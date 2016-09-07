@@ -1,0 +1,10 @@
+
+.DemoBox {
+  display: block;
+  position: relative;
+  float: left;
+  margin: 20px;
+  width: 200px; 
+  height: 200px; 
+  border: 2px dashed #eee;
+}

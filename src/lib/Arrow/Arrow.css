@@ -1,0 +1,35 @@
+/* required for arrow */
+.arrow-head {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0; 
+  height: 0; 
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  border-left: 30px solid green;
+}
+
+.arrow-body {
+  display: inline-block;
+  vertical-align: middle;
+  background-color: green;
+  width: 40px;
+  height: 20px;
+  margin: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-left: 0;
+  border-right: 0;
+}
+
+.arrow-wrapper {
+  width: 70px;   /* arrow-body width + arrow-head border width */
+}
+
+.Arrow {
+  /* For some nice animation on the rotates: */
+  -webkit-transition: -webkit-transform .2s;
+     -moz-transition:    -moz-transform .2s;
+          transition:         transform .2s;
+}
+

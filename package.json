@@ -1,0 +1,48 @@
+{
+  "name": "Thing",
+  "version": "0.0.0",
+  "description": "Javascript 6 OOP demo library",
+  "main": "index.js",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  },
+  "devDependencies": {
+    "browserify": "^13.1.0",
+    "browserify-css": "^0.9.2",
+    "browserify-shim": "^3.8.12",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-less": "^3.1.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0",
+    "jshint": "^2.9.3",
+    "stringify": "^5.1.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:marknapier/Thing.git"
+  },
+  "keywords": [
+    "Javascript",
+    "6",
+    "OOP",
+    "HTML",
+    "CSS"
+  ],
+  "author": "Mark Napier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marknapier/Thing/issues"
+  },
+  "homepage": "https://github.com/marknapier/Thing"
+}
