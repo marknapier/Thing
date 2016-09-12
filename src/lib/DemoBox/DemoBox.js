@@ -8,7 +8,7 @@ class DemoBox extends Box {
 		props.height = props.height || 200;
 		props.position = 'relative';
 		this.type = 'DemoBox';
-		this.$element = Thing.makeElement(Thing.html(), this.props, this.type);
+		this.$element = Thing.makeElement(this.html(), this.props, this.type);
 	}
 
 	render () {

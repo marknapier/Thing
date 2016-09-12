@@ -5,7 +5,7 @@ class Box extends Thing {
   	this.initialize(props);
   	this.type = 'Box';
   	this.items = [];
-  	this.$element = Thing.makeElement(Thing.html(), this.props, this.type);
+  	this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
   add (item) {

@@ -7,7 +7,7 @@ class Thing {
   init (props) {
     this.initialize(props);
     this.type = 'Thing';
-    this.$element = Thing.makeElement(Thing.html(), this.props, this.type);
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
   initialize (props) {
@@ -17,6 +17,8 @@ class Thing {
     // keep these properties on 'this'
     this.rotation = props.rotate || 0;
     this.scaleFactor = props.scale || 1;
+    this.x = props.x || 0;
+    this.y = props.y || 0;
     this.$element = null;
     this.parent = null;
   }
@@ -37,29 +39,39 @@ class Thing {
 
   rotate (degrees) {
     this.rotation += degrees;
-    this.css({ 
-      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor)
-    });
+    this.transform();
   }
 
   rotateTo (angle) {
     this.rotation = angle;
-    this.css({ 
-      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor)
-    });
+    this.transform();
   }
 
   scale (factor) {
     this.scaleFactor += factor;
-    this.css({ 
-      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor)
-    });
+    this.transform();
   }
 
   scaleTo (factor) {
     this.scaleFactor = factor;
+    this.transform();
+  }
+
+  translate (x, y) {
+    this.x += x;
+    this.y += y;
+    this.transform();
+  }
+
+  translateTo (x, y) {
+    this.x = x;
+    this.y = y;
+    this.transform();
+  }
+
+  transform () {
     this.css({ 
-      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor)
+      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor, this.x, this.y)
     });
   }
 
@@ -68,7 +80,7 @@ class Thing {
     this.$element.css(props);
   }
 
-  static html () {
+  html () {
     return '<div></div>';
   }
 
@@ -104,13 +116,13 @@ class Thing {
   static makeStyles (props) {
     var styles = props || {};
     $.extend(styles, {
-      left: props.left || (props.x && (props.x + "px")),
-      top: props.top || (props.y && (props.y + "px")),
+      // left: props.left || (props.x && (props.x + "px")),
+      // top: props.top || (props.y && (props.y + "px")),
       width: props.width || (props.w && (props.w + "px")),
       height: props.height || (props.h && (props.h + "px")),
       zIndex: props.zIndex || props.z,
       backgroundColor: (props.backgroundColor || 'transparent'),
-      transform: props.transform || (Thing.makeTransformCSS(props.rotate, props.scale)),
+      transform: props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y)),
       position: props.position || 'absolute'
     });
     delete styles.rotate;
@@ -123,10 +135,11 @@ class Thing {
     return styles;
   }
 
-  static makeTransformCSS (rotate, scale) {
+  static makeTransformCSS (rotate, scale, tx, ty) {
     var transform = '';
-    transform += scale && (Thing.makeScaleCSS(scale) + ' ');
-    transform += Thing.isNumeric(rotate) && (Thing.makeAngleCSS(rotate) + ' ');
+    transform += (tx || ty) ? (Thing.makeTranslateCSS(tx, ty) + ' ') : '';
+    transform += Thing.isNumeric(rotate) ? (Thing.makeAngleCSS(rotate) + ' ') : '';
+    transform += scale ? (Thing.makeScaleCSS(scale) + ' ') : '';
     return transform;
   }
 
@@ -136,6 +149,12 @@ class Thing {
 
   static makeScaleCSS (scale) {
     return 'scale('+scale+')';
+  }
+
+  static makeTranslateCSS (x, y) {
+    x = x || '0';
+    y = y || '0';
+    return 'translate('+ x + 'px, ' + y +'px)';
   }
 
   static makeElement (html, props, type) {

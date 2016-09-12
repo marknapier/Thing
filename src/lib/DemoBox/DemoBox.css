@@ -1,8 +1,7 @@
 
 .DemoBox {
-  display: block;
+  display: inline-block;
   position: relative;
-  float: left;
   margin: 20px;
   width: 200px; 
   height: 200px; 
