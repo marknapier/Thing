@@ -1,0 +1,489 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Thing Demo</title>    
+    <link href="reset.css" rel="stylesheet">
+    <style>
+      #demo { 
+        border: 1px dashed #ccc;
+        /*height: 400px;*/
+        position: relative;
+      }
+      
+      /* Lines can be styled with normal css: */
+      div.Line{                     
+        height: 5px; /* Line width of 3 */
+        background: #948C79; /* Black fill */
+        opacity: 0.5;
+        box-shadow: 0 0 8px #B99B7E;
+        
+        /* For some nice animation on the rotates: */
+        -webkit-transition: -webkit-transform 1s;
+           -moz-transition:    -moz-transform 1s;
+                transition:         transform 1s;
+      }
+      
+      div.Line:hover{
+        background: #C30;
+        box-shadow: 0 0 8px #C30;
+        opacity: 1;
+      }
+      
+      div.Line.active{
+        background: #666;
+        box-shadow: 0 0 8px #666;
+        opacity: 1;
+      }
+
+      /* required for arrow */
+/*      .arrow-head {
+        display: inline-block;
+        vertical-align: middle;
+        width: 0; 
+        height: 0; 
+        border-top: 30px solid transparent;
+        border-bottom: 30px solid transparent;
+        border-left: 30px solid green;
+      }
+
+      .arrow-body {
+        display: inline-block;
+        vertical-align: middle;
+        background-color: green;
+        width: 40px;
+        height: 20px;
+        margin: 0;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-left: 0;
+        border-right: 0;
+      }
+
+      .arrow {
+        -webkit-transition: -webkit-transform .2s;
+           -moz-transition:    -moz-transform .2s;
+                transition:         transform .2s;
+      }
+*/
+      .Thing {
+        border-color: #F00;
+      }
+    </style>
+  </head>
+
+  <body>
+  
+  <div id="page">
+    <div id='content'>      
+      <div id='controls'>
+        <a href='#' id='rotate-lines'>Rotate Lines</a>
+        | <a href='#' id='rotate-arrows'>Rotate Arrows</a>
+        | <a href='#' id='clear-lines'>Remove Lines</a>
+      </div>
+    </div>
+  </div>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<script src='jquery/jquery-1.9.1.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  var x1 = null, y1 = null;
+  
+  function createNotation(x,y){
+    var note = $('<div>' + '(' + x + ',' + y + ')' + '</div>')
+      .css({
+        'position': 'absolute',
+        'left': '' + x + 'px',
+        'top': '' + y + 'px'
+      });
+
+    return note;
+  }
+
+  function createLineWithNumbers (x1,y1, x2,y2) {
+    var line = createLine(x1,y1,x2,y2);
+    line.appendTo('#demo');
+    createNotation(x1,y1).appendTo('#demo');
+    createNotation(x2,y2).appendTo('#demo');
+  }
+
+  $('#rotate-lines').click(function(event){
+    event.preventDefault();
+    rotateLineThings();
+  });
+
+  $('#rotate-arrows').click(function(event){
+    event.preventDefault();
+    rotateArrowThings();
+  });
+
+  // createLineWithNumbers(100,50, 200,200);
+  // createLineWithNumbers(150,200, 10,30);  
+  // createArrow(300,300).appendTo('#demo');
+
+
+  function rotateArrowThings() {
+    var degrees = (Math.random() * 360) - 180;   // +- 180
+    for (var i=0; i < arrows.length; i++) {
+      arrows[i].rotate(degrees);
+    }
+  }
+
+  function rotateLineThings() {
+    var degrees = (Math.random() * 360) - 180;   // +- 180
+    for (var i=0; i < funboxItems.length; i++) {
+      funboxItems[i].rotate(degrees);
+    }
+  }
+
+  //---------------------------------------------------------
+
+  class Img extends Thing {
+    init (props) {
+      props = props || {};
+      props.src = props.src || 'img/IMG_0021.JPG';
+      super.init(props);
+      this.type = 'Img';
+      this.$element = Thing.makeElement(this.html(), this.props, this.type);
+      this.$element.addClass(this.type)
+    }
+
+    html () {
+      return '<img src="' + this.props.src + '">';
+    }
+  }
+
+  var arrows = [];
+  var Box = Thing.getClass('Box');
+  var DemoBox = Thing.getClass('DemoBox');
+  var Arrow = Thing.getClass('Arrow');
+
+  function makeBoxOfArrows () {
+    var outerBox = DemoBox.make({position:'relative', width:'70%', height:'inherit'});
+    for (var i=0; i < 10; i++) {
+      var db = DemoBox.make({
+        overflow:'hidden',
+        borderColor: '#ccc',
+        width: '400px',
+        height: '400px'
+      });
+      // var a = Arrow.make({
+      //   rotate: (Math.random()*360),
+      //   scale: .2 + (Math.random()*4),
+      //   x: (Math.random()*200),
+      //   y: (Math.random()*200),
+      //   color: ["red", "yellow", "green", "blue"][parseInt(Math.random()*4)]
+      // });
+      var a = Img.make({
+        rotate: (Math.random()*360),
+        scale: 1,
+        x: (Math.random()*50),
+        y: (Math.random()*50)
+      });
+      outerBox.add(db);
+      db.add(a);
+      arrows.push(a);
+    }
+
+    outerBox.render();
+  }
+
+  //---------------------------------------------------------
+
+  window.funboxItems = [];
+
+  class Line extends Thing {
+    init (props) {
+      // expecting props: { x1:0, y1:0, x2:50, y2:50 }
+      props.backgroundColor = props && (props.backgroundColor || props.color || 'black');
+      super.init(props);
+      this.type = 'Line';
+      this.$element = Thing.makeElement(this.html(), this.props, this.type);
+      this.$element.addClass(this.type)
+      this.createLine(props.x1, props.y1, props.x2, props.y2, props.width);
+    }
+
+    createLine (x1,y1, x2,y2, width) {
+      var length = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+      var angle  = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+      this.css({
+          'left': '' + x1 + 'px',
+          'top': '' + y1 + 'px',
+          'width': '' + length + 'px',
+          'height': '' + (width || 2) + 'px',
+          // rotate around start point of line
+          'transform-origin': '0 50%'
+        });
+      this.rotateTo(angle);
+    }
+  }
+
+  class FunBox extends Box {
+    init (props) {
+      // prep some params
+      props = $.extend({
+        position: 'relative',
+        border: '2px solid #ddd',
+        borderRadius: '6px',
+        margin: '10px'
+      }, props);
+
+      super.init(props);
+      this.type = 'FunBox';
+      this.$element = Thing.makeElement(this.html(), this.props, this.type);
+
+      for (var i=0; i < 10; i++) {
+        var db = DemoBox.make({
+          overflow:'hidden',
+          borderColor: '#ccc',
+          position: 'relative'
+        });
+
+        for (var j=0; j < 10; j++) {
+          var a = Line.make({
+            x1: (Math.random()*100),
+            y1: (Math.random()*200),
+            x2: (100 + Math.random()*100),
+            y2: (Math.random()*200),
+            width: parseInt(1 + (Math.random()*3), 10),
+            opacity: .1 + (Math.random()*.9)
+          });
+          db.add(a);
+          funboxItems.push(a);
+        }
+
+        this.add(db);
+      }
+    }
+  }
+
+  //---------------------------------------------------------
+
+  makeBoxOfArrows();
+
+  var FB = FunBox.make();
+  FB.css({width: '70%'});
+  FB.render();
+
+  window.FB = FB;
+  window.Img = Img;
+
+});
+</script>
+
+<script type="text/javascript">
+
+
+class Action {
+  constructor() {
+  }
+
+  init (props) {
+    this.props = props || {};
+    return this;
+  }
+
+  go () {
+    window.console.log('Action.go()');
+  }
+
+  stop () {
+    window.console.log('Action.stop()');
+  }
+
+  static make () {
+    var cls = this;
+    var instance = new cls();
+    instance.init.apply(instance, arguments);
+    return instance;
+  }
+}
+
+// module.exports = Action;
+
+class Timer extends Action {
+  init (props) {
+    props = props || {};
+    this.callback = props.callback || function () {};
+    this.delay = props.delay || 1000;
+    this.timerID = null;
+    return this;
+  }
+
+  go () {
+    clearTimeout(this.timerID);
+    this.timerID = setTimeout(this.callback, this.delay);
+    return this;
+  }
+
+  stop () {
+    clearTimeout(this.timerID);
+    this.timerID = null;
+  }
+}
+
+
+
+class Pulsar extends Action {
+  init (props) {
+    props = props || {};
+    this.callback = props.callback || function () {};
+    this.delay = props.delay || 1000;
+    this.T = Timer.make({callback: this.trigger.bind(this), delay: this.delay});
+    return this;
+  }
+
+  go () {
+    this.T.go();
+    return this;
+  }
+
+  stop () {
+    this.T.stop();
+  }
+
+  trigger () {
+    this.callback();
+    this.T.go();
+  }
+}
+
+
+
+var PI = 3.14159265359;
+var HALFPI = PI/2.0;
+
+class Rand {
+  static randItem(arr) {
+    if (arr && arr.length > 0) {
+      return arr[ Rand.randInt(0, arr.length-1) ];
+    }
+  }
+
+  // Returns a random integer between min (included) and max (included)
+  // Using Math.round() will give you a non-uniform distribution!
+  static randInt(min, max) {
+    min = Math.ceil(min||0);
+    max = Math.floor(max||1);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // return float between 0 and .999999
+  static randfloat() {
+      return Math.random();
+  }
+
+  static randPercent(threshold) {
+    return Rand.randInt(1,100) < threshold;
+  }
+
+  // random integer within maxDistance of target (distributed in a bell curve around target)
+  static randCloseTo(target, maxDistance) {
+    // return target + (maxDistance * randNormal());    // concentrated towards center 50% of range
+    // return target + (maxDistance * randSin2());   // spread over entire range, somewhat concentrated towards center 
+    return target + (maxDistance * Rand.randPow2());   // spread over entire range, with sharp concentration around center
+  }
+
+  // return float between 0 and 1, distributed exponentially closer to 0
+  static randPow() {
+    return Math.pow(1.0 - Rand.randfloat(), 4);
+  }
+
+  // return float between 0 and 1, distributed toward 1
+  static randSin() {
+    return Math.sin(Rand.randfloat() * HALFPI);
+  }
+
+  // return float between -1 and 1, distributed exponentially closer to 0
+  static randPow2() {
+    return Rand.randPow() - Rand.randPow();
+  }
+
+  // return float between -1 and 1, distributed in a bell curve around 0
+  static randNormal() {
+    return ((Rand.randfloat() + Rand.randfloat() + Rand.randfloat() + Rand.randfloat() + Rand.randfloat() + Rand.randfloat()) - 3.0) / 3.0;
+  }
+
+  // return float between -1 and 1, distributed closer to 0
+  static randSin2() {
+    return Rand.randSin() - Rand.randSin();
+  }
+}
+
+
+class Blinky extends Thing {
+  init () {
+    this.colors = ['yellow', 'red', 'blue', 'green', 'magenta', 'cyan', 'orange', 'black'];
+
+    this.square = Thing.make({
+      w: 50, 
+      h: 50, 
+      backgroundColor: '#ccc', 
+      transition: 'background-color 11.5s', 
+      position: 'relative', 
+      margin: '0', 
+      display: 'inline-block',
+      lineHeight: 0,
+      fontSize: 0
+    });
+
+    // this.pulse = Pulsar.make({
+    //   callback: this.changeColor.bind(this), 
+    //   delay: 2000
+    // });
+  }
+
+  changeColor () {
+    this.square.css({backgroundColor: Rand.randItem(this.colors)});    
+  }
+
+  render () {
+    this.square.render();
+    // this.pulse.go();
+  }
+}
+
+
+class BlinkyBunch extends Thing {
+  init () {
+    this.blinkies = [];
+
+    for (var i=0; i < 1000; i++) { 
+      this.blinkies.push(Blinky.make());
+    }
+
+    this.pulse = Pulsar.make({
+      callback: this.changeColor.bind(this), 
+      delay: 4000
+    });
+  }
+
+  changeColor () {
+    this.blinkies.forEach( function (blinky) {
+      blinky.changeColor();
+    });
+  }
+
+  render () {
+    for (var i=0; i < this.blinkies.length; i++) { 
+      this.blinkies[i].render();
+    }
+    this.pulse.go();
+  }
+
+  stop () {
+    this.pulse.stop();
+  }
+}
+
+// BlinkyBunch.make().render();
+
+</script>
+
+
+  </body>
+</html>
