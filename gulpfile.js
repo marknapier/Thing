@@ -74,13 +74,18 @@ var config = {
 ////////////////
 // Tasks
 
+gulp.task('demo', function() {
+   gulp.src('src/demo/thing.html')
+   .pipe(gulp.dest('dist'));
+});
+
 gulp.task('jshint', function() {
     return gulp.src('src/lib/**/*.js')
         .pipe(jshint(config.jshint.options))
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('browserify', function () {
+gulp.task('browserify', ['jshint'], function () {
   // set up the browserify instance for use in Gulp
   var options = {
 	entries: 'src/lib/index.js',
@@ -104,18 +109,12 @@ gulp.task('browserify', function () {
     ;
 });
 
-
-gulp.task('js', function() {
-  return browserify({ 'entries':['src/lib/index.js'], 'debug':true })
-    .transform(stringify, {
-        appliesTo: { includeExtensions: ['.html', '.css'] },
-        minify: true
-    })
-    .bundle()
-    .pipe(source('main.js')) // gives streaming vinyl file object 
-    .pipe(gulp.dest(paths.build));
+gulp.task('publish',  ['browserify', 'demo'], function() {
+   gulp.src('./dist/**/*')
+   .pipe(gulp.dest('../../../../xampp/htdocs/css_lines'));
 });
+
 ////////////////
 // Default task
 
-gulp.task('default', ['jshint', 'browserify']);
+gulp.task('default', ['publish']);

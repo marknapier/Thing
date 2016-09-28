@@ -3,6 +3,7 @@ var Box = require('../Box/Box.js');
 
 class DemoBox extends Box {
 	init (props) {
+		props = props || {};
 		super.init(props);
 		props.width = props.width || 200;
 		props.height = props.height || 200;

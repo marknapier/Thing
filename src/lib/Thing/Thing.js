@@ -100,10 +100,10 @@ class Thing {
     Thing.classes[cls.name] = cls;
 
     // load the class styles (these are included in the bundle at build time)
-    Thing.addCSSString(cls.css(), cls.name);
+    cls.css && Thing.addCSSString(cls.css(), cls.name);
 
     // add additional css file at load time
-    Thing.addCSSFile(cls.name + '/' + cls.name + '.css', cls.name);
+    Thing.addCSSFile(cls.name + '/' + cls.name + '.css', 'css'+cls.name);
   }
 
   static getClass (name) {
