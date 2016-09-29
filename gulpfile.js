@@ -75,7 +75,7 @@ var config = {
 // Tasks
 
 gulp.task('demo', function() {
-   gulp.src('src/demo/thing.html')
+   gulp.src('src/demo/*.html')
    .pipe(gulp.dest('dist'));
 });
 

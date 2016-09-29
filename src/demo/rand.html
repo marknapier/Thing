@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Rand Demo</title>    
+    <link href="reset.css" rel="stylesheet">
+    <style>
+      #demo { 
+        border: 1px dashed #ccc;
+        /*height: 400px;*/
+        position: relative;
+      }
+    </style>
+  </head>
+
+  <body>
+  
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<script src='jquery/jquery-1.9.1.js'></script>
+<script src='thing.js'></script>
+
+<script type="text/javascript">
+var imgNames = [
+  'elvis_eye_left_round.png',
+  'elvis_eye_left_square.png',
+  'elvis_eye_right_round.png',
+  'elvis_eye_right_square.png',
+  'elvis_mouth_round.png',
+  'elvis_mouth_square.png',
+  'marilyn_eye_left_fuzzy.png',
+  'marilyn_eye_left_round.png',
+  'marilyn_eye_left_square.png',
+  'marilyn_eye_right_fuzzy.png',
+  'marilyn_eye_right_round.png',
+  'marilyn_eye_right_square.png',
+  'marilyn_mouth.png',
+  'marilyn_mouth_round.png',
+  'marilyn_mouth_square.png',
+  'mona_eye_left_circle.png',
+  'mona_eye_left_fuzzy.png',
+  'mona_eye_right_circle.png',
+  'mona_eye_right_fuzzy.png',
+  'mona_eye_right_square.png',
+  'washington_eye_left_fuzzy.png',
+  'washington_eye_left_round.png',
+  'washington_eye_left_square.png',
+  'washington_eye_right_fuzzy.png',
+  'washington_eye_right_round.png',
+  'washington_eye_right_square.png',
+  'washington_mouth_fuzzy.png',
+  'washington_mouth_round.png',
+  'washington_mouth_square.png',
+  'yoda_eye_left_fuzzy.png',
+  'yoda_eye_right.png',
+  'yoda_eye_right_fuzzy.png',
+  'yoda_left_eye.png',
+  'yoda_mouth_circle.png'
+];
+
+function imgBunch () {
+  var Imgs = [];
+
+  for (var i=0; i < imgNames.length; i++) {
+    var facepart = Img.make({
+      src: 'img/faceparts/' + imgNames[i], 
+      x: i*10, 
+      y: i*10,
+      opacity: .1 + Rand.randFloat(),
+      scale: .5 + Rand.randFloat()
+    });
+    Imgs.push(facepart);
+  }
+
+  for (var i=0; i < Imgs.length; i++) {
+    Imgs[i].render();
+  }
+}
+
+function scatterBox (randFunction) {
+  var size = 100;
+  var outerboxsize = ((size+2) * 2)+1;
+  var Box = Thing.getClass('Box');
+  var outerbox = Box.make({
+    position: 'relative',
+    display: 'inline-block',
+    w: outerboxsize,
+    h: outerboxsize,
+    border: '0',
+    margin: '10px',
+    fontSize: 0
+  });
+  var sb = null;
+
+  function makeInnerBox() {
+    return Box.make({
+      position: 'relative',
+      display: 'inline-block',
+      w: size,
+      h: size,
+      border: '1px dashed #ddd',
+      margin: '0'
+    });
+  }
+
+  outerbox.add(makeInnerBox());
+  outerbox.add(makeInnerBox());
+  outerbox.add(makeInnerBox());
+  outerbox.add(sb = makeInnerBox());
+  outerbox.render();
+
+  for (var i=0; i < 1000; i++) {
+    var t = Thing.make({
+      w: 2,
+      h: 2,
+      x: randFunction()*size,
+      y: randFunction()*size,
+      backgroundColor: '#000',
+      opacity: .4
+    });
+    sb.add(t);
+    t.render();
+  }
+
+  return outerbox;
+}
+
+var Rand = Thing.getClass('Rand');
+var sb = scatterBox(Rand.randFloat);
+var sb = scatterBox(Rand.randPow);
+var sb = scatterBox(Rand.randSin);
+var sb = scatterBox(Rand.randNormal);
+var sb = scatterBox(Rand.randPow2);
+var sb = scatterBox(Rand.randSin2);
+
+</script>
+
+
+  </body>
+</html>
