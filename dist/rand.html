@@ -76,10 +76,11 @@ function imgBunch () {
   }
 }
 
-function scatterBox (randFunction) {
+function scatterBox (randFunction, title) {
   var size = 100;
   var outerboxsize = ((size+2) * 2)+1;
   var Box = Thing.getClass('Box');
+  var Label = Thing.getClass('Label');
   var outerbox = Box.make({
     position: 'relative',
     display: 'inline-block',
@@ -88,6 +89,12 @@ function scatterBox (randFunction) {
     border: '0',
     margin: '10px',
     fontSize: 0
+  });
+  var title = Label.make({
+    text: title,
+    position: 'absolute',
+    left: 0,
+    top: 0
   });
   var sb = null;
 
@@ -106,6 +113,7 @@ function scatterBox (randFunction) {
   outerbox.add(makeInnerBox());
   outerbox.add(makeInnerBox());
   outerbox.add(sb = makeInnerBox());
+  outerbox.add(title);
   outerbox.render();
 
   for (var i=0; i < 1000; i++) {
@@ -125,12 +133,12 @@ function scatterBox (randFunction) {
 }
 
 var Rand = Thing.getClass('Rand');
-var sb = scatterBox(Rand.randFloat);
-var sb = scatterBox(Rand.randPow);
-var sb = scatterBox(Rand.randSin);
-var sb = scatterBox(Rand.randNormal);
-var sb = scatterBox(Rand.randPow2);
-var sb = scatterBox(Rand.randSin2);
+var sb = scatterBox(Rand.randFloat, 'randFloat');
+var sb = scatterBox(Rand.randPow, 'randPow');
+var sb = scatterBox(Rand.randSin, 'randSin');
+var sb = scatterBox(Rand.randNormal, 'randNormal');
+var sb = scatterBox(Rand.randPow2, 'randPow2');
+var sb = scatterBox(Rand.randSin2, 'randSin2');
 
 </script>
 
