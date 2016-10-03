@@ -23,7 +23,6 @@ class Label extends Thing {
 	render () {
 		super.render();
 	}
-
 }
 Thing.addClass(Label);
 

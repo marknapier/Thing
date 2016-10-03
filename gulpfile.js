@@ -24,7 +24,7 @@ var bases = {
 
 var paths = {
  scripts: ['src/lib/**/*.js'],
- // html: ['src/demo/index.html', '!src/demo/test.html'], 
+ // html: ['src/demo/index.html', '!src/demo/test.html'],
  dist: 'dist/'
 };
 
@@ -102,7 +102,7 @@ gulp.task('browserify', ['jshint'], function () {
   var b = browserify(config.browserify.options);
 
   return b.bundle()
-    .pipe(source('src/lib/**/*.js'))   // makes streaming vinyl file object 
+    .pipe(source('src/lib/**/*.js'))   // makes streaming vinyl file object
     .pipe(buffer())
     .pipe(rename('thing.js'))
     .pipe(gulp.dest('dist'))
@@ -111,7 +111,8 @@ gulp.task('browserify', ['jshint'], function () {
 
 gulp.task('publish',  ['browserify', 'demo'], function() {
    gulp.src('./dist/**/*')
-   .pipe(gulp.dest('../../../../xampp/htdocs/css_lines'));
+   // .pipe(gulp.dest('../../../../xampp/htdocs/css_lines'));
+   .pipe(gulp.dest('../htdocs/Thing'));
 });
 
 ////////////////

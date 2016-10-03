@@ -8,5 +8,6 @@ require('./Rand/Rand.js');
 require('./Pulsar/Pulsar.js');
 require('./Do/Do.js');
 require('./Label/Label.js');
+require('./Line/Line.js');
 
 window.Thing = Thing;

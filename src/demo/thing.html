@@ -3,34 +3,34 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Thing Demo</title>    
+    <title>Thing Demo</title>
     <link href="reset.css" rel="stylesheet">
     <style>
-      #demo { 
+      #demo {
         border: 1px dashed #ccc;
         /*height: 400px;*/
         position: relative;
       }
-      
+
       /* Lines can be styled with normal css: */
-      div.Line{                     
+      div.Line{
         height: 5px; /* Line width of 3 */
         background: #948C79; /* Black fill */
         opacity: 0.5;
         box-shadow: 0 0 8px #B99B7E;
-        
+
         /* For some nice animation on the rotates: */
         -webkit-transition: -webkit-transform 1s;
            -moz-transition:    -moz-transform 1s;
                 transition:         transform 1s;
       }
-      
+
       div.Line:hover{
         background: #C30;
         box-shadow: 0 0 8px #C30;
         opacity: 1;
       }
-      
+
       div.Line.active{
         background: #666;
         box-shadow: 0 0 8px #666;
@@ -41,8 +41,8 @@
 /*      .arrow-head {
         display: inline-block;
         vertical-align: middle;
-        width: 0; 
-        height: 0; 
+        width: 0;
+        height: 0;
         border-top: 30px solid transparent;
         border-bottom: 30px solid transparent;
         border-left: 30px solid green;
@@ -74,9 +74,9 @@
   </head>
 
   <body>
-  
+
   <div id="page">
-    <div id='content'>      
+    <div id='content'>
       <div id='controls'>
         <a href='#' id='rotate-lines'>Rotate Lines</a>
         | <a href='#' id='rotate-arrows'>Rotate Arrows</a>
@@ -86,13 +86,14 @@
   </div>
 
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
-<script src='jquery/jquery-1.9.1.js'></script>
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
 <script src='thing.js'></script>
 
 <script>
 $(function(){
   var x1 = null, y1 = null;
-  
+
   function createNotation(x,y){
     var note = $('<div>' + '(' + x + ',' + y + ')' + '</div>')
       .css({
@@ -122,7 +123,7 @@ $(function(){
   });
 
   // createLineWithNumbers(100,50, 200,200);
-  // createLineWithNumbers(150,200, 10,30);  
+  // createLineWithNumbers(150,200, 10,30);
   // createArrow(300,300).appendTo('#demo');
 
 
@@ -384,7 +385,7 @@ $(function(){
 //   // random integer within maxDistance of target (distributed in a bell curve around target)
 //   static randCloseTo(target, maxDistance) {
 //     // return target + (maxDistance * randNormal());    // concentrated towards center 50% of range
-//     // return target + (maxDistance * randSin2());   // spread over entire range, somewhat concentrated towards center 
+//     // return target + (maxDistance * randSin2());   // spread over entire range, somewhat concentrated towards center
 //     return target + (maxDistance * Rand.randPow2());   // spread over entire range, with sharp concentration around center
 //   }
 
@@ -420,25 +421,25 @@ class Blinky extends Thing {
     this.colors = ['yellow', 'red', 'blue', 'green', 'magenta', 'cyan', 'orange', 'black'];
 
     this.square = Thing.make({
-      w: 50, 
-      h: 50, 
-      backgroundColor: '#ccc', 
-      transition: 'background-color 11.5s', 
-      position: 'relative', 
-      margin: '0', 
+      w: 50,
+      h: 50,
+      backgroundColor: '#ccc',
+      transition: 'background-color 11.5s',
+      position: 'relative',
+      margin: '0',
       display: 'inline-block',
       lineHeight: 0,
       fontSize: 0
     });
 
     // this.pulse = Pulsar.make({
-    //   callback: this.changeColor.bind(this), 
+    //   callback: this.changeColor.bind(this),
     //   delay: 2000
     // });
   }
 
   changeColor () {
-    this.square.css({backgroundColor: Rand.randItem(this.colors)});    
+    this.square.css({backgroundColor: Rand.randItem(this.colors)});
   }
 
   render () {
@@ -456,12 +457,12 @@ class BlinkyBunch extends Thing {
   init () {
     this.blinkies = [];
 
-    for (var i=0; i < 100; i++) { 
+    for (var i=0; i < 100; i++) {
       this.blinkies.push(Blinky.make());
     }
 
     this.pulse = Pulsar.make({
-      callback: this.changeColor.bind(this), 
+      callback: this.changeColor.bind(this),
       delay: 4000
     });
   }
@@ -473,7 +474,7 @@ class BlinkyBunch extends Thing {
   }
 
   render () {
-    for (var i=0; i < this.blinkies.length; i++) { 
+    for (var i=0; i < this.blinkies.length; i++) {
       this.blinkies[i].render();
     }
     this.pulse.go();
@@ -530,8 +531,8 @@ function imgBunch () {
 
   for (var i=0; i < imgNames.length; i++) {
     var facepart = Img.make({
-      src: 'img/faceparts/' + imgNames[i], 
-      x: i*10, 
+      src: 'img/faceparts/' + imgNames[i],
+      x: i*10,
       y: i*10,
       opacity: .1 + Rand.randFloat(),
       scale: .5 + Rand.randFloat()

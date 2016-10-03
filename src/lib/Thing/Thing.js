@@ -70,7 +70,7 @@ class Thing {
   }
 
   transform () {
-    this.css({ 
+    this.css({
       transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor, this.x, this.y)
     });
   }
@@ -121,7 +121,7 @@ class Thing {
       width: props.width || (props.w && (props.w + "px")),
       height: props.height || (props.h && (props.h + "px")),
       zIndex: props.zIndex || props.z,
-      backgroundColor: (props.backgroundColor || 'transparent'),
+      backgroundColor: props.backgroundColor,
       transform: props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y)),
       position: props.position || 'absolute'
     });
@@ -192,7 +192,7 @@ class Thing {
   static addCSSString(cssString, id) {
     if (cssString) {
       // var doc = window.document;
-      var styleEl = $('<style type="text/css">' +cssString+ '</style>')     
+      var styleEl = $('<style type="text/css">' +cssString+ '</style>')
         .attr('id', (id || 'Thing') + '-styles');
       $('head').append(styleEl);
     }

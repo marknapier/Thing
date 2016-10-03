@@ -2,21 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Rand Demo</title>    
+    <title>Rand Demo</title>
     <link href="reset.css" rel="stylesheet">
     <style>
-      #demo { 
+      #demo {
         border: 1px dashed #ccc;
         /*height: 400px;*/
         position: relative;
+      }
+
+      .GraphPaper {
+        background-color: #269;
+        background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+        background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+        background-image: linear-gradient(white 2px, transparent 2px),
+                          linear-gradient(90deg, white 2px, transparent 2px),
+                          linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
       }
     </style>
   </head>
 
   <body>
-  
+
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
-<script src='jquery/jquery-1.9.1.js'></script>
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
 <script src='thing.js'></script>
 
 <script type="text/javascript">
@@ -57,13 +68,36 @@ var imgNames = [
   'yoda_mouth_circle.png'
 ];
 
+//-----------------------
+
+class GraphPaper extends Thing {
+  init (props) {
+    var defaultProps = {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: '0px',
+      top: '0px',
+      backgroundColor: '#003',
+      color: '#ddd'
+    };
+    props = $.extend({}, defaultProps, props);
+    this.initialize(props);
+    this.type = 'GraphPaper';
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
+  }
+}
+Thing.classes.GraphPaper = GraphPaper;
+
+//-----------------------
+
 function imgBunch () {
   var Imgs = [];
 
   for (var i=0; i < imgNames.length; i++) {
     var facepart = Img.make({
-      src: 'img/faceparts/' + imgNames[i], 
-      x: i*10, 
+      src: 'img/faceparts/' + imgNames[i],
+      x: i*10,
       y: i*10,
       opacity: .1 + Rand.randFloat(),
       scale: .5 + Rand.randFloat()
@@ -75,6 +109,8 @@ function imgBunch () {
     Imgs[i].render();
   }
 }
+
+//-----------------------
 
 function scatterBox (randFunction, title) {
   var size = 100;
@@ -92,9 +128,33 @@ function scatterBox (randFunction, title) {
   });
   var title = Label.make({
     text: title,
-    position: 'absolute',
+    position: 'relative',
     left: 0,
     top: 0
+  });
+  var one = Label.make({
+    text: '1',
+    position: 'absolute',
+    right: '0%',
+    top: '50%'
+  });
+  var oneBottom = Label.make({
+    text: '1',
+    position: 'absolute',
+    left: '50%',
+    top: '105%'
+  });
+  var negativeOne = Label.make({
+    text: '-1',
+    position: 'absolute',
+    left: '0%',
+    top: '50%'
+  });
+  var negativeOneTop = Label.make({
+    text: '-1',
+    position: 'absolute',
+    left: '50%',
+    top: '0%'
   });
   var sb = null;
 
@@ -109,11 +169,15 @@ function scatterBox (randFunction, title) {
     });
   }
 
+  outerbox.add(title);
   outerbox.add(makeInnerBox());
   outerbox.add(makeInnerBox());
   outerbox.add(makeInnerBox());
   outerbox.add(sb = makeInnerBox());
-  outerbox.add(title);
+  outerbox.add(one);
+  outerbox.add(oneBottom);
+  outerbox.add(negativeOne);
+  outerbox.add(negativeOneTop);
   outerbox.render();
 
   for (var i=0; i < 1000; i++) {
@@ -132,6 +196,8 @@ function scatterBox (randFunction, title) {
   return outerbox;
 }
 
+//-----------------------
+
 var Rand = Thing.getClass('Rand');
 var sb = scatterBox(Rand.randFloat, 'randFloat');
 var sb = scatterBox(Rand.randPow, 'randPow');
@@ -139,6 +205,17 @@ var sb = scatterBox(Rand.randSin, 'randSin');
 var sb = scatterBox(Rand.randNormal, 'randNormal');
 var sb = scatterBox(Rand.randPow2, 'randPow2');
 var sb = scatterBox(Rand.randSin2, 'randSin2');
+
+var Line = Thing.getClass('Line');
+var a = Line.make({
+  x1: (Math.random()*100),
+  y1: (Math.random()*200),
+  x2: (200 + Math.random()*500),
+  y2: (Math.random()*500),
+  width: parseInt(1 + (Math.random()*3), 10),
+  opacity: .1 + (Math.random()*.9)
+});
+a.render();
 
 </script>
 

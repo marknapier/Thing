@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Rand Demo</title>
+    <link href="reset.css" rel="stylesheet">
+    <style>
+      #demo {
+        border: 1px dashed #ccc;
+        /*height: 400px;*/
+        position: relative;
+      }
+
+      .GraphPaper {
+        background-color: #269;
+        background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+        background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+        background-image: linear-gradient(white 2px, transparent 2px),
+                          linear-gradient(90deg, white 2px, transparent 2px),
+                          linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+      }
+    </style>
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script type="text/javascript">
+var Box = Thing.getClass('Box');
+var DemoBox = Thing.getClass('DemoBox');
+var Line = Thing.getClass('Line');
+
+window.funboxItems = [];
+
+class FunBox extends Box {
+  init (props) {
+    // prep some params
+    props = $.extend({
+      position: 'relative',
+      border: '2px solid #ddd',
+      borderRadius: '6px',
+      margin: '10px'
+    }, props);
+
+    super.init(props);
+    this.type = 'FunBox';
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
+
+    for (var i=0; i < 10; i++) {
+      var db = DemoBox.make({
+        overflow:'hidden',
+        borderColor: '#ccc',
+        position: 'relative'
+      });
+
+      for (var j=0; j < 10; j++) {
+        var a = Line.make({
+          x1: (Math.random()*100),
+          y1: (Math.random()*200),
+          x2: (100 + Math.random()*100),
+          y2: (Math.random()*200),
+          width: parseInt(1 + (Math.random()*3), 10),
+          opacity: .1 + (Math.random()*.9)
+        });
+        db.add(a);
+        funboxItems.push(a);
+      }
+
+      this.add(db);
+    }
+  }
+}
+
+//---------------------------------------------------------
+
+var FB = FunBox.make();
+FB.css({width: '70%'});
+FB.render();
+
+window.FB = FB;
+
+</script>
+
+
+  </body>
+</html>
