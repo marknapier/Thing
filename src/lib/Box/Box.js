@@ -13,18 +13,20 @@ class Box extends Thing {
   		this.items.push(item);
   		item.parent = this;
   	}
+    return this;
   }
 
   // remove item from this box (from the dom and the items list)
   remove (item) {
-	if (item) {
-		var index = this.items.indexOf(item);
-		if (index > -1) {
-		    this.items.splice(index, 1);
-			item.$element.remove();
-			item.parent = null;
-		}
-	}
+  	if (item) {
+  		var index = this.items.indexOf(item);
+  		if (index > -1) {
+  		    this.items.splice(index, 1);
+  			item.$element.remove();
+  			item.parent = null;
+  		}
+  	}
+    return this;
   }
 
   numElements () {
@@ -36,6 +38,7 @@ class Box extends Thing {
   	for (var i=0; i < this.items.length; i++) {
   		this.items[i].render();
   	}
+    return this;
   }
 }
 Thing.addClass(Box);

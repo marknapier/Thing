@@ -89,6 +89,15 @@ class GraphPaper extends Thing {
 }
 Thing.classes.GraphPaper = GraphPaper;
 
+function makeGraphPaper () {
+  Thing.classes.DemoBox
+    .make( {w:500, h:500, backgroundColor: 'green'} )
+    .add( Thing.classes.Img.make({src:'img/IMG_0021.JPG', position:'absolute', width:'100%'}) )
+    .add( Thing.classes.GraphPaper.make() )
+    .rotate(45)
+    .render();
+}
+
 //-----------------------
 
 function imgBunch () {

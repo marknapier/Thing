@@ -14,6 +14,7 @@ class DemoBox extends Box {
 
 	render () {
 		super.render();
+		return this;
 	}
 
 	static css () {

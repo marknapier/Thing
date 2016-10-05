@@ -1,8 +1,7 @@
 var elementCounter = 0;
 
 class Thing {
-  constructor() {
-  }
+  constructor() {}
 
   init (props) {
     this.initialize(props);
@@ -27,6 +26,7 @@ class Thing {
     var parentElement = (this.parent && this.parent.$element) || $(document.body);
     parentElement.append(this.$element);
     this.$element.css(this.props);
+    return this;
   }
 
   // remove element from dom and null it out
@@ -40,44 +40,52 @@ class Thing {
   rotate (degrees) {
     this.rotation += degrees;
     this.transform();
+    return this;
   }
 
   rotateTo (angle) {
     this.rotation = angle;
     this.transform();
+    return this;
   }
 
   scale (factor) {
     this.scaleFactor += factor;
     this.transform();
+    return this;
   }
 
   scaleTo (factor) {
     this.scaleFactor = factor;
     this.transform();
+    return this;
   }
 
   translate (x, y) {
     this.x += x;
     this.y += y;
     this.transform();
+    return this;
   }
 
   translateTo (x, y) {
     this.x = x;
     this.y = y;
     this.transform();
+    return this;
   }
 
   transform () {
     this.css({
       transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor, this.x, this.y)
     });
+    return this;
   }
 
   css (props) {
     this.props = $.extend(this.props, props);
     this.$element.css(props);
+    return this;
   }
 
   html () {

@@ -143,25 +143,11 @@ $(function(){
 
   //---------------------------------------------------------
 
-  class Img extends Thing {
-    init (props) {
-      props = props || {};
-      props.src = props.src || 'img/IMG_0021.JPG';
-      super.init(props);
-      this.type = 'Img';
-      this.$element = Thing.makeElement(this.html(), this.props, this.type);
-      this.$element.addClass(this.type);
-    }
-
-    html () {
-      return '<img src="' + this.props.src + '">';
-    }
-  }
-
   var arrows = [];
   var Box = Thing.getClass('Box');
   var DemoBox = Thing.getClass('DemoBox');
   var Arrow = Thing.getClass('Arrow');
+  var Img = Thing.classes.Img;
 
   function makeBoxOfArrows () {
     var outerBox = DemoBox.make({position:'relative', width:'70%', height:'inherit'});

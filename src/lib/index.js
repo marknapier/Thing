@@ -9,5 +9,6 @@ require('./Pulsar/Pulsar.js');
 require('./Do/Do.js');
 require('./Label/Label.js');
 require('./Line/Line.js');
+require('./Img/Img.js');
 
 window.Thing = Thing;

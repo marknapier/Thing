@@ -4,7 +4,7 @@ class Arrow extends Thing {
 	init (props) {
 		this.initialize(props);
 		this.type = 'Arrow';
-		this.$element = Thing.makeElement(Arrow.html(), this.props, this.type);  // basic Thing div with ID and class
+		this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
 		this.setColor(this.props.color);  // have to make arrow before calling this
 	}
 
@@ -21,13 +21,13 @@ class Arrow extends Thing {
 		this.$element.find('.arrow-body').css({backgroundColor:c});
 	}
 
+	html () {
+		return "<div><div class='arrow-wrapper'><div class='arrow-body'></div><div class='arrow-head'></div></div></div>";
+	}
+
 	static createArrowElement () {
 		var $arrow = $("<div class='arrow-wrapper'><div class='arrow-body'></div><div class='arrow-head'></div></div>");
 		return $arrow;
-	}
-
-	static html () {
-		return "<div><div class='arrow-wrapper'><div class='arrow-body'></div><div class='arrow-head'></div></div></div>";
 	}
 
 	static css () {
