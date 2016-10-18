@@ -124,8 +124,8 @@ function imgBunch () {
 function scatterBox (randFunction, title) {
   var size = 100;
   var outerboxsize = ((size+2) * 2)+1;
-  var Box = Thing.getClass('Box');
-  var Label = Thing.getClass('Label');
+  var Box = Thing.classes.Box;
+  var Label = Thing.classes.Label;
   var outerbox = Box.make({
     position: 'relative',
     display: 'inline-block',
@@ -207,24 +207,13 @@ function scatterBox (randFunction, title) {
 
 //-----------------------
 
-var Rand = Thing.getClass('Rand');
+var Rand = Thing.classes.Rand;
 var sb = scatterBox(Rand.randFloat, 'randFloat');
 var sb = scatterBox(Rand.randPow, 'randPow');
 var sb = scatterBox(Rand.randSin, 'randSin');
 var sb = scatterBox(Rand.randNormal, 'randNormal');
 var sb = scatterBox(Rand.randPow2, 'randPow2');
 var sb = scatterBox(Rand.randSin2, 'randSin2');
-
-var Line = Thing.getClass('Line');
-var line = Line.make({
-  x1: (Math.random()*100),
-  y1: (Math.random()*200),
-  x2: (200 + Math.random()*500),
-  y2: (Math.random()*500),
-  width: parseInt(1 + (Math.random()*3), 10),
-  opacity: .1 + (Math.random()*.9)
-});
-line.render();
 
 </script>
 

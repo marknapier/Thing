@@ -37,6 +37,10 @@ class Thing {
     }
   }
 
+  getDimensions () {
+    return {w: this.$element.width(), h: this.$element.height()};
+  }
+
   rotate (degrees) {
     this.rotation += degrees;
     this.transform();

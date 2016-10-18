@@ -21,9 +21,9 @@
 <script src='thing.js'></script>
 
 <script type="text/javascript">
-var Box = Thing.getClass('Box');
-var DemoBox = Thing.getClass('DemoBox');
-var Line = Thing.getClass('Line');
+var Box = Thing.classes.Box;
+var DemoBox = Thing.classes.DemoBox;
+var Line = Thing.classes.Line;
 
 window.funboxItems = [];
 
@@ -73,6 +73,19 @@ FB.css({width: '70%'});
 FB.render();
 
 window.FB = FB;
+
+// make a random line
+var Line = Thing.classes.Line;
+var line = Line.make({
+  x1: (Math.random()*100),
+  y1: (Math.random()*200),
+  x2: (200 + Math.random()*500),
+  y2: (Math.random()*500),
+  width: parseInt(1 + (Math.random()*3), 10),
+  opacity: .1 + (Math.random()*.9),
+  color: 'red'
+});
+line.render();
 
 </script>
 
