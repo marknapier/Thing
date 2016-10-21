@@ -41,6 +41,21 @@ class Thing {
     return {w: this.$element.width(), h: this.$element.height()};
   }
 
+  getBoundingBox () {
+    // relative to page
+    var scrolltop = $(document).scrollTop();
+    var scrollleft = $(document).scrollLeft();
+    var bounds = this.$element[0].getBoundingClientRect();
+    return {
+      x: bounds.left+scrollleft,
+      y: bounds.top+scrolltop,
+      w: bounds.width,
+      h: bounds.height,
+      bottom: bounds.bottom+scrolltop,
+      right: bounds.right+scrollleft
+    };
+  }
+
   rotate (degrees) {
     this.rotation += degrees;
     this.transform();

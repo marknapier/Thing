@@ -113,6 +113,16 @@ var imgNamesNoses = [
 
 //-----------------------
 var Rand = Thing.classes.Rand;
+var Box = Thing.classes.Box;
+
+class ImageBunchBox extends Box {
+  init (props) {
+    this.initialize(props);
+    this.type = 'Box';
+    this.items = [];
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
+  }
+}
 
 function imgBunch (names, box) {
   for (var i=0; i < names.length; i++) {
@@ -148,16 +158,42 @@ function pickImages (names, box) {
   box.render();
 }
 
+function makeBoundingBox(box, color) {
+  var elbounds = box.getElementBounds(); // bounds of all elements, relative to document
+  var boxbounds = box.getBoundingBox();  // bounds of the box element
+  var rect = Thing.make({
+    x: elbounds.x-boxbounds.x, // position the rectangle relative to the box
+    y: elbounds.y-boxbounds.y, 
+    w: elbounds.w, 
+    h: elbounds.h,
+    zIndex: 0,
+    border: '2px solid ' + color
+  });
+  box.add(rect);  // add the rect to the box
+  rect.render();
+  return rect;
+}
+
 $(function(){
   var eyeR = Thing.classes.Box.make({x:170, y:150, w:100, h:100, backgroundColor:'green'});
   var eyeL = Thing.classes.Box.make({x:430, y:150, w:150, h:100, backgroundColor:'red'});
   var nose = Thing.classes.Box.make({x:300, y:200, w:100, h:100, backgroundColor:'magenta'});
   var mouth = Thing.classes.Box.make({x:250, y:460, w:200, h:100, backgroundColor:'yellow'});
+  window.Nose = nose;
+  window.Mouth = mouth;
 
   pickImages(imgNamesMouths, mouth);
   pickImages(imgNamesNoses, nose);
   pickImages(imgNamesEyesLeft, eyeL);
   pickImages(imgNamesEyesRight, eyeR);
+
+  Thing.classes.Img.onAllLoaded = function () {
+    window.console.log('Make Bounding Box');
+    makeBoundingBox(nose, '#F00');
+    makeBoundingBox(mouth, '#0F0');
+    makeBoundingBox(eyeR, '#F0F');
+    makeBoundingBox(eyeL, '#FF0');
+  }
 });
 
 </script>
