@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Patterns Demo</title>
+    <link href="reset.css" rel="stylesheet">
+    <style>
+    </style>
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script type="text/javascript">
+
+// linear-gradient(0deg, blue 0%, blue 20%, green 20%, green 22%, yellow 21%, yellow 100%)
+
+function makeStripes(props) {
+  props = props || {};
+
+  var angle = props.angle || 0;
+  var aspectRatio = (props.w && props.h ? props.w/props.h : 1);
+  var repeat = props.repeat || 0;
+  var colors = props.colors || [
+    {color:'red', width:10},
+    {color:'blue', width:20},
+    {color:'green', width:70}
+  ];
+  var backgroundSize = '' + (100/repeat) + '% ' + ((100/repeat)*aspectRatio) + '%';
+  var lingradstr = 'linear-gradient(' + angle + 'deg, ';
+  var pos = 0;
+
+  for (var i=0; i < colors.length; i++) {
+    var c = colors[i];
+    lingradstr += '' + c.color + ' ' + pos + '%' + ', ';
+    lingradstr += '' + c.color + ' ' + (pos + c.width) + '%';
+    lingradstr += (i < colors.length-1? ", " : "");
+    pos += c.width;
+  }
+
+  lingradstr += ")";
+
+  return {
+    backgroundSize: backgroundSize,
+    backgroundImage: lingradstr
+  };
+}
+
+var css = makeStripes({
+  vertical: true,
+  repeat: 4,
+  colors: [
+    {color: 'red', width: 25},
+    {color: 'blue', width: 25},
+    {color: 'green', width: 25},
+    {color: 'yellow', width: 25}
+  ]
+});
+
+
+
+class Pattern extends Thing {
+  init (props) {
+    var defaultProps = {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: '0px',
+      top: '0px',
+      color: '#ddd',
+      pattern: 'GraphPaper'
+    };
+    props = $.extend({}, defaultProps, props);
+    this.initialize(props);
+    this.type = 'Pattern';
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
+    this.$element.addClass(props.pattern)
+  }
+}
+Thing.addClass(Pattern);
+
+
+class BGImg extends Thing {
+  init (props) {
+    var defaultProps = {
+      url: '',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: '0px',
+      top: '0px'
+    };
+    props = this.props = $.extend({}, defaultProps, props);
+    this.initialize(props);
+    this.type = 'BGImg';
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
+    var css = {
+      background: 'url("' + props.url + '") no-repeat center',
+      backgroundSize: '100% 100%'
+    };
+    this.$element.css(css);
+  }
+}
+Thing.addClass(BGImg);
+
+
+function scaleDocument (n) {
+  var el = document.body;
+  el.style.transformOrigin = 'left top'; 
+  el.style.transform = 'scale(' + n + ')';
+}
+
+function makePattern (name) {
+  return Thing.classes.DemoBox
+    .make( {w:400, h:400, backgroundColor: 'green'} )
+    .add( Thing.classes.Pattern.make({pattern: name}) )
+    .render();
+}
+
+function patternBox() {
+  var Pattern = Thing.classes.Pattern;
+  // var stripesCSS = makeStripes({
+  //         angle: 90,
+  //         repeat: 4,
+  //         colors: [
+  //           {color: 'transparent', width: 20},
+  //           {color: '#ee8', width: 50},
+  //           {color: 'red', width: 5},
+  //           {color: '#359', width: 25}
+  //         ]
+  //       });
+  var pbox = Thing.classes.Box.make({w:800, h:800, backgroundColor:'pink'});
+  pbox.add(Pattern.make({pattern:'DiagonalStripes'}));
+  pbox.add(Pattern.make({pattern:'BlueBalls'}));
+  pbox.add(Pattern.make({pattern:'Stripes'}));
+  return pbox;
+}
+
+$(function () {
+  // background aliasing is much smoother at a larger size
+  scaleDocument(3);
+
+  makePattern('GraphPaper');
+  makePattern('PlaidRed');
+  makePattern('Sofa');
+  makePattern('PolkaDots');
+  makePattern('Stripes');
+  makePattern('DiagonalStripes');
+
+  Thing.classes.DemoBox
+    .make( {w:400, h:400, backgroundColor: 'green'} )
+    .css( makeStripes({
+          angle: 90,
+          repeat: 4,
+          colors: [
+            {color: 'transparent', width: 20},
+            {color: '#ee8', width: 50},
+            {color: 'red', width: 5},
+            {color: '#359', width: 25}
+          ]
+        }) )
+    .render();
+
+  var dstripes = makePattern('DiagonalStripes');
+  dstripes.add(Thing.classes.Pattern.make({pattern: 'Stripes'}));
+  dstripes.render();
+
+  window.pbox = patternBox();
+  pbox.render();
+});
+</script>
+
+
+  </body>
+</html>
