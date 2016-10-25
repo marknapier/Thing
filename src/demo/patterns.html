@@ -62,52 +62,6 @@ var css = makeStripes({
 });
 
 
-
-class Pattern extends Thing {
-  init (props) {
-    var defaultProps = {
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      left: '0px',
-      top: '0px',
-      color: '#ddd',
-      pattern: 'GraphPaper'
-    };
-    props = $.extend({}, defaultProps, props);
-    this.initialize(props);
-    this.type = 'Pattern';
-    this.$element = Thing.makeElement(this.html(), this.props, this.type);
-    this.$element.addClass(props.pattern)
-  }
-}
-Thing.addClass(Pattern);
-
-
-class BGImg extends Thing {
-  init (props) {
-    var defaultProps = {
-      url: '',
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      left: '0px',
-      top: '0px'
-    };
-    props = this.props = $.extend({}, defaultProps, props);
-    this.initialize(props);
-    this.type = 'BGImg';
-    this.$element = Thing.makeElement(this.html(), this.props, this.type);
-    var css = {
-      background: 'url("' + props.url + '") no-repeat center',
-      backgroundSize: '100% 100%'
-    };
-    this.$element.css(css);
-  }
-}
-Thing.addClass(BGImg);
-
-
 function scaleDocument (n) {
   var el = document.body;
   el.style.transformOrigin = 'left top'; 
@@ -123,16 +77,6 @@ function makePattern (name) {
 
 function patternBox() {
   var Pattern = Thing.classes.Pattern;
-  // var stripesCSS = makeStripes({
-  //         angle: 90,
-  //         repeat: 4,
-  //         colors: [
-  //           {color: 'transparent', width: 20},
-  //           {color: '#ee8', width: 50},
-  //           {color: 'red', width: 5},
-  //           {color: '#359', width: 25}
-  //         ]
-  //       });
   var pbox = Thing.classes.Box.make({w:800, h:800, backgroundColor:'pink'});
   pbox.add(Pattern.make({pattern:'DiagonalStripes'}));
   pbox.add(Pattern.make({pattern:'BlueBalls'}));
@@ -151,6 +95,12 @@ $(function () {
   makePattern('Stripes');
   makePattern('DiagonalStripes');
 
+  // layer two patterns
+  var dstripes = makePattern('DiagonalStripes');
+  dstripes.add(Thing.classes.Pattern.make({pattern: 'Stripes'}));
+  dstripes.render();
+
+  // Generate a stripe pattern
   Thing.classes.DemoBox
     .make( {w:400, h:400, backgroundColor: 'green'} )
     .css( makeStripes({
@@ -165,10 +115,14 @@ $(function () {
         }) )
     .render();
 
-  var dstripes = makePattern('DiagonalStripes');
-  dstripes.add(Thing.classes.Pattern.make({pattern: 'Stripes'}));
-  dstripes.render();
+  // Make a background image
+  Thing.classes.DemoBox
+    .make( {w:400, h:400, backgroundColor: 'green'} )
+    .add( Thing.classes.BGImg.make({url:'img/wood-panel-texture-oak.jpg'}) )
+    .add( Thing.classes.Pattern.make({pattern:'DiagonalStripes'}) )
+    .render();
 
+  // layer multiple patterns
   window.pbox = patternBox();
   pbox.render();
 });
