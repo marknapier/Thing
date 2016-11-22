@@ -10,15 +10,13 @@ class Arrow extends Thing {
 
 	render () {
 		super.render();
-
-		// var parentElement = (this.parent && this.parent.$element) || $(document.body);
-		// parentElement.append(this.$element);
-		// this.$element.css(this.props);
+		return this;
 	}
 
 	setColor (c) {
 		this.$element.find('.arrow-head').css({borderLeftColor:c});
 		this.$element.find('.arrow-body').css({backgroundColor:c});
+		return this;
 	}
 
 	html () {

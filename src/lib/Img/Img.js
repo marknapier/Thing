@@ -15,10 +15,16 @@ class Img extends Thing {
     // props.background = 'url("' + props.src + '") no-repeat ' + (props.center ? 'center' : 'left top');
     // props.backgroundSize = (props.size === 'contain' || props.size === 'cover' ? props.size : (props.size==='stretch' ? '100% 100%' : undefined) );
 
+    this.props = Thing.cleanup(props);
+
     this.type = 'Img';
     this.aspectRatio = 1;
     this.loaded = false;
     this.src = props.src;
+    this.x = props.x || undefined;
+    this.y = props.y || undefined;
+    this.w = props.w || undefined;
+    this.h = props.h || undefined;
 
     Img.loading(this);
     loadImage(props.src, this.onload.bind(this), this.onerror.bind(this));
@@ -30,12 +36,12 @@ class Img extends Thing {
   onload (img) {
     window.console.log('Image Loaded:', img, img.src, img.width, img.height);
     this.loaded = true;
-    this.width = img.width;
-    this.height = img.height;
-    this.aspectRatio = this.height / this.width;
+    this.w = this.w || img.width;
+    this.h = this.h || img.height;
+    this.aspectRatio = this.h / this.w;
     this.css({
-        width: img.width, 
-        height: img.height, 
+        width: this.w, 
+        height: this.h, 
         background: 'url(' +img.src+ ') no-repeat center',
         backgroundSize: '100% 100%'
     });

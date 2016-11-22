@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Portrait</title>
+    <link href="reset.css" rel="stylesheet">
+    <style>
+    </style>
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script type="text/javascript">
+
+var imgNamesEyesRight = [
+  'kim_eye_right_1.png',
+  'kim_eye_right_2.png',
+  'kim_eye_right_3.png',
+  'kim_eye_right_4.png',
+  'kim_eye_right_5.png',
+  'kim_eye_right_6.png',
+  'kim_eye_right_7.png',
+  'kim_eye_right_8.png',
+  'kim_eye_right_9.png',
+  'kim_eye_right_10.png',
+  'kim_eye_right_11.png',
+  'kim_eye_right_12.png'
+];
+
+var imgNamesEyesLeft = [
+  'elvis_eye_left_round.png',
+  'elvis_eye_left_square.png',
+  'marilyn_eye_left_fuzzy.png',
+  'marilyn_eye_left_round.png',
+  'marilyn_eye_left_square.png',
+  'mona_eye_left_circle.png',
+  'mona_eye_left_fuzzy.png',
+  'washington_eye_left_fuzzy.png',
+  'washington_eye_left_round.png',
+  'washington_eye_left_square.png',
+  'yoda_eye_left_fuzzy.png',
+  'yoda_left_eye.png'
+];
+
+class ImgGrid extends Thing {
+  init (props) {
+    this.initialize(props);
+    this.path = props.path;
+    this.imgNames = props.names;
+    this.columns = props.columns || 10;
+    this.box = props.box;
+  }
+
+  render () {
+    this.pickImages(this.path, this.imgNames, this.box, this.columns);
+  }
+
+  pickImages (path, names, box, columns) {
+    var Rand = Thing.classes.Rand;
+    var dim = box.getDimensions();
+    var midW = dim.w/2;
+    var midH = dim.h/2;
+    var scale = .5; //dim.w / 1000;
+    var size = dim.w/columns;
+    var howMany = columns * columns;
+
+    for (var i=0; i < howMany; i++) {
+      var facepart = Thing.classes.Img.make({
+        src: path + Rand.randItem(names),
+        x: (i % columns) * size,    //midW + (Rand.randNormal() * midW),
+        y: Math.floor(i/columns) * size,  // midH + (Rand.randNormal() * midH),
+        w: size, //midW + (Rand.randNormal() * midW),
+        h: size  //dim.h/howMany
+        // scale: (.1+Rand.randFloat()) * scale
+      });
+      box.add(facepart);
+    }
+
+    var L = Thing.classes.Label.make({
+      x: 50,
+      y: 50,
+      text:''+howMany,
+      color: 'red',
+      fontSize: 120
+    });
+    box.add(L);
+
+    box.render();
+  }
+}
+
+function scaleDocument (n) {
+  var el = document.body;
+  el.style.transformOrigin = 'left top'; 
+  el.style.transform = 'scale(' + n + ')';
+}
+
+function gradient(gradientCSS) {
+  return Thing.make({position:'absolute', width:'100%', height:'100%', background:gradientCSS});
+}
+
+function makeBox (w, h) {
+  return Thing.classes.Box
+    .make( {w:w, h:h, backgroundColor: '#f00'} )
+    .add( gradient('linear-gradient(to bottom, rgba(90,90,0,.1) 0%, rgba(0,90,0,.4) 100%)') )
+    .add( gradient('linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,.1))') )
+    // .add( gradient('linear-gradient(135deg, rgba(214,247,49,0.2) 0%, rgba(249,220,0,0.1) 25%, rgba(2,86,255,0.05) 43%,rgba(2,86,255,0) 100%)') )
+    .add( gradient('radial-gradient(ellipse at 80% 50%, rgba(228,244,137,.2) 0%, rgba(2,86,255,0.09) 91%, rgba(2,86,255,0) 100%)') )
+    .add( Thing.classes.Pattern.make({pattern: 'Grid'}) )
+    .render();
+}
+
+function bunchOfLines(box) {
+  var Rand = Thing.classes.Rand;
+  var howMany = Rand.randInt(30,500);
+  var dim = box.getDimensions();
+
+  for (var i=0; i < howMany; i++) {
+    var Ln = Thing.classes.Line.make({
+      x1: Rand.randCloseTo(0, 400),
+      y1: Rand.randInt(0, dim.h),
+      x2: Rand.randCloseTo(dim.w, 400),
+      y2: Rand.randInt(0, dim.h),
+      width: Rand.randInt(3,10),
+      color: '#3F3',
+      opacity: .1 + Rand.randFloat()
+    })
+    box.add(Ln);
+  }
+
+  box.render();
+}
+
+function main () {
+  var aspectRatio = 1.25;
+  var pixelWidth = 3000;  //6000;
+  var pixelHeight = pixelWidth * aspectRatio;  //7500;
+  var background = makeBox(pixelWidth, pixelHeight);
+  var rightEyesBox = Thing.classes.Box.make({w:pixelWidth/2, h:pixelHeight/2});
+  var leftEyesBox = Thing.classes.Box.make({x:pixelWidth/2, y:0, w:pixelWidth/2, h:pixelHeight/2, backgroundColor: 'yellow'});
+  var linesBox = Thing.classes.Box.make({w:pixelWidth, h:pixelHeight});
+
+  // var IGR = ImgGrid.make({
+  //   path: 'img/KIM/eye_right/',
+  //   names: imgNamesEyesRight,
+  //   box: rightEyesBox,
+  //   columns: 6
+  // }).render();
+
+  // var IGL = ImgGrid.make({
+  //   path: 'img/faceparts/',
+  //   names: imgNamesEyesLeft, 
+  //   box: leftEyesBox
+  // }).render();
+
+  bunchOfLines(linesBox);
+
+  var A = Thing.classes.Arrow.make({
+    x: 1000,
+    y: 2000,
+    scale: 3,
+    // rotate: Ln.angle,
+    color: '#3F3'
+  }).render();
+
+  var dot = Thing.classes.Box.make({
+    x: 1000,
+    y: 2000,
+    w: 3,
+    h: 3,
+    backgroundColor: 'red'
+  }).render();
+}
+
+$(function () {
+  // scaleDocument(3);
+  main();
+});
+
+</script>
+
+
+  </body>
+</html>
