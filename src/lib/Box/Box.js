@@ -8,10 +8,15 @@ class Box extends Thing {
   	this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
-  add (item) {
-  	if (item) {
-  		this.items.push(item);
-  		item.parent = this;
+  add (addItems) {
+  	if (addItems) {
+      if (!(addItems instanceof Array)) {
+        addItems = [addItems];
+      }
+      for (var i=0; i < addItems.length; i++) {
+        this.items.push(addItems[i]);
+        addItems[i].parent = this;        
+      }
   	}
     return this;
   }
