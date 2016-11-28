@@ -115,7 +115,7 @@ window.RedText = RedText;
 
 function scaleDocument (n) {
   var el = document.body;
-  el.style.transformOrigin = 'left top'; 
+  el.style.transformOrigin = 'left top';
   el.style.transform = 'scale(' + n + ')';
 }
 
@@ -123,18 +123,18 @@ function gradient(gradientCSS) {
   return Thing.make({position:'absolute', width:'100%', height:'100%', background:gradientCSS});
 }
 
-function makeBox (w, h) {
+function makeBackground (w, h, scale) {
   return Thing.classes.Box
     .make( {w:w, h:h, backgroundColor: '#f00', position:'relative', display:'inline-block'} )
     .add( gradient('linear-gradient(to bottom, rgba(90,90,0,.1) 0%, rgba(0,90,0,.4) 100%)') )
     .add( gradient('linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,.1))') )
     // .add( gradient('linear-gradient(135deg, rgba(214,247,49,0.2) 0%, rgba(249,220,0,0.1) 25%, rgba(2,86,255,0.05) 43%,rgba(2,86,255,0) 100%)') )
     .add( gradient('radial-gradient(ellipse at 80% 50%, rgba(228,244,137,.2) 0%, rgba(2,86,255,0.09) 91%, rgba(2,86,255,0) 100%)') )
-    .add( Thing.classes.Pattern.make({pattern: 'Grid'}) )
+    .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*100, cellHeight:scale*100, lineWidth:scale*5}) )
     .render();
 }
 
-function makeArrayOfLines(dim) {
+function makeArrayOfLines(dim, scale) {
   var Rand = Thing.classes.Rand;
   var howMany = Rand.randInt(30,500);
   var items = [];
@@ -145,7 +145,7 @@ function makeArrayOfLines(dim) {
       y1: Rand.randInt(0, dim.h),
       x2: Rand.randCloseTo(dim.w, 400),
       y2: Rand.randInt(0, dim.h),
-      width: Rand.randInt(3,10),
+      width: Rand.randInt(scale, scale*4),
       color: '#3F3',
       opacity: .1 + Rand.randFloat()
     })
@@ -155,14 +155,14 @@ function makeArrayOfLines(dim) {
   return items;
 }
 
-function addRandomStuff (dim, items, path) {
+function addRandomStuff (dim, items, path, scale) {
   var Rand = Thing.classes.Rand;
 
   // Arrow
   var A = Thing.classes.Arrow.make({
     x: Rand.randCloseTo(0, dim.w/3),
     y: Rand.randInt(0, dim.h),
-    scale: Rand.randInt(3,50),
+    scale: Rand.randInt(scale,scale*20),
     rotate: Thing.classes.Rand.randInt(0,360),
     color: 'rgb(0, 235, 0)'
   });
@@ -170,8 +170,8 @@ function addRandomStuff (dim, items, path) {
 
   // Red number
   var R = RedText.make({
-    text: ''+Thing.classes.Rand.randInt(0,360), 
-    x: Rand.randInt(0, dim.w*.6), 
+    text: ''+Thing.classes.Rand.randInt(0,360),
+    x: Rand.randInt(0, dim.w*.6),
     y: Rand.randInt(0, dim.h*.75),
     fontSize: Rand.randInt(dim.w/10, dim.w/5)
   });
@@ -190,6 +190,15 @@ function addRandomStuff (dim, items, path) {
     items.splice(Rand.randInt(1,items.length), 0, facepart);
   }
 
+  // Grid
+  var gridPattern = Thing.classes.Pattern.make({
+    pattern: 'grid',
+    cellWidth: scale * 130,
+    cellHeight: scale * 130,
+    lineWidth: scale * 2
+  });
+  items.splice(Rand.randInt(1,items.length), 0, gridPattern);
+
   return items;
 }
 
@@ -197,7 +206,8 @@ function main () {
   var aspectRatio = 1.25;
   var pixelWidth = 1000;  //6000;
   var pixelHeight = pixelWidth * aspectRatio;  //7500;
-  var background = makeBox(pixelWidth, pixelHeight);
+  var mainScale = pixelWidth * .001;  // assume design is 1000 pixels wide, this will be 1
+  var background = makeBackground(pixelWidth, pixelHeight, mainScale);
   var rightEyesBox = Thing.classes.Box.make({w:pixelWidth/2, h:pixelHeight/2});
   var leftEyesBox = Thing.classes.Box.make({x:pixelWidth/2, y:0, w:pixelWidth/2, h:pixelHeight/2, backgroundColor: 'yellow'});
   var linesBox = Thing.classes.Box.make({w:pixelWidth, h:pixelHeight, overflow:'hidden'});
@@ -212,17 +222,18 @@ function main () {
 
   // var IGL = ImgGrid.make({
   //   path: 'img/faceparts/',
-  //   names: imgNamesEyesLeft, 
+  //   names: imgNamesEyesLeft,
   //   box: leftEyesBox
   // }).render();
 
   var dim = linesBox.getDimensions();
   var lines = makeArrayOfLines(dim);
-  lines = addRandomStuff(dim, lines, imgPath);
+  lines = addRandomStuff(dim, lines, imgPath, mainScale);
   linesBox.add(lines);
   background.add(linesBox);
   background.render();
-  // linesBox.render();
+
+  window.linesBox = linesBox;
 }
 
 $(function () {
