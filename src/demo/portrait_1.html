@@ -155,14 +155,44 @@ var B = Thing.classes.Box
     .make( {w:1000, h:1000, backgroundColor: '#c00', position:'absolute', display:'block'} )
     .css({
       background:
-        'linear-gradient(135deg, #ECEDDC 25%, transparent 25%) -50px 0,' +
-        'linear-gradient(225deg, #ECEDDC 25%, transparent 25%) -50px 0,' +
-        'linear-gradient(315deg, #ECEDDC 25%, transparent 25%),' +
-        'linear-gradient(45deg, #ECEDDC 25%, transparent 25%)',
+        'linear-gradient(135deg, #fa6 25%, transparent 25%) -50px 0,' +
+        'linear-gradient(225deg, #fa6 25%, transparent 25%) -50px 0,' +
+        'linear-gradient(315deg, #fa6 25%, transparent 25%),' +
+        'linear-gradient(45deg, #fa6 25%, transparent 25%)',
       backgroundSize: '100px 100px',
       backgroundColor: '#EC173A'
     })
-    .render();
+
+var P1 = Thing.classes.Pattern.make({pattern: 'grid', cellWidth:90, cellHeight:90, lineWidth:50});
+P1.rotate(45);
+B.add(P1);
+
+--------------------------------------------------------------------------------
+
+var B = Thing.classes.Box
+    .make( {w:1000, h:1000, backgroundColor: '#c00', position:'absolute', display:'block'} )
+    .css({
+      background:
+        'linear-gradient(135deg, #fa6 25%, transparent 25%) -50px 0,' +
+        'linear-gradient(225deg, #fa6 25%, transparent 25%) -50px 0,' +
+        'linear-gradient(315deg, #fa6 25%, transparent 25%),' +
+        'linear-gradient(45deg, #fa6 25%, transparent 25%)',
+      backgroundSize: '100px 100px',
+      backgroundColor: '#EC173A'
+    })
+
+var P2 = Thing.make({left:'-50%', top:'-50%', width:'200%', height:'200%', position:'absolute', display:'block'})
+  .rotate(45)
+  .css({
+      backgroundImage:
+        'linear-gradient(rgba(255, 255, 255, .99) 14px, transparent 50px), ' +
+        'linear-gradient(90deg, rgba(255, 255, 255, .99) 30px, transparent 57px)',
+      backgroundPosition: '-50px -50px, -50px -50px',
+      backgroundSize: '90px 90px'
+  });
+B.add(P2);
+
+B.render();
 
 */
 
