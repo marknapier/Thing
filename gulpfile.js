@@ -75,11 +75,14 @@ var config = {
 // Tasks
 
 gulp.task('demo', function() {
-   gulp.src('src/demo/**/*.html')
-   .pipe(gulp.dest('dist'));
+    gulp.src('src/demo/**/*.js')
+        .pipe(gulp.dest('dist'));
 
-   gulp.src('src/demo/**/*.css')
-   .pipe(gulp.dest('dist'));
+    gulp.src('src/demo/**/*.html')
+        .pipe(gulp.dest('dist'));
+
+    gulp.src('src/demo/**/*.css')
+   		.pipe(gulp.dest('dist'));
 });
 
 gulp.task('jshint', function() {
