@@ -65,7 +65,7 @@ function main () {
         text:'That put the thing in a new light. Ben stopped nibbling his apple. Tom swept his brush daintily back and forth -- stepped back to note the effect -- added a touch here and there -- criticised the effect again -- Ben watching every move and getting more and more interested, more and more absorbed. Presently he said:',
         width:'100%',
         height:'100%',
-        color: 'red',
+        color: Rand.randRGBstr(),
         fontSize: fontSize
     }) );
     linesBox.add( TextPane.make({
@@ -74,7 +74,7 @@ function main () {
         height:'100%',
         color: bgColor,
         fontSize: fontSize
-    }) );
+    }).rotate(90) );
     linesBox.render();
 
     window.linesBox = linesBox;

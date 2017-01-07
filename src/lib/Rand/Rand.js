@@ -66,7 +66,7 @@ class Rand {
 
     static randRGBstr() {
 		var rgb = Rand.randRGB();
-        return 'rgb(' +rgb[0]+ ',' +rgb[1]+ ',' +rgb[2]+ ')';
+        return 'rgba(' +rgb[0]+ ',' +rgb[1]+ ',' +rgb[2]+ ', .9)';
     }
 }
 Thing.addClass(Rand);
