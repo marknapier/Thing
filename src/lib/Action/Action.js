@@ -21,6 +21,17 @@ class Action {
 	  var cls = this;
 	  var instance = new cls();
 	  instance.init.apply(instance, arguments);
+
+	  // bind member functions to the instance
+	  /* jshint ignore:start */
+	  Object.getOwnPropertyNames(instance.__proto__).forEach(function (key) {
+	    if (typeof instance[key] === 'function') {
+	      instance[key] = instance[key].bind(instance);
+	      window.console.log('BOUND', key);        
+	    }
+	  });
+	  /* jshint ignore:end */
+
 	  return instance;
 	}
 }

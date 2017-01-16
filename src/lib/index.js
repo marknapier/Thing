@@ -7,6 +7,7 @@ require('./Timer/Timer.js');
 require('./Rand/Rand.js');
 require('./Pulsar/Pulsar.js');
 require('./Do/Do.js');
+require('./External/External.js');
 require('./Label/Label.js');
 require('./Line/Line.js');
 require('./Img/Img.js');

@@ -18,10 +18,12 @@ class Label extends Thing {
 	setText (txt) {
 		this.text = txt;
 		this.$element.empty().append(txt);
+		return this;
 	}
 
 	render () {
 		super.render();
+		return this;
 	}
 }
 Thing.addClass(Label);

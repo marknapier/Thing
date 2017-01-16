@@ -1,6 +1,7 @@
 var Thing = require('../Thing/Thing.js');
 var Action = require('../Action/Action.js');
 var Timer = require('../Timer/Timer.js');
+var External = require('../External/External.js');
 
 
 class Pulsar extends Action {
@@ -9,6 +10,10 @@ class Pulsar extends Action {
 		this.callback = props.callback || function () {};
 		this.delay = props.delay || 1000;
 		this.T = Timer.make({callback: this.trigger.bind(this), delay: this.delay});
+
+		// Create external function
+		this.action = External(function action () {});
+
 		return this;
 	}
 
@@ -22,7 +27,7 @@ class Pulsar extends Action {
 	}
 
 	trigger () {
-		this.callback();
+		this.action(); // call external function
 		this.T.go();
 	}
 }

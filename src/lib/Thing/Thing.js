@@ -116,9 +116,31 @@ class Thing {
   }
 
   static make () {
+    // cls will be the class that make() was called on (if Box.make() was called, cls will be Box)
     var cls = this;
+
+    // Create an instance of the class
     var instance = new cls();
+
+    // Init the instance
     instance.init.apply(instance, arguments);
+
+    // bind member functions to the instance
+    // for (var i in instance) {
+    //   if (instance.hasOwnProperty(i)) {
+    //     window.console.log(i);
+    //   }
+    // }
+
+/* jshint ignore:start */
+    Object.getOwnPropertyNames(instance.__proto__).forEach(function (key) {
+      if (typeof instance[key] === 'function') {
+        instance[key] = instance[key].bind(instance);
+        window.console.log('BOUND', key);        
+      }
+    });
+/* jshint ignore:end */
+
     return instance;
   }
 
