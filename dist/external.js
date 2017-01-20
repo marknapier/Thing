@@ -1,68 +1,22 @@
 var External = Thing.External;
 
-// Randomizer.init()
-// Randomizer.outputNumber.BIND(function (n) {console.log('Randomizer outputNumberted', n);})
-// Randomizer.go()
-
-var Randomizer = (function () {
-    var Rand = Thing.classes.Rand;
-
-    function init () {
-        Rand = Thing.classes.Rand;
-    }
-
+var NumberCruncher = (function () {
     function go () {
-        outputNumber( Rand.randInt(0,100) );
+        outputNumber( inputNumber() * 100 );
     }
 
-    var outputNumber = External(function outputNumber (randFloat) {
-    });
+    var inputNumber = External(function inputNumber () {});
+    var outputNumber = External(function outputNumber (randFloat) {});
 
     return {
-        init: init,
         go: go,
+        inputNumber: inputNumber,
         outputNumber: outputNumber
     };
 }());
 
-var Pulse = (function () {
-    var delay, T, Timer=Thing.classes.Timer;
-
-    function init (props) {
-        props = props || {};
-        delay = props.delay || 1000;
-        T = Timer.make({callback: trigger.bind(this), delay: delay});
-        return this;
-    }
-
-    function go () {
-        T.go();
-        return this;
-    }
-
-    function stop () {
-        T.stop();
-        return this;
-    }
-
-    function trigger () {
-        action();
-        T.go();
-    }
-
-    var action = External(function action () {
-    });
-
-    return {
-        init: init,
-        go: go,
-        stop: stop,
-        action: action
-    };
-}());
-
-
 function main () {
+    var Rand = Thing.classes.Rand;
     var display = Thing.classes.Label.make({
         w: 100,
         h: 100,
@@ -71,16 +25,14 @@ function main () {
         fontSize: '24px',
         text: 'blah'
     }).render();
+    var pulse = Thing.classes.Pulsar.make();
 
-    // display.setText = display.setText.bind(display);
-    window.display = display;
+    NumberCruncher.inputNumber.BIND( Rand.randSin );
+    NumberCruncher.outputNumber.BIND( display.setText );
+    pulse.action.BIND( NumberCruncher.go );
 
-    Randomizer.outputNumber.BIND( display.setText );
-    Randomizer.go();
+    pulse.go();
 }
-
-window.Randomizer = Randomizer;
-window.Pulse = Pulse;
 
 
 $(function () {

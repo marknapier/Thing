@@ -126,20 +126,14 @@ class Thing {
     instance.init.apply(instance, arguments);
 
     // bind member functions to the instance
-    // for (var i in instance) {
-    //   if (instance.hasOwnProperty(i)) {
-    //     window.console.log(i);
-    //   }
-    // }
-
-/* jshint ignore:start */
-    Object.getOwnPropertyNames(instance.__proto__).forEach(function (key) {
-      if (typeof instance[key] === 'function') {
+    // instance.__proto__
+    // Object.getOwnPropertyNames(Object.getPrototypeOf(Object.getPrototypeOf(instance)))  // superclass members
+    Object.getOwnPropertyNames(Object.getPrototypeOf(instance)).forEach(function (key) {
+      if (typeof instance[key] === 'function' && key !== 'constructor' && key !== 'init') {
         instance[key] = instance[key].bind(instance);
-        window.console.log('BOUND', key);        
+        window.console.log('BOUND', instance.constructor.name, key);        
       }
     });
-/* jshint ignore:end */
 
     return instance;
   }

@@ -18,21 +18,19 @@ class Action {
 	}
 
 	static make () {
-	  var cls = this;
-	  var instance = new cls();
-	  instance.init.apply(instance, arguments);
+		var cls = this;
+		var instance = new cls();
+		instance.init.apply(instance, arguments);
 
-	  // bind member functions to the instance
-	  /* jshint ignore:start */
-	  Object.getOwnPropertyNames(instance.__proto__).forEach(function (key) {
-	    if (typeof instance[key] === 'function') {
-	      instance[key] = instance[key].bind(instance);
-	      window.console.log('BOUND', key);        
-	    }
-	  });
-	  /* jshint ignore:end */
+		// bind member functions to the instance
+		Object.getOwnPropertyNames(Object.getPrototypeOf(instance)).forEach(function (key) {
+			if (typeof instance[key] === 'function' && key !== 'constructor' && key !== 'init') {
+				instance[key] = instance[key].bind(instance);
+				window.console.log('BOUND', instance.constructor.name, key);
+		    }
+		});
 
-	  return instance;
+		return instance;
 	}
 }
 Thing.addClass(Action);
