@@ -4,12 +4,13 @@ class Pattern extends Thing {
   init (props) {
     var defaultProps = {
       position: 'absolute',
-      width: '100%',
-      height: '100%',
       left: '0px',
       top: '0px',
       color: '#ddd',
-      pattern: 'GraphPaper'
+      pattern: 'GraphPaper',
+      cellWidth: 100,
+      cellHeight: 100,
+      lineWidth: 2
     };
     this.props = props = $.extend({}, defaultProps, props);
     this.initialize(props);
@@ -17,8 +18,17 @@ class Pattern extends Thing {
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     this.$element.addClass(props.pattern);
     if (props.pattern === 'grid') {
-      this.css( Pattern.makeGridCSS(props.cellWidth || 100, props.cellHeight || 100, props.lineWidth || 2) );
+      this.css( Pattern.makeGridCSS(props.cellWidth, props.cellWidth, props.lineWidth) );
     }
+  }
+
+  render () {
+    // render first, this will set a parent element
+    super.render();
+    // then adjust pattern to fill parent with a square aspect ratio
+    var size = Math.max(this.parent.$element.width(), this.parent.$element.height());
+    this.css({width: size, height: size});
+    return this;
   }
 
   static makeGridCSS (cellWidth, cellHeight, lineWidth) {

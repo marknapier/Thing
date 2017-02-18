@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Patterns Demo</title>
+    <link href="reset.css" rel="stylesheet">
+    <style>
+    </style>
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script type="text/javascript">
+
+function scaleDocument (n) {
+  var el = document.body;
+  el.style.transformOrigin = 'left top'; 
+  el.style.transform = 'scale(' + n + ')';
+}
+
+function makePattern (name) {
+  var box = Thing.classes.Box
+    .make( {
+      w: 100, 
+      h: 400, 
+      backgroundColor: 'green', 
+      position: 'relative', 
+      display: 'inline-block',
+      overflow: 'hidden'
+    })
+    .add( Thing.classes.Pattern.make({pattern: name}) )
+    .css({width:'300px', height:'1200px'})
+    .render();
+}
+
+$(function () {
+  // background aliasing is smoother at a larger size
+  // scaleDocument(3);
+
+  makePattern('GraphPaper');
+  makePattern('PlaidRed');
+  makePattern('Sofa');
+  makePattern('PolkaDots');
+  makePattern('Stripes');
+  makePattern('DiagonalStripes');
+
+  var i = Thing.classes.Img
+    .make({src:'img/las_meninas_girl_t.png'})
+    .css({left:'0px', top:'0px'})
+    .render();
+
+});
+</script>
+
+
+  </body>
+</html>
