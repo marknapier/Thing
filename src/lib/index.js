@@ -12,5 +12,6 @@ require('./Line/Line.js');
 require('./Img/Img.js');
 require('./Pattern/Pattern.js');
 require('./BGImg/BGImg.js');
+require('./TextPane/TextPane.js');
 
 window.Thing = Thing;

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Patterns Demo</title>
+    <link href="reset.css" rel="stylesheet">
+    <style>
+    </style>
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script type="text/javascript">
+
+function scaleDocument (n) {
+  var el = document.body;
+  el.style.transformOrigin = 'left top';
+  el.style.transform = 'scale(' + n + ')';
+}
+
+function makePattern (name) {
+  var Rand = Thing.classes.Rand;
+  var Pattern = Thing.classes.Pattern;
+  var box = Thing.classes.Box
+    .make( {
+      x: Rand.randInt(0,1000),
+      y: 0,
+      w: Rand.randInt(30,500),
+      h: 400,
+      z: Rand.randInt(1,1000) * 10,
+      backgroundColor: 'green',
+      position: 'absolute',
+      display: 'block',
+      overflow: 'hidden'
+    })
+    .add( Pattern.make({pattern: name}) )
+    .css({width:'300px', height:'1000px'})  ;
+    // .render();
+    return box;
+}
+
+function makeTextPane (x, y, w, h) {
+  var Rand = Thing.classes.Rand;
+  var TextPane = Thing.classes.TextPane;
+  var bgColor = '#339911';
+  var textBox = Thing.classes.Box.make({
+      x: x,
+      y: y,
+      w: w,
+      h: h,
+      overflow: 'hidden',
+      backgroundColor: bgColor
+  });
+  var fontSize = Rand.randInt(12, 48);
+
+  textBox.add( TextPane.make({
+      text:'There was a man and a dog too this time. Two beasts, counting Old Ben, the bear, and two men, counting Boon and Hoggenbeck, in whom some of the same blood ran which ran in Sam Fathers, even though Boon\'s was a plebeian strain of it and only Sam and Old Ben and the mongrel Lion were taintless and incorruptible.',
+      width:'100%',
+      height:'100%',
+      color: Rand.randRGBstr(),
+      fontSize: fontSize
+  }) );
+  textBox.add( TextPane.make({
+      text:'That put the thing in a new light. Ben stopped nibbling his apple. Tom swept his brush daintily back and forth -- stepped back to note the effect -- added a touch here and there -- criticised the effect again -- Ben watching every move and getting more and more interested, more and more absorbed. Presently he said:',
+      width:'100%',
+      height:'100%',
+      color: '#f0fff9',
+      fontSize: fontSize
+  }) );
+  textBox.add( TextPane.make({
+      text:'On the surface, I was calm: in secret, without really admitting it, I was waiting for something. Her return? How could I have been waiting for that? We all know that we are material creatures, subject to the laws of physiology and physics, and not even the power of all our feelings combined can defeat those laws. All we can do is detest them. The age-old faith of lovers and poets in the power of love, stronger than death, that finis vitae sed non amoris, is a lie, useless and not even funny. So must one be resigned to being a clock that measures the passage of time, now out of order, now repaired, and whose mechanism generates despair and love as soon as its maker sets it going? Are we to grow used to the idea that every man relives ancient torments, which are all the more profound because they grow comic with repetition? That human existence should repeat itself, well and good, but that it should repeat itself like a hackneyed tune, or a record a drunkard keeps playing as he feeds coins into the jukebox...',
+      width:'100%',
+      height:'100%',
+      color: bgColor,
+      fontSize: fontSize
+  }).rotate(90) );
+  return textBox;  //.render();
+}
+
+function makeMenina() {
+  var Rand = Thing.classes.Rand;
+  var i = Thing.classes.Img
+    .make({
+      src:'img/las_meninas_girl_t.png',
+      x: Rand.randInt(0, 500),
+      y: Rand.randInt(0, 200),
+      w: Rand.randInt(200, 1000),
+      z: Rand.randInt(500,1000) * 10
+    })
+    .rotate(Rand.randInt(360))  ;
+    // .css({left:'0px', top:'0px'})
+    // .render();
+  return i;
+}
+
+function makePlane () {
+  var i = Thing.classes.Img
+    .make({
+      src:'img/wood_texture_smooth_panel_red_oak.jpg',
+      w: 2000,
+      h: 600,
+      z: 20000
+    })
+    .css({transform: 'translate(-500px, 780px) rotateX(90deg)'})  ; // rotateX(90deg)
+    // .render();
+  return i;
+}
+
+function makeBackground (w, h, scale) {
+  return Thing.classes.Box
+      .make({
+        w: w,
+        h: h,
+        backgroundColor: '#f00',
+        position: 'absolute',
+        display: 'block',
+        overflow: 'hidden',
+        perspective: '900px'
+      })
+      .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*100, cellHeight:scale*100, lineWidth:scale*5}) )
+      .render();
+}
+
+$(function () {
+  var Rand = Thing.classes.Rand;
+  var Img = Thing.classes.Img;
+  var TextPane = Thing.classes.TextPane;
+
+  // setup the stage
+  var aspectRatio = .72;
+  var pixelWidth = 1664;  //6000;
+  var pixelHeight = pixelWidth * aspectRatio;  //7500;
+  var mainScale = pixelWidth * .001;  // assume design is 1000 pixels wide, this will be 1
+  var background = makeBackground(pixelWidth, pixelHeight, mainScale);
+
+  // background aliasing is smoother at a larger size
+  // scaleDocument(3);
+
+  background.add(makeTextPane(0, 0, 1200, 1200));
+
+  background.add(makePattern('GraphPaper'));
+  background.add(makePattern('PlaidRed'));
+  background.add(makePattern('Sofa'));
+  background.add(makePattern('PolkaDots'));
+  background.add(makePattern('Stripes'));
+  background.add(makePattern('DiagonalStripes'));
+
+  background.add(makeMenina());
+  background.add(makeMenina());
+
+  background.add(makePlane());
+
+  background.render();
+
+});
+</script>
+
+
+  </body>
+</html>

@@ -36,12 +36,12 @@ class Img extends Thing {
   onload (img) {
     window.console.log('Image Loaded:', img, img.src, img.width, img.height);
     this.loaded = true;
+    this.aspectRatio = img.height / img.width;  // aspect ratio of original image
     this.w = this.w || img.width;
-    this.h = this.h || img.height;
-    this.aspectRatio = this.h / this.w;
+    this.h = this.h || (this.w * this.aspectRatio);
     this.css({
-        width: this.w, 
-        height: this.h, 
+        width: this.w,
+        height: this.h,
         background: 'url(' +img.src+ ') no-repeat center',
         backgroundSize: '100% 100%'
     });
@@ -71,7 +71,7 @@ class Img extends Thing {
     Img.queuedImgs = Img.queuedImgs || [];
     if (img && !img.loaded) {
         Img.queuedImgs.push(img);
-    } 
+    }
     return Img.queuedImgs.length;
   }
 
@@ -87,7 +87,7 @@ class Img extends Thing {
             Img.onAllLoaded();
         }
     }
-    return Img.queuedImgs.length === 0;        
+    return Img.queuedImgs.length === 0;
   }
 
   static onAllLoaded () {
