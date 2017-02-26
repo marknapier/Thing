@@ -64,6 +64,7 @@ class Img extends Thing {
         width: this.width,
         height: this.height
     });
+    return this;
   }
 
   static loading (img) {

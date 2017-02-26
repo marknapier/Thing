@@ -40,7 +40,6 @@ function makePattern (name) {
     })
     .add( Pattern.make({pattern: name}) )
     .css({width:'300px', height:'1000px'})  ;
-    // .render();
     return box;
 }
 
@@ -79,7 +78,7 @@ function makeTextPane (x, y, w, h) {
       color: bgColor,
       fontSize: fontSize
   }).rotate(90) );
-  return textBox;  //.render();
+  return textBox;
 }
 
 function makeMenina() {
@@ -93,22 +92,81 @@ function makeMenina() {
       z: Rand.randInt(500,1000) * 10
     })
     .rotate(Rand.randInt(360))  ;
-    // .css({left:'0px', top:'0px'})
-    // .render();
   return i;
 }
 
-function makePlane () {
+function makeFloor () {
   var i = Thing.classes.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak.jpg',
-      w: 2000,
+      w: 1000,
       h: 600,
       z: 20000
     })
-    .css({transform: 'translate(-500px, 780px) rotateX(90deg)'})  ; // rotateX(90deg)
-    // .render();
+    .css({transform: 'translate(0px, 780px) rotateX(90deg) scale(2)'})  ;
   return i;
+}
+
+// function makeRightWall () {
+//   var i = Thing.classes.Img
+//     .make({
+//       src:'img/vintagewallpaper4_crop_edges_1.png',   // 'vintagewallpaper4_crop.png',
+//       w: 1000,
+//       h: 1000,
+//       z: 1000,
+//       opacity: .1
+//     })
+//     .css({transform: 'translate(800px, -60px) rotateY(110deg) scale(2)'})  ;
+//   return i;
+// }
+
+function makeRightWall () {
+  var i = Thing.classes.Img
+    .make({
+      src: 'img/vintagewallpaper4_crop.png',   //'img/vintagewallpaper4_crop_cutout_1.png',
+      w: 1000,
+      h: 1000,
+      z: 1000,
+      opacity: .85
+    })
+    .css({
+      transform: 'translate(800px, -60px) rotateY(110deg) scale(2)'
+    });
+
+  var g = Thing.make({
+      w: 1000,
+      h: 1000,
+      opacity: 1
+    })
+    .css({
+      background: 'radial-gradient(at 40% 30%, rgba(255, 224, 113, 0.490196) 10%, transparent 50%, rgba(144, 0, 27, 0.8) 90%)'
+    });
+
+  i.$element.append(g.$element);
+  return i;
+}
+
+function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
+  var l = Thing.classes.Line.make({
+    x1:bubbleX, y1:bubbleY, 
+    x2:targetX, y2:targetY, 
+    color:'#BADA55',
+    width:5,
+    arrow:true,
+    boxShadow: '0px 0px 9px -1px rgba(10,20,0,0.75)'
+  });
+  l.arrowHead.css({boxShadow: '0px 0px 9px -1px rgba(10,20,0,0.75)'});
+  l.render();
+
+  var c = Thing.classes.Circle.make({
+    text: '' + Thing.classes.Rand.randInt(1, 67), 
+    x: bubbleX, 
+    y: bubbleY,
+    r: 30,
+    fontSize: '32px', 
+    boxShadow: '0px 0px 9px 0px rgba(10,20,0,0.75)'
+  })
+  .render();
 }
 
 function makeBackground (w, h, scale) {
@@ -116,13 +174,14 @@ function makeBackground (w, h, scale) {
       .make({
         w: w,
         h: h,
-        backgroundColor: '#f00',
+        backgroundColor: '#ff6400',
         position: 'absolute',
         display: 'block',
         overflow: 'hidden',
-        perspective: '900px'
+        perspective: '2000px'
       })
-      .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*100, cellHeight:scale*100, lineWidth:scale*5}) )
+      // .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*100, cellHeight:scale*100, lineWidth:scale*3}) )
+      // .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*7, cellHeight:scale*7, lineWidth:scale*1.5, opacity:.2}) )
       .render();
 }
 
@@ -141,6 +200,9 @@ $(function () {
   // background aliasing is smoother at a larger size
   // scaleDocument(3);
 
+  // this prevents the screenshot plugin from including scrollbars in large screenshots
+  $('body').css({overflow: 'hidden'});
+
   background.add(makeTextPane(0, 0, 1200, 1200));
 
   background.add(makePattern('GraphPaper'));
@@ -150,12 +212,32 @@ $(function () {
   background.add(makePattern('Stripes'));
   background.add(makePattern('DiagonalStripes'));
 
+  var m = makeMenina();
+  m.css({border: '3px solid pink'});
   background.add(makeMenina());
-  background.add(makeMenina());
+  background.add(m);
 
-  background.add(makePlane());
+  window.m = m;
+
+  background.add(makeRightWall());
+  background.add(makeFloor())
+
+  var edge = Thing.classes.Line.make({
+    x1:1345, y1:0, 
+    x2:1345, y2:1000,
+    width: 8,
+    zIndex: 10010,
+    background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
+  });
+  background.add(edge);
 
   background.render();
+
+  var bb = m.getBoundingBox();
+  makeBubbleArrow(Rand.randInt(100,1000), Rand.randInt(50,400), m.x, m.y);
+
+// background: linear-gradient( 45deg, red 0%, red 50%, white 51%, white 100% );
+// radial-gradient(ellipse at 40% 30%, rgba(255, 255, 0, 0.13) 20%, transparent 60%, rgba(249, 0, 0, .2) 90%), 
 
 });
 </script>

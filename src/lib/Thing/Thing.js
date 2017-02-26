@@ -178,6 +178,9 @@ class Thing {
     return 'scale('+scale+')';
   }
 
+  // NOTE: translation coords are relative to the element's position in the document flow.
+  // They are not the same as setting left/top values, which are absolute coordinates
+  // relative to the parent element.
   static makeTranslateCSS (x, y) {
     x = x || '0';
     y = y || '0';

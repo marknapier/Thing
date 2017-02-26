@@ -13,5 +13,7 @@ require('./Img/Img.js');
 require('./Pattern/Pattern.js');
 require('./BGImg/BGImg.js');
 require('./TextPane/TextPane.js');
+require('./Circle/Circle.js');
+require('./Triangle/Triangle.js');
 
 window.Thing = Thing;
