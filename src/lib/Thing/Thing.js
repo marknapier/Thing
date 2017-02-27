@@ -56,6 +56,24 @@ class Thing {
     };
   }
 
+  getPosition () {
+    // relative to page
+    var xy = this.$element.offset();
+    var z = this.$element.css('z-index');
+    z = z ? parseInt(z) : undefined;
+    return [xy.left, xy.top, z];
+  }
+
+  // return the element's CSS transform matrix as array of 6 values
+  getCSSTransform () {
+    var mStr = this.$element.css('transform').match(/-?[\d\.]+/g);
+    var mVal = [];
+    for (var i=0; i < mStr.length; i++) {
+      mVal[i] = parseFloat(mStr[i]);
+    }
+    return mVal;  
+  }
+
   rotate (degrees) {
     this.rotation += degrees;
     this.transform();

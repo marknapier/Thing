@@ -7,14 +7,13 @@ class Circle extends Thing {
       left: 0,
       top: 0,
       r: 25,
-      borderWidth: 5,
       fontFamily: 'Calibri, Arial, sans-serif',
+      fontSize: '24px',
+      fontWeight: 'bold',
       color: '#0f0',
       backgroundColor: '#222',
-      borderRadius: '10000px',
-      border: '5px solid #BADA55',
-      fontSize: '24px',
-      fontWeight: 'bold'
+      borderColor: '#BADA55',
+      borderWidth: 5
     };
 
     props = $.extend({}, defaultProps, props);
@@ -32,6 +31,8 @@ class Circle extends Thing {
         'width': '' + props.r*2 + 'px',
         'height': '' + props.r*2 + 'px',
         'lineHeight': '' + props.r*2 + 'px',
+        'border': props.borderWidth + 'px solid ' + props.borderColor,
+        'borderRadius': '10000px',
         'textAlign': 'center',
         'overflow': 'hidden'
       });

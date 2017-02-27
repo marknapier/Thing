@@ -11,13 +11,14 @@ class Line extends Thing {
     this.angle = 0;
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     this.$element.addClass(this.type);
-    this.createLine(props.x1, props.y1, props.x2, props.y2, props.width, props.arrow);
+    this.createLine(props.x1, props.y1, props.x2, props.y2, props.width, props.arrow, props.shorten);
   }
 
-  createLine (x1,y1, x2,y2, width, arrow) {
+  createLine (x1,y1, x2,y2, width, arrow, shorten) {
     this.width = width || 2;
     this.length = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) - (arrow? this.width*2 : 0);  // shorten the length to make room for arrowhead
     this.angle  = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    this.length -= shorten || 0;  // shorten the line a bit (makes room for arrowhead)
     this.css({
         'left': '' + x1 + 'px',
         'top': '' + (y1-(this.width/2)) + 'px',

@@ -14,6 +14,7 @@
 <!-- <script src='jquery/jquery-1.9.1.js'></script> -->
 <script src='jquery/jquery.min.js'></script>
 <script src='thing.js'></script>
+<script src='sylvester/sylvester.js'></script>
 
 <script type="text/javascript">
 
@@ -86,11 +87,11 @@ function makeMenina() {
   var i = Thing.classes.Img
     .make({
       src:'img/las_meninas_girl_t.png',
-      x: Rand.randInt(0, 500),
+      x: Rand.randInt(0, 800),
       y: Rand.randInt(0, 200),
-      w: Rand.randInt(200, 1000),
       z: Rand.randInt(500,1000) * 10
     })
+    .scaleTo(.2 + (Rand.randFloat()*.8))
     .rotate(Rand.randInt(360))  ;
   return i;
 }
@@ -146,27 +147,33 @@ function makeRightWall () {
   return i;
 }
 
-function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
+function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY, color, text, shorten, z) {
+  z = z || 2200;
+
   var l = Thing.classes.Line.make({
-    x1:bubbleX, y1:bubbleY, 
-    x2:targetX, y2:targetY, 
-    color:'#BADA55',
+    x1:bubbleX, y1:bubbleY,
+    x2:targetX, y2:targetY,
+    color: color,
     width:5,
     arrow:true,
+    shorten: shorten,
+    zIndex: z,
     boxShadow: '0px 0px 9px -1px rgba(10,20,0,0.75)'
   });
-  l.arrowHead.css({boxShadow: '0px 0px 9px -1px rgba(10,20,0,0.75)'});
-  l.render();
 
   var c = Thing.classes.Circle.make({
-    text: '' + Thing.classes.Rand.randInt(1, 67), 
+    text: text || '' + Thing.classes.Rand.randInt(1, 67), 
     x: bubbleX, 
     y: bubbleY,
     r: 30,
-    fontSize: '32px', 
-    boxShadow: '0px 0px 9px 0px rgba(10,20,0,0.75)'
+    zIndex: z+1,
+    fontSize: '32px',
+    color: '#fff',
+    boxShadow: '0px 0px 9px 0px rgba(10,20,0,0.75)',
+    borderColor: color
   })
-  .render();
+
+  return [l,c];
 }
 
 function makeBackground (w, h, scale) {
@@ -184,6 +191,39 @@ function makeBackground (w, h, scale) {
       // .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*7, cellHeight:scale*7, lineWidth:scale*1.5, opacity:.2}) )
       .render();
 }
+
+//----------------------------------------------------
+// Matrix functions (rely on Sylvester.js)
+
+// return a Sylvester.js matrix from an array of 6 values
+function makeMatrix2D (mA) {
+  var m = null;
+  if (mA && mA.length === 6) {
+    var m = $M([
+      [mA[0], mA[2], mA[4]],
+      [mA[1], mA[3], mA[5]],
+      [0,0,1]
+    ]);
+  }
+  return m;  
+}
+
+// return the point transformed by the given matrix
+// CSS Elements by default have transform-origin at center. Pass
+// the position of the origin in originOffset (defaults to 0,0).
+function transformPoint (point, M, originOffset) {
+  originOffset = originOffset || [0,0];
+  // shift point to center around origin
+  var v = Vector.create([point[0]-originOffset[0], point[1]-originOffset[1], 1]);
+  // transform the point
+  var tm = M.multiply(v);
+  // shift the transformed point back
+  var tx = tm.elements[0]+originOffset[0];
+  var ty = tm.elements[1]+originOffset[1];
+  return [tx, ty];
+}
+
+//----------------------------------------------------
 
 $(function () {
   var Rand = Thing.classes.Rand;
@@ -212,12 +252,12 @@ $(function () {
   background.add(makePattern('Stripes'));
   background.add(makePattern('DiagonalStripes'));
 
-  var m = makeMenina();
-  m.css({border: '3px solid pink'});
+  var menina = makeMenina();
+  menina.css({border: '3px solid pink'});
   background.add(makeMenina());
-  background.add(m);
+  background.add(menina);
 
-  window.m = m;
+  window.menina = menina;
 
   background.add(makeRightWall());
   background.add(makeFloor())
@@ -231,14 +271,30 @@ $(function () {
   });
   background.add(edge);
 
+  background.add( makeBubbleArrow(Rand.randInt(100,1000), Rand.randInt(50,400), menina.x, menina.y, '#ceff34') );
+
   background.render();
 
-  var bb = m.getBoundingBox();
-  makeBubbleArrow(Rand.randInt(100,1000), Rand.randInt(50,400), m.x, m.y);
+  function makeImgPointers () {
+    var dim = menina.getDimensions();
+    var pos = menina.getPosition();
+    var point = [500, 100];
+    var M = makeMatrix2D( menina.getCSSTransform() );
+    var tp = transformPoint (point, M, [dim.w/2, dim.h/2]);
+    background.add( makeBubbleArrow( 
+      Rand.randInt(tp[0]-100, tp[0]+100), 
+      Rand.randInt(tp[1]-150, tp[1]-350), 
+      tp[0], tp[1], 
+      '#5dff1d', parseInt(tp[0]), 60, pos[2]+11) );
+    background.render();
+  }
 
-// background: linear-gradient( 45deg, red 0%, red 50%, white 51%, white 100% );
-// radial-gradient(ellipse at 40% 30%, rgba(255, 255, 0, 0.13) 20%, transparent 60%, rgba(249, 0, 0, .2) 90%), 
+  Thing.classes.Img.onAllLoaded = makeImgPointers;
 
+  // background: linear-gradient( 45deg, red 0%, red 50%, white 51%, white 100% );
+  // radial-gradient(ellipse at 40% 30%, rgba(255, 255, 0, 0.13) 20%, transparent 60%, rgba(249, 0, 0, .2) 90%), 
+  // $('#Img22').css('transform').replace(/[^0-9\-.,]/g, '').split(',')
+  // clip-path: inset(0px 120px 646px 0px);
 });
 </script>
 
