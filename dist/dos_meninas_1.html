@@ -87,12 +87,26 @@ function makeMenina() {
   var i = Thing.classes.Img
     .make({
       src:'img/las_meninas_girl_t.png',
-      x: Rand.randInt(0, 800),
+      x: 400,
       y: Rand.randInt(0, 200),
       z: Rand.randInt(500,1000) * 10
     })
     .scaleTo(.2 + (Rand.randFloat()*.8))
     .rotate(Rand.randInt(360))  ;
+  return i;
+}
+
+function makeCouch() {
+  var Rand = Thing.classes.Rand;
+  var i = Thing.classes.Img
+    .make({
+      src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
+      x: -200,
+      y: 500,
+      z: 30000,
+      filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
+    }) 
+    .scaleTo(.6) ;
   return i;
 }
 
@@ -259,6 +273,8 @@ $(function () {
 
   window.menina = menina;
 
+  background.add(makeCouch());
+
   background.add(makeRightWall());
   background.add(makeFloor())
 
@@ -294,6 +310,7 @@ $(function () {
   // background: linear-gradient( 45deg, red 0%, red 50%, white 51%, white 100% );
   // radial-gradient(ellipse at 40% 30%, rgba(255, 255, 0, 0.13) 20%, transparent 60%, rgba(249, 0, 0, .2) 90%), 
   // $('#Img22').css('transform').replace(/[^0-9\-.,]/g, '').split(',')
+  // clip-path: inset(0px 120px 646px 0px);
 });
 </script>
 
