@@ -2,7 +2,7 @@
   background-color: #003;
   background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
   background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255,255,255,.5) 2px, transparent 2px),
     linear-gradient(90deg, rgba(255,255,255,.5) 2px, transparent 2px),
     linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
@@ -12,7 +12,7 @@
 .Pattern.Grid {
   background-size: 100px 100px, 100px 100px;
   background-position: -2px -2px, -2px -2px;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255,255,255,.5) 2px, transparent 2px),
     linear-gradient(90deg, rgba(255,255,255,.5) 2px, transparent 2px);
 }
@@ -49,13 +49,27 @@
   background-size: 25% 25%;
 }
 
+.Pattern.YellowCirclesWithViolet {
+    background-image: radial-gradient(#ffd679 17%, #3d5443 17.5%, #3d5443 18.2%, #3cdada 19%, #6de8e8 24%, #edcbfb 30%, transparent 36%), radial-gradient(#3dabc7 12%, #49ab3c 13.5%, #38822e 14%, #ffdb89 14.5%, #ffdb89 19%, #fff57a 20%, #fcffb5 28%, #fffebd 29%);
+    background-size: 25%, 25%;
+    background-position: 0% 0%, 17% 17%;
+}
+
+.Pattern.YellowCirclesWithViolet2 {
+  background-image: radial-gradient(#ffdd90 17%, black 17.5%, black 18.2%, #3cdada 19%, #6de8e8 24%, #edcbfb 30%, transparent 36%), radial-gradient(#3cdada 17%, gray 17.5%, gray 18%, #ffdd90 19%, #ffdd90 24%, #ffff90 30%, #ffff90 36%);
+  background-size: 25%, 25%;
+  background-position: 0% 0%, 17% 17%;
+}
+
 .Pattern.PolkaDots {
-  background-image: 
+  background-image:
     radial-gradient(white 15%, transparent 17%),
     radial-gradient(white 15%, transparent 17%);
   background-size: 60px 60px;
   background-position: 0 0, 30px 30px;
 }
+
+
 
 .Pattern.BlueBalls {
   background-image: radial-gradient(#acf 77%, rgba(88,99,255,.88) 80%, transparent 83%);
@@ -67,24 +81,33 @@
   background-size: 15%;
 }
 
+.Pattern.StripesWhiteRedGreen {
+  background-image:
+    linear-gradient(90deg, transparent 51%, #ffffc8 51%, #ffffc8 59%, transparent 59%),
+    linear-gradient(90deg, transparent 43%, #f33054 43%, #f33054 67%, transparent 67%),
+    linear-gradient(90deg, #029b4f 34%, #262626 34%, #262626 75%, #029b4f 75%);
+  background-position: 0%, 0%, 0%;
+  background-size: 15%, 15%, 15%;
+}
+
 .Pattern.PlaidRed {
   background-color: hsl(0, 86%, 34%);
-  background-image: 
+  background-image:
     repeating-linear-gradient(transparent,
       transparent 50px, rgba(40,0,160,.4) 50px, rgba(40,0,160,.4) 53px, transparent 53px,
       transparent 63px, rgba(40,0,160,.4) 63px, rgba(40,0,160,.4) 66px, transparent 66px,
       transparent 116px, rgba(0,60,0,.5) 116px, rgba(0,60,0,.5) 166px, rgba(255,255,200,.3) 166px, rgba(255,255,200,.3) 169px, rgba(0,60,0,.5) 169px,
       rgba(0,60,0,.5) 179px, rgba(255,255,200,.3) 179px, rgba(255,255,200,.3) 182px, rgba(0,60,0,.5) 182px,
       rgba(0,60,0,.5) 232px, transparent 232px),
-    repeating-linear-gradient(270deg, transparent, 
-      transparent 50px, rgba(40,0,160,.4) 50px, rgba(40,0,160,.4) 53px, transparent 53px, 
-      transparent 63px, rgba(40,0,160,.4) 63px, rgba(40,0,160,.4) 66px, transparent 66px, 
-      transparent 116px, rgba(0,60,0,.5) 116px, rgba(0,60,0,.5) 166px, rgba(255,255,200,.3) 166px, rgba(255,255,200,.3) 169px, rgba(0,60,0,.5) 169px, 
-      rgba(0,60,0,.5) 179px, rgba(255,255,200,.3) 179px, rgba(255,255,200,.3) 182px, rgba(0,60,0,.5) 182px, 
+    repeating-linear-gradient(270deg, transparent,
+      transparent 50px, rgba(40,0,160,.4) 50px, rgba(40,0,160,.4) 53px, transparent 53px,
+      transparent 63px, rgba(40,0,160,.4) 63px, rgba(40,0,160,.4) 66px, transparent 66px,
+      transparent 116px, rgba(0,60,0,.5) 116px, rgba(0,60,0,.5) 166px, rgba(255,255,200,.3) 166px, rgba(255,255,200,.3) 169px, rgba(0,60,0,.5) 169px,
+      rgba(0,60,0,.5) 179px, rgba(255,255,200,.3) 179px, rgba(255,255,200,.3) 182px, rgba(0,60,0,.5) 182px,
       rgba(0,60,0,.5) 232px, transparent 232px),
-    repeating-linear-gradient(125deg, transparent, 
-      transparent 2px, rgba(0,0,0,.2) 2px, 
-      rgba(0,0,0,.2) 3px, transparent 3px, 
+    repeating-linear-gradient(125deg, transparent,
+      transparent 2px, rgba(0,0,0,.2) 2px,
+      rgba(0,0,0,.2) 3px, transparent 3px,
       transparent 5px, rgba(0,0,0,.2) 5px);
 }
 
@@ -97,9 +120,23 @@
 
 .Pattern.BlueCascade {
   background-color: #026873;
-  background-image: linear-gradient(91deg, rgba(255,255,25,0.17) 50%, transparent 51.5%), 
-    linear-gradient(89deg, rgba(25,255,255,0.23) 50%, transparent 54.5%), 
-    linear-gradient(90.5deg, transparent 50%, rgba(252, 255, 162, 0.37) 54.5%), 
+  background-image: linear-gradient(91deg, rgba(255,255,25,0.17) 50%, transparent 51.5%),
+    linear-gradient(89deg, rgba(25,255,255,0.23) 50%, transparent 54.5%),
+    linear-gradient(90.5deg, transparent 50%, rgba(252, 255, 162, 0.37) 54.5%),
     linear-gradient(90deg, transparent 50.75%, red 51%, red 51.5%, transparent 51.75%);
   background-size: 5% 100%, 3% 100%, 9% 100%, 8% 100%;
 }
+
+ /*Perlin Noise-ish radial blurs*/
+  /*RGB*/
+  /*background-image: radial-gradient(rgba(255, 42, 0, .5) 1%, transparent 200%), radial-gradient(rgba(86, 250, 2, .5) 1%, transparent 200%), radial-gradient(rgba(0, 7, 255, 0.6) 1%, transparent 150%);
+  background-size: 161px, 134px, 188px;
+  background-position: -54px, 57px, 55px;
+  */
+
+  /*Monochrome - better blurs*/
+/*
+  background-image: radial-gradient(rgba(9, 1, 112, 0.56) 0%, rgba(9, 1, 112, 0.25) 48%, rgba(9, 1, 112, 0.16) 65%, rgba(9, 1, 112, 0.12) 94%), radial-gradient(rgba(9, 1, 112, 0.56) 0%, rgba(9, 1, 112, 0.25) 48%, rgba(9, 1, 112, 0.16) 65%, rgba(9, 1, 112, 0.12) 94%), radial-gradient(rgba(9, 1, 112, 0.56) 0%, rgba(9, 1, 112, 0.25) 48%, rgba(9, 1, 112, 0.16) 65%, rgba(9, 1, 112, 0.12) 94%);
+  background-size: 188px 347px, 170px, 209px;
+  background-position: -54px, 57px, 55px;
+*/
