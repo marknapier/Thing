@@ -15,5 +15,7 @@ require('./BGImg/BGImg.js');
 require('./TextPane/TextPane.js');
 require('./Circle/Circle.js');
 require('./Triangle/Triangle.js');
+require('./Cube/Cube.js');
+require('./Room/Room.js');
 
 window.Thing = Thing;
