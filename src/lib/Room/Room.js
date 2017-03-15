@@ -48,41 +48,74 @@ class Room extends Box {
 			transition: 'transform 1s'
 		});
 
+		// Inner facing walls
 		walls.push( this.makeWall('front', {
 			background: 'rgba(255, 255, 255, .2)',
-		  	width: this.w + 'px',
-		  	height: this.h + 'px',
-		  	transform: 'translateZ( ' + (halfDepth) + 'px )'
+			width: this.w + 'px',
+			height: this.h + 'px',
+			transform: 'translateZ( ' + (halfDepth) + 'px )'
 		}) );
 		walls.push( this.makeWall('back', {
 			background: 'rgba(0, 0, 0, .5)',
-		  	width: this.w + 'px',
-		  	height: this.h + 'px',
-		  	transform: 'translateZ( ' + (-halfDepth) + 'px )'
+			width: this.w + 'px',
+			height: this.h + 'px',
+			transform: 'translateZ( ' + (-halfDepth) + 'px )'
 		}) );
 		walls.push( this.makeWall('right', {
 			background: 'rgba(255, 0, 55, 1)',
-		  	width: this.d + 'px',
-		  	height: this.h + 'px', 
-		  	transform: 'rotateY( -90deg ) translateZ( ' + (-(halfWidth + (halfWidth-halfDepth))) + 'px )'
+			width: this.d + 'px',
+			height: this.h + 'px',
+			transform: 'rotateY( -90deg ) translateZ( ' + (-(halfWidth + (halfWidth-halfDepth))) + 'px )'
 		}) );
 		walls.push( this.makeWall('left', {
 			background: 'rgba(255, 255, 0, 1)',
-		  	width: this.d + 'px',
-		  	height: this.h + 'px', 
-		  	transform: 'rotateY( 90deg ) translateZ( ' + (-halfDepth) + 'px )'
+			width: this.d + 'px',
+			height: this.h + 'px',
+			transform: 'rotateY( 90deg ) translateZ( ' + (-halfDepth) + 'px )'
 		}) );
 		walls.push( this.makeWall('top', {
 			background: 'rgba(0, 55, 255, 1)',
-		  	width: this.w + 'px',
-		  	height: this.d + 'px', 
-		  	transform: 'rotateX( -90deg ) translateZ( ' + (-(halfHeight - (halfHeight-halfDepth))) + 'px )'
+			width: this.w + 'px',
+			height: this.d + 'px',
+			transform: 'rotateX( -90deg ) translateZ( ' + (-(halfHeight - (halfHeight-halfDepth))) + 'px )'
 		}) );
 		walls.push( this.makeWall('bottom', {
 			background: 'rgba(0, 255, 0, 1)',
-		  	width: this.w + 'px',
-		  	height: this.d + 'px', 
-		  	transform: 'rotateX( 90deg ) translateZ( ' + (-(halfHeight + (halfHeight-halfDepth))) + 'px )'
+			width: this.w + 'px',
+			height: this.d + 'px',
+			transform: 'rotateX( 90deg ) translateZ( ' + (-(halfHeight + (halfHeight-halfDepth))) + 'px )'
+		}) );
+
+		// Outer facing walls
+		walls.push( this.makeWall('outback', {
+			background: 'rgba(0, 0, 0, 1)',
+			width: this.w + 'px',
+			height: this.h + 'px',
+			transform: 'rotateX( -180deg ) translateZ( ' + halfDepth + 'px )'
+		}) );
+		walls.push( this.makeWall('outright', {
+			background: 'rgba(100, 100, 100, 1)',
+			width: this.d + 'px',
+			height: this.h + 'px',
+			transform: 'rotateY( 90deg ) translateZ( ' + ((halfWidth + (halfWidth-halfDepth))) + 'px )'
+		}) );
+		walls.push( this.makeWall('outleft', {
+			background: 'rgba(100, 100, 100, 1)',
+			width: this.d + 'px',
+			height: this.h + 'px',
+			transform: 'rotateY( -90deg ) translateZ( ' + (halfWidth - (halfWidth-halfDepth)) + 'px )'
+		}) );
+		walls.push( this.makeWall('outtop', {
+			background: 'rgba(100, 100, 200, 1)',
+			width: this.w + 'px',
+			height: this.d + 'px',
+			transform: 'rotateX( 90deg ) translateZ( ' + halfDepth + 'px )'
+		}) );
+		walls.push( this.makeWall('outbottom', {
+			background: 'rgba(100, 200, 100, 1)',
+			width: this.w + 'px',
+			height: this.d + 'px',
+			transform: 'rotateX( -90deg ) translateZ( ' + (halfHeight + (halfHeight-halfDepth)) + 'px )'
 		}) );
 
 		wrapper.add(walls);
@@ -156,25 +189,25 @@ class Room extends Box {
 		this.setupFace($faceRight, {
 			background: 'rgba(255,   0,  55, .5)',
 		  	width: this.d + 'px',
-		  	height: this.h + 'px', 
+		  	height: this.h + 'px',
 		  	transform: 'rotateY(   90deg ) translateZ( ' + (halfWidth + (halfWidth-halfDepth)) + 'px )'  /* halfWidth + (halfWidth-halfDepth) */
 		});
 		this.setupFace($faceLeft, {
 			background: 'rgba(255, 255,   0, .5)',
 		  	width: this.d + 'px',
-		  	height: this.h + 'px', 
+		  	height: this.h + 'px',
 		  	transform: 'rotateY(  -90deg ) translateZ( ' + (halfWidth - (halfWidth-halfDepth)) + 'px )'  /* halfWidth - (halfWidth-halfDepth) */
 		});
 		this.setupFace($faceTop, {
 			background: 'rgba(  0,  55, 255, .5)',
 		  	width: this.w + 'px',
-		  	height: this.d + 'px', 
+		  	height: this.d + 'px',
 		  	transform: 'rotateX(   90deg ) translateZ( ' + halfDepth + 'px )'
 		});
 		this.setupFace($faceBottom, {
 			background: 'rgba(  0, 255,   0, .5)',
 		  	width: this.w + 'px',
-		  	height: this.d + 'px', 
+		  	height: this.d + 'px',
 		  	transform: 'rotateX(  -90deg ) translateZ( ' + (halfHeight + (halfHeight-halfDepth)) + 'px )'
 		});
 	}
