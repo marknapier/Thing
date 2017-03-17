@@ -29,10 +29,10 @@ function makePattern (name) {
   var Pattern = Thing.classes.Pattern;
   var box = Thing.classes.Box
     .make( {
-      x: Rand.randInt(0,1000),
+      x: Rand.randInt(0,4000),
       y: 0,
-      w: Rand.randInt(80,500),
-      h: 1000,
+      w: Rand.randInt(400,1000),
+      h: 3600,
       z: Rand.randInt(1,1000) * 10,
       backgroundColor: 'green',
       position: 'absolute',
@@ -87,11 +87,11 @@ function makeMenina() {
   var i = Thing.classes.Img
     .make({
       src:'img/las_meninas_girl_t.png',
-      x: Rand.randInt(-200, 1000),
-      y: Rand.randInt(0, 300),
+      x: Rand.randInt(-500, 5000),
+      y: Rand.randInt(0, 200),
       z: Rand.randInt(500,1000) * 10
     })
-    .scaleTo(.2 + (Rand.randFloat()*.8))
+    .scaleTo(1 + (Rand.randFloat()*3))
     .rotate(Rand.randInt(180)-90)  ;
   return i;
 }
@@ -101,8 +101,8 @@ function makeCouch() {
   var i = Thing.classes.Img
     .make({
       src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
-      x: -200,
-      y: 500,
+      x: -500,
+      y: 400,
       z: Rand.randInt(5000, 10000),
       filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
     })
@@ -233,8 +233,21 @@ function makeBackground (w, h, scale) {
         perspective: '2000px',
         transformStyle: 'preserve-3d'
       })
-      // .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*100, cellHeight:scale*100, lineWidth:scale*3}) )
-      // .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*7, cellHeight:scale*7, lineWidth:scale*1.5, opacity:.2}) )
+      .render();
+}
+
+function makeStage (w, h, scale) {
+  return Thing.classes.Box
+      .make({
+        w: w,
+        h: h,
+        backgroundColor: '#ff64cc',
+        position: 'absolute',
+        display: 'block',
+        overflow: 'hidden',
+        perspective: '2000px',
+        transformStyle: 'preserve-3d'
+      })
       .render();
 }
 
@@ -287,15 +300,14 @@ $(function () {
   var pixelHeight = pixelWidth * aspectRatio;
   var mainScale = pixelWidth * .001;  // assume design is 1000 pixels wide, this will be 1
   var background = makeBackground(pixelWidth, pixelHeight, mainScale);
+  var stage = makeStage(pixelWidth, pixelHeight, mainScale);
 
   // background aliasing is smoother at a larger size
   // scaleDocument(3);
 
   // Prevents the screenshot plugin from including scrollbars in large screenshots.
-  // Scale design to fit on screen (set scale to 1 for full print resolution)
   $('body').css({
     overflow: 'hidden',
-    // transform: 'scale(.4)',
     transformOrigin: '0 0'
   });
 
@@ -319,12 +331,12 @@ $(function () {
   background.add(makeCouch());
 
   background.add(makeRightWall());
-  background.add(makeFloor())
+  // background.add(makeFloor())
 
   var edge = Thing.classes.Line.make({
     x1:1345, y1:0,
     x2:1345, y2:1000,
-    width: 8,
+    width: 20,
     zIndex: 10010,
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });
@@ -334,14 +346,28 @@ $(function () {
           Rand.randInt(100,1000), Rand.randInt(50,400), menina.x, menina.y,
           '#ceff34', '', false, Rand.randInt(1000,3000)) );
 
-  background.add(Thing.classes.Cube.make({w:4000, h:2500, d:2000}));
+  // background.render();
+  var pos = menina.getPosition();
 
   // Room
-  var R = Thing.classes.Room.make({left:'3000px', top:'500px'});
-  background.add(R);
+  var R = Thing.classes.Room.make({
+    w: pixelWidth, 
+    h: pixelHeight,
+    d: 2000
+  });
+  R.walls.back.add(background);
 
-  background.render();
-  var pos = menina.getPosition();
+  var floorImg = Thing.classes.Img
+    .make({
+      src:'img/wood_texture_smooth_panel_red_oak.jpg',
+      w: pixelWidth,
+      h: 2000
+    });
+  R.walls.bottom.add(floorImg);
+
+  stage.add(R);
+  stage.render();
+
 
   function makeImgPointers () {
     var dim = menina.getDimensions();
