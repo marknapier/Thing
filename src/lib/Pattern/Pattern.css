@@ -71,10 +71,18 @@
 
 .Pattern.PolkaDotsLarge {
   background-image:
-    radial-gradient(white 15%, transparent 17%),
-    radial-gradient(white 15%, transparent 17%);
-  background-size: 10%;
-  background-position: 0 0, 50% 50%;
+    radial-gradient(#fffdd7 100px, transparent 103px),
+    radial-gradient(#fffdd7 100px, transparent 103px);
+  background-size: 500px;
+  background-position: 0 0, 250px 250px;
+}
+
+.Pattern.PolkaDiamondsWhiteGreen {
+    background-image: 
+      radial-gradient(#fffdd7 9px, transparent 103px), 
+      radial-gradient(#fffdd7 111px, transparent 103px);
+    background-size: 200px;
+    background-position: 0 0, 100px 100px;
 }
 
 .Pattern.BlueBalls {
@@ -130,7 +138,7 @@
 }
 
 .Pattern.DiagonalStripesViolet {
-  background-image: linear-gradient(45deg, #0f0035 25%, transparent 25.15%, transparent 50%, #0f0035 50.15%, #0f0035 75%, transparent 75.15%, transparent);
+  background-image: linear-gradient(45deg, #0e0030 25%, transparent 25.15%, transparent 50%, #0e0030 50.15%, #0e0030 75%, transparent 75.15%, transparent);
   background-size: 6%;
 }
 
