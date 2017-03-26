@@ -78,8 +78,8 @@
 }
 
 .Pattern.PolkaDiamondsWhiteGreen {
-    background-image: 
-      radial-gradient(#fffdd7 9px, transparent 103px), 
+    background-image:
+      radial-gradient(#fffdd7 9px, transparent 103px),
       radial-gradient(#fffdd7 111px, transparent 103px);
     background-size: 200px;
     background-position: 0 0, 100px 100px;
@@ -130,6 +130,48 @@
       transparent 5px, rgba(0,0,0,.2) 5px);
 }
 
+.Pattern.PlaidRedLarge {
+  background-color: hsl(0, 86%, 34%);
+  background-image:
+    repeating-linear-gradient(transparent,
+      transparent 200px, rgba(40,0,160,.4) 200px, rgba(40,0,160,.4) 212px, transparent 212px,
+      transparent 252px, rgba(40,0,160,.4) 252px, rgba(40,0,160,.4) 264px, transparent 264px,
+      transparent 464px, rgba(0,60,0,.5) 464px, rgba(0,60,0,.5) 664px, rgba(255,255,200,.3) 664px, rgba(255,255,200,.3) 676px, rgba(0,60,0,.5) 676px,
+      rgba(0,60,0,.5) 716px, rgba(255,255,200,.3) 716px, rgba(255,255,200,.3) 728px, rgba(0,60,0,.5) 728px,
+      rgba(0,60,0,.5) 928px, transparent 928px),
+    repeating-linear-gradient(270deg, transparent,
+      transparent 200px, rgba(40,0,160,.4) 200px, rgba(40,0,160,.4) 212px, transparent 212px,
+      transparent 252px, rgba(40,0,160,.4) 252px, rgba(40,0,160,.4) 264px, transparent 264px,
+      transparent 464px, rgba(0,60,0,.5) 464px, rgba(0,60,0,.5) 664px, rgba(255,255,200,.3) 664px, rgba(255,255,200,.3) 676px, rgba(0,60,0,.5) 676px,
+      rgba(0,60,0,.5) 716px, rgba(255,255,200,.3) 716px, rgba(255,255,200,.3) 728px, rgba(0,60,0,.5) 728px,
+      rgba(0,60,0,.5) 928px, transparent 928px),
+    repeating-linear-gradient(125deg, transparent,
+      transparent 8px, rgba(0,0,0,.2) 8px,
+      rgba(0,0,0,.2) 12px, transparent 12px,
+      transparent 20px, rgba(0,0,0,.2) 20px);
+}
+
+.Pattern.PlaidRedLargeX {
+  background-color: hsl(0, 86%, 34%);
+  background-image:
+    repeating-linear-gradient(transparent,
+      transparent 250px, rgba(40,0,160,.4) 250px, rgba(40,0,160,.4) 265px, transparent 265px,
+      transparent 315px, rgba(40,0,160,.4) 315px, rgba(40,0,160,.4) 330px, transparent 330px,
+      transparent 580px, rgba(0,60,0,.5) 580px, rgba(0,60,0,.5) 830px, rgba(255,255,200,.3) 830px, rgba(255,255,200,.3) 845px, rgba(0,60,0,.5) 845px,
+      rgba(0,60,0,.5) 895px, rgba(255,255,200,.3) 895px, rgba(255,255,200,.3) 910px, rgba(0,60,0,.5) 910px,
+      rgba(0,60,0,.5) 1160px, transparent 1160px),
+    repeating-linear-gradient(270deg, transparent,
+      transparent 250px, rgba(40,0,160,.4) 250px, rgba(40,0,160,.4) 265px, transparent 265px,
+      transparent 315px, rgba(40,0,160,.4) 315px, rgba(40,0,160,.4) 330px, transparent 330px,
+      transparent 580px, rgba(0,60,0,.5) 580px, rgba(0,60,0,.5) 830px, rgba(255,255,200,.3) 830px, rgba(255,255,200,.3) 845px, rgba(0,60,0,.5) 845px,
+      rgba(0,60,0,.5) 895px, rgba(255,255,200,.3) 895px, rgba(255,255,200,.3) 910px, rgba(0,60,0,.5) 910px,
+      rgba(0,60,0,.5) 1160px, transparent 1160px),
+    repeating-linear-gradient(125deg, transparent,
+      transparent 10px, rgba(0,0,0,.2) 10px,
+      rgba(0,0,0,.2) 15px, transparent 15px,
+      transparent 25px, rgba(0,0,0,.2) 25px);
+}
+
 .Pattern.DiagonalStripes {
   background-image: linear-gradient(45deg, black 25%, transparent 25.15%, transparent 50%, black 50.15%, black 75%, transparent 75.15%, transparent);
   background-size: 16% 16%;  /* must match aspect ratio of containing element or lines will break */
@@ -173,4 +215,12 @@
     radial-gradient(rgba(9, 1, 112, 0.01) 0%, rgba(85, 255, 59, 0.08) 48%, rgba(174, 202, 0, 0.16) 65%, rgba(9, 1, 112, 0) 94%);
     background-size: 188px 347px, 170px, 209px;
   background-position: -54px, 57px, 55px;
+}
+
+.Pattern.DarkDonuts {
+    background-image:
+      radial-gradient(black 10%, #fffdd7 60%, transparent 61%),
+      radial-gradient(#292929 1%, #fffdd7 50%, #fffdd7 62%, #4a4a4a 61%);
+    background-size: 800px;
+    background-position: 0 0, 400px 400px;
 }

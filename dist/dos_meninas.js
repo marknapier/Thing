@@ -9,8 +9,8 @@ function scaleDocument (n) {
 
 function makePattern (name, size) {
   var Rand = Thing.classes.Rand;
-  var Pattern = Thing.classes.Pattern;
-  var P = Pattern.make({pattern: name});
+  var Pattern = Thing.classes[name] ? Thing.classes[name] : Thing.classes.Pattern;
+  var P =  Pattern.make({pattern: name, size: size});
   var box = Thing.classes.Box.make( {
     x: Rand.randInt(0,3000),
     y: 0,
@@ -22,10 +22,6 @@ function makePattern (name, size) {
     display: 'block',
     overflow: 'hidden'
   });
-
-  if (size) {
-    P.css({backgroundSize: size + '%'});
-  }
 
   box.add( P )
   return box;

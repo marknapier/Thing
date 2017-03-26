@@ -50,11 +50,11 @@ $(function () {
   background.add(makeTextPane(0, 0, 1200, 2800));
 
   background.add(makePattern('GraphPaper'));
-  background.add(makePattern('PlaidRed'));
+  background.add(makePattern('PlaidRedLarge'));
   background.add(makePattern('Sofa', Rand.randItem(sofaSizes)));
-  background.add(makePattern('PolkaDotsLarge'));
-  background.add(makePattern('StripesOchre', Rand.randInt(3,20)));
-  background.add(makePattern('DiagonalStripesViolet', Rand.randInt(5,20)));
+  background.add(makePattern('PatternPolkaDots', Rand.randInt(300,650)));
+  background.add(makePattern('PatternStripes', Rand.randInt(130,600)));
+  background.add(makePattern('DiagonalStripesViolet', Rand.randInt(10,40)));
 
   var menina = makeMenina();
   menina.css({border: '9px solid rgba(255, 192, 203, 1)'});
@@ -140,6 +140,14 @@ $(function () {
   // clip-path: inset(0px 120px 646px 0px);
   //perspective-origin: 50% 25%
   //backface-visibility: hidden
+
+  // mask image:
+  // -webkit-mask-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/234228/alpha-cat.png);
+  //
+  // -webkit-mask-image: url(file:///Users/mark.napier/Projects/htdocs/Thing/img/las_meninas_girl_t.png);
+  // -webkit-mask-repeat: no-repeat;
+  // -webkit-mask-size: 140%;
+  // opacity: .85;
 });
 </script>
 

@@ -3,9 +3,6 @@ var Thing = require('../Thing/Thing.js');
 class Pattern extends Thing {
   init (props) {
     var defaultProps = {
-      position: 'absolute',
-      left: '0px',
-      top: '0px',
       color: '#ddd',
       pattern: 'GraphPaper',
       cellWidth: 100,
@@ -23,11 +20,21 @@ class Pattern extends Thing {
   }
 
   render () {
-    // render first, this will set a parent element
     super.render();
-    // then adjust pattern to fill parent with a square aspect ratio
+
+    // Adjust pattern to fill parent with a square aspect ratio
     var size = Math.max(this.parent.$element.width(), this.parent.$element.height());
-    this.css({width: size, height: size});
+    this.css({
+      position: 'absolute',
+      left: '0px', top: '0px',
+      width: size, height: size
+    });
+
+    // Tweak the size
+    if (this.props.size) {
+      this.css({backgroundSize: this.props.size + '%'});
+    }
+
     return this;
   }
 

@@ -71,7 +71,7 @@ class Thing {
     for (var i=0; i < mStr.length; i++) {
       mVal[i] = parseFloat(mStr[i]);
     }
-    return mVal;  
+    return mVal;
   }
 
   rotate (degrees) {
@@ -248,6 +248,9 @@ class Thing {
 
   //---------------------------------------------------------
 
+  static msg(s) {
+    window.console.log(s);
+  }
 }
 Thing.addClass(Thing);
 

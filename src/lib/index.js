@@ -11,6 +11,8 @@ require('./Label/Label.js');
 require('./Line/Line.js');
 require('./Img/Img.js');
 require('./Pattern/Pattern.js');
+require('./PatternPolkaDots/PatternPolkaDots.js');
+require('./PatternStripes/PatternStripes.js');
 require('./BGImg/BGImg.js');
 require('./TextPane/TextPane.js');
 require('./Circle/Circle.js');
