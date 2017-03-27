@@ -7,6 +7,7 @@ class PatternPolkaDots extends Thing {
       radius: 100,
       size: 500
     };
+    props.radius = props.radius || props.size/5;
     this.props = props = $.extend({}, defaultProps, props);
     this.initialize(props);
     this.type = 'PatternPolkaDots';

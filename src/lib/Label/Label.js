@@ -3,6 +3,7 @@ var Thing = require('../Thing/Thing.js');
 class Label extends Thing {
 	init (props) {
 		var defaultProps = {
+			text: '',
 			fontFamily: 'Calibri, Arial, sans-serif',
 			fontSize: '14px',
 			color: '#000'
@@ -17,7 +18,7 @@ class Label extends Thing {
 
 	setText (txt) {
 		this.text = txt;
-		this.$element.empty().append(txt);
+		this.$element.empty().text(txt);
 	}
 
 	render () {

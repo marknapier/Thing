@@ -27,14 +27,13 @@ class Img extends Thing {
     this.h = props.h || undefined;
 
     Img.loading(this);
-    loadImage(props.src, this.onload.bind(this), this.onerror.bind(this));
+    loadImage(props.src, this.onload.bind(this), this.onError.bind(this));
 
     super.initialize(props);
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
   onload (img) {
-    window.console.log('Image Loaded:', img, img.src, img.width, img.height);
     this.loaded = true;
     this.aspectRatio = img.height / img.width;  // aspect ratio of original image
     this.w = this.w || img.width;
@@ -48,8 +47,8 @@ class Img extends Thing {
     Img.loaded(this);
   }
 
-  onerror (img) {
-    window.console.log('Img.onerror', img.src, 'failed');
+  onError (img) {
+    Thing.msg('Img.onError: Failed to load ' + img.src);
     this.loaded = true;
     this.error = true;
     this.width = this.height = 0;
@@ -68,7 +67,6 @@ class Img extends Thing {
   }
 
   static loading (img) {
-    window.console.log("IMG.loading():", img.src);
     Img.queuedImgs = Img.queuedImgs || [];
     if (img && !img.loaded) {
         Img.queuedImgs.push(img);
@@ -77,7 +75,6 @@ class Img extends Thing {
   }
 
   static loaded (img) {
-    window.console.log("IMG.loaded():", img.src, Img.queuedImgs.length);
     Img.queuedImgs = Img.queuedImgs || [];
     if (img && img.loaded) {
         var index = Img.queuedImgs.indexOf(img);
@@ -92,7 +89,7 @@ class Img extends Thing {
   }
 
   static onAllLoaded () {
-    window.console.log("IMG.onAllLoaded(): triggered");
+    Thing.msg("IMG.onAllLoaded(): triggered");
   }
 
 }

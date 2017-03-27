@@ -217,8 +217,7 @@ function makeBackground (w, h, scale) {
         overflow: 'hidden',
         perspective: '4000px',
         transformStyle: 'preserve-3d'
-      })
-      .render();
+      });
 }
 
 function makeStage (w, h, scale) {
@@ -232,8 +231,7 @@ function makeStage (w, h, scale) {
         overflow: 'hidden',
         perspective: '2000px',
         transformStyle: 'preserve-3d'
-      })
-      .render();
+      });
 }
 
 //----------------------------------------------------
