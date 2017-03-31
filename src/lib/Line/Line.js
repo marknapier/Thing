@@ -51,6 +51,16 @@ class Line extends Thing {
     this.$element.empty().append(this.arrowHead);
   }
 
+  dashed (dashSize) {
+    dashSize = dashSize===undefined ? 10 : dashSize;
+    this.css({
+      backgroundColor: 'transparent',
+      backgroundImage: 'linear-gradient(90deg, transparent 30%, ' +this.props.backgroundColor+ ' 30%)',
+      backgroundSize: dashSize + 'px'
+    });
+    return this;
+  }
+
   static css () {
   	return require('./Line.css');
   }

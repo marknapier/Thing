@@ -183,13 +183,24 @@ class Thing {
   static makeTransformCSS (rotate, scale, tx, ty) {
     var transform = '';
     transform += (tx || ty) ? (Thing.makeTranslateCSS(tx, ty) + ' ') : '';
-    transform += Thing.isNumeric(rotate) ? (Thing.makeAngleCSS(rotate) + ' ') : '';
+    transform += Thing.isNumeric(rotate) ? (Thing.makeRotationCSS(rotate) ) : '';
     transform += scale ? (Thing.makeScaleCSS(scale) + ' ') : '';
     return transform;
   }
 
-  static makeAngleCSS (angle) {
-    return 'rotate('+angle+'deg)';
+  static makeRotationCSS (angle) {
+    var css = '';
+    if (angle !== undefined && angle !== null) {
+      if (typeof angle === 'object') {
+        $.each(angle, function (axisName, angle) {
+          css += 'rotate' + axisName.toUpperCase() + '(' +angle+ 'deg) ';
+        });
+      }
+      else {
+        css = 'rotateZ('+angle+'deg) ';
+      }
+    }
+    return css;
   }
 
   static makeScaleCSS (scale) {
