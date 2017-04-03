@@ -201,11 +201,21 @@ $(function () {
   background.add(edge);
   background.add(floorImg);
 
-  background.render();
-
   var L = Thing.classes.Line.make({x1:2000, y1:3300, x2:4000, y2:3300, color:'#ff0', width:20, zIndex:50000, arrow:true})
       .dashed(200)
       .css({ filter: 'drop-shadow(rgba(0, 0, 0, 0.8) 1px 1px 0px)' })
       .render();
 
+  var T = Thing.make({
+    w:5000,
+    h:3600,
+    zIndex:40000,
+    transform: 'translate(0px, 500px) rotateX(70deg)',
+    backgroundImage: 'linear-gradient(90deg, #f3daac 0.4%, #6a5f4b .8%, #6a5f4b 1.6%, #ffdc8d 2.0%, #f3daac 3%)',
+    backgroundSize: '500px 500px'
+  });
+
+  background.add(T);
+
+  background.render();
 });
