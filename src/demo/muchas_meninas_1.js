@@ -22,6 +22,7 @@ function makePattern (name, size) {
 function makeMeninaSandwich(props) {
   var Rand = Thing.classes.Rand;
   var Img = Thing.classes.Img;
+  var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
 
   var mWich = Thing.classes.Box.make({
     x: props.x,
@@ -218,4 +219,43 @@ $(function () {
   background.add(T);
 
   background.render();
+
+  /*
+    legs around wall, floor to thigh. parade of legs.
+    adam and eve menacing
+    break wall into sections, pattern each
+    doorways
+    windows 
+      with patterns
+      landscape
+      view into other room
+    other patterns
+      wood
+      tile
+    doorway
+      into other room
+      figure enters/leaves
+    rugs
+    floorboards
+      wood
+      yellowish (magritte)
+    dog on floor (meninas)
+    dog on couch (titian venus)
+    olympia's cat on couch
+    wall-as-space
+      like aquarium
+      blurred bluish, with depth
+    other patterned figures
+      magritte's man in hat
+      outline
+      blurred
+    multiple spaces
+      small rooms (telephone booth sized) left-right across stage
+      divide one space down middle A vs. B  left/right
+    multi-layered text (from genesis)
+      in wall
+      like trees/woods in durer's adam and eve
+      adam and eve woven through verticals of large text
+      MMMTYHHI vertical collonade letters 
+  */
 });

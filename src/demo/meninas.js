@@ -1,5 +1,4 @@
 var greens = ['#339911', '#008000', '#009000', '#008600', '#00aa00', '#008010', '#108000', '#30a000', '#00a030', '#30a030'];
-var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
 
 function scaleDocument (n) {
   var el = document.body;

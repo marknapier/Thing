@@ -117,7 +117,6 @@ gulp.task('browserify', ['jshint'], function () {
 
 gulp.task('publish',  ['browserify', 'demo'], function() {
    gulp.src('./dist/**/*')
-   // .pipe(gulp.dest('../../../../xampp/htdocs/css_lines'));
    .pipe(gulp.dest('../htdocs/Thing'));
 });
 

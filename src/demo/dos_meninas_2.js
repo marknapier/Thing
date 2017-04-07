@@ -17,6 +17,7 @@ $(function () {
   var mainScale = pixelWidth * .001;  // assume design is 1000 pixels wide, this will be 1
   var background = makeBackground(pixelWidth, pixelHeight, mainScale);
   var stage = makeStage(pixelWidth, pixelHeight, mainScale);
+  var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
 
   // background aliasing is smoother at a larger size
   // scaleDocument(3);
