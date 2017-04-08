@@ -35,6 +35,7 @@ var config = {
 	        browser: true,
 	        browserify: true,
 	        curly: true,
+	        esversion: 6,
 	        eqeqeq: true,
 	        eqnull: true,
 	        expr: true,
@@ -45,12 +46,12 @@ var config = {
 	        },
 	        indent: 4,
 	        lookup: false,
+	        multistr: true,
 	        scripturl: true,
 	        strict: false,
 	        trailing: true,
 	        undef: true,
-	        unused: true,
-	        esversion: 6
+	        unused: true
 	    }
 	},
 	browserify: {
