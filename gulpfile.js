@@ -87,7 +87,7 @@ gulp.task('demo', function() {
 });
 
 gulp.task('jshint', function() {
-    return gulp.src('src/lib/**/*.js')
+    return gulp.src( ['src/lib/**/*.js', 'src/demo/*.js'] )
         .pipe(jshint(config.jshint.options))
         .pipe(jshint.reporter('default'));
 });

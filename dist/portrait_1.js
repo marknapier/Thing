@@ -1,6 +1,7 @@
 /**
  * Created by mark.napier on 1/1/17.
  */
+var Thing = window.Thing;
 
 var imgNamesEyesRight = [
     'kim_eye_right_1.png',
@@ -17,20 +18,20 @@ var imgNamesEyesRight = [
     'kim_eye_right_12.png'
 ];
 
-var imgNamesEyesLeft = [
-    'elvis_eye_left_round.png',
-    'elvis_eye_left_square.png',
-    'marilyn_eye_left_fuzzy.png',
-    'marilyn_eye_left_round.png',
-    'marilyn_eye_left_square.png',
-    'mona_eye_left_circle.png',
-    'mona_eye_left_fuzzy.png',
-    'washington_eye_left_fuzzy.png',
-    'washington_eye_left_round.png',
-    'washington_eye_left_square.png',
-    'yoda_eye_left_fuzzy.png',
-    'yoda_left_eye.png'
-];
+// var imgNamesEyesLeft = [
+//     'elvis_eye_left_round.png',
+//     'elvis_eye_left_square.png',
+//     'marilyn_eye_left_fuzzy.png',
+//     'marilyn_eye_left_round.png',
+//     'marilyn_eye_left_square.png',
+//     'mona_eye_left_circle.png',
+//     'mona_eye_left_fuzzy.png',
+//     'washington_eye_left_fuzzy.png',
+//     'washington_eye_left_round.png',
+//     'washington_eye_left_square.png',
+//     'yoda_eye_left_fuzzy.png',
+//     'yoda_left_eye.png'
+// ];
 
 class ImgGrid extends Thing {
     init (props) {
@@ -48,20 +49,16 @@ class ImgGrid extends Thing {
     pickImages (path, names, box, columns) {
         var Rand = Thing.classes.Rand;
         var dim = box.getDimensions();
-        var midW = dim.w/2;
-        var midH = dim.h/2;
-        var scale = .5; //dim.w / 1000;
         var size = dim.w/columns;
         var howMany = columns * columns;
 
         for (var i=0; i < howMany; i++) {
             var facepart = Thing.classes.Img.make({
                 src: path + Rand.randItem(names),
-                x: (i % columns) * size,    //midW + (Rand.randNormal() * midW),
-                y: Math.floor(i/columns) * size,  // midH + (Rand.randNormal() * midH),
-                w: size, //midW + (Rand.randNormal() * midW),
-                h: size  //dim.h/howMany
-                // scale: (.1+Rand.randFloat()) * scale
+                x: (i % columns) * size,
+                y: Math.floor(i/columns) * size,
+                w: size,
+                h: size
             });
             box.add(facepart);
         }
@@ -115,7 +112,7 @@ class TextPane extends Thing {
         this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
     }
 
-    fillText (textString) {
+    fillText () {
         var maxHeight = this.$element.height();
         var max = 50;
         var $span = $('<span id="bdfiekdiek"></span>');
@@ -123,11 +120,11 @@ class TextPane extends Thing {
 
         // $('body').append(this.$element);
         this.$element.append($span);
-        console.log('PRE ADD SPAN', maxHeight);
+        window.console.log('PRE ADD SPAN', maxHeight);
         while (spanHeight < maxHeight && max-- > 0) {
             $span.append(this.text);
             spanHeight = $('#bdfiekdiek').height();
-            console.log('ADD SPAN', maxHeight, spanHeight, max);
+            window.console.log('ADD SPAN', maxHeight, spanHeight, max);
         }
         // $('body').remove(this.$element);
     }
@@ -162,68 +159,6 @@ function makeBackground (w, h, scale) {
         .render();
 }
 
-/*
- // Red Checkers Twist
- var B = Thing.classes.Box
- .make( {w:1000, h:1000, backgroundColor: '#c00', position:'absolute', display:'block'} );
- var P = Thing.classes.Pattern.make({pattern: 'grid', cellWidth:100, cellHeight:100, lineWidth:5});
- B.add(P);
- P.rotate(5);
- var P1 = Thing.classes.Pattern.make({pattern: 'grid', cellWidth:90, cellHeight:90, lineWidth:5});
- B.add(P1);
- P1.rotate(-4);
- var P2 = Thing.classes.Pattern.make({pattern: 'grid', cellWidth:50, cellHeight:50, lineWidth:25});
- B.add(P2);
- var P4 = Thing.classes.Pattern.make({pattern: 'grid', cellWidth:60, cellHeight:60, lineWidth:23});
- B.add(P4);
- B.render();
-
- // ZigZag
- var B = Thing.classes.Box
- .make( {w:1000, h:1000, backgroundColor: '#c00', position:'absolute', display:'block'} )
- .css({
- background:
- 'linear-gradient(135deg, #fa6 25%, transparent 25%) -50px 0,' +
- 'linear-gradient(225deg, #fa6 25%, transparent 25%) -50px 0,' +
- 'linear-gradient(315deg, #fa6 25%, transparent 25%),' +
- 'linear-gradient(45deg, #fa6 25%, transparent 25%)',
- backgroundSize: '100px 100px',
- backgroundColor: '#EC173A'
- })
-
- var P1 = Thing.classes.Pattern.make({pattern: 'grid', cellWidth:90, cellHeight:90, lineWidth:50});
- P1.rotate(45);
- B.add(P1);
-
- --------------------------------------------------------------------------------
-
- var B = Thing.classes.Box
- .make( {w:1000, h:1000, backgroundColor: '#c00', position:'absolute', display:'block'} )
- .css({
- background:
- 'linear-gradient(135deg, #fa6 25%, transparent 25%) -50px 0,' +
- 'linear-gradient(225deg, #fa6 25%, transparent 25%) -50px 0,' +
- 'linear-gradient(315deg, #fa6 25%, transparent 25%),' +
- 'linear-gradient(45deg, #fa6 25%, transparent 25%)',
- backgroundSize: '100px 100px',
- backgroundColor: '#EC173A'
- })
-
- var P2 = Thing.make({left:'-50%', top:'-50%', width:'200%', height:'200%', position:'absolute', display:'block'})
- .rotate(45)
- .css({
- backgroundImage:
- 'linear-gradient(rgba(255, 255, 255, .99) 14px, transparent 50px), ' +
- 'linear-gradient(90deg, rgba(255, 255, 255, .99) 30px, transparent 57px)',
- backgroundPosition: '-50px -50px, -50px -50px',
- backgroundSize: '90px 90px'
- });
- B.add(P2);
-
- B.render();
-
- */
-
 function makeArrayOfLines(dim, scale) {
     var Rand = Thing.classes.Rand;
     var howMany = Rand.randInt(30,500);
@@ -237,8 +172,8 @@ function makeArrayOfLines(dim, scale) {
             y2: Rand.randInt(0, dim.h),
             width: Rand.randInt(scale, scale*4),
             color: '#3F3',
-            opacity: .1 + Rand.randFloat()
-        })
+            opacity: 0.1 + Rand.randFloat()
+        });
         items.push(Ln);
     }
 
@@ -261,21 +196,21 @@ function addRandomStuff (dim, items, path, scale) {
     // Red number
     var R = RedTextLabel.make({
         text: ''+Thing.classes.Rand.randInt(0,360),
-        x: Rand.randInt(0, dim.w*.6),
-        y: Rand.randInt(0, dim.h*.75),
+        x: Rand.randInt(0, dim.w*0.6),
+        y: Rand.randInt(0, dim.h*0.75),
         fontSize: Rand.randInt(dim.w/10, dim.w/5)
     });
     items.splice(Rand.randInt(1,items.length), 0, R);
 
     // Eyes
     var howMany = Rand.randInt(1,4);
-    var scale = dim.w / 750;   // images are about 750px wide. Scale is the multiplier that will make image same width as container box.
+    scale = dim.w / 750;   // images are about 750px wide. Scale is the multiplier that will make image same width as container box.
     for (var i=0; i < howMany; i++) {
         var facepart = Thing.classes.Img.make({
             src: path + Rand.randItem(imgNamesEyesRight),
-            x: Rand.randInt(0, dim.w*.6),
-            y: Rand.randInt(0, dim.h*.6),
-            scale: (.1+(Rand.randFloat()*.5)) * scale
+            x: Rand.randInt(0, dim.w*0.6),
+            y: Rand.randInt(0, dim.h*0.6),
+            scale: (0.1+(Rand.randFloat()*0.5)) * scale
         });
         items.splice(Rand.randInt(1,items.length), 0, facepart);
     }
@@ -296,28 +231,13 @@ function main () {
     var aspectRatio = 1.25;
     var pixelWidth = 1000;  //6000;
     var pixelHeight = pixelWidth * aspectRatio;  //7500;
-    var mainScale = pixelWidth * .001;  // assume design is 1000 pixels wide, this will be 1
+    var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
     var background = makeBackground(pixelWidth, pixelHeight, mainScale);
-    var rightEyesBox = Thing.classes.Box.make({w:pixelWidth/2, h:pixelHeight/2});
-    var leftEyesBox = Thing.classes.Box.make({x:pixelWidth/2, y:0, w:pixelWidth/2, h:pixelHeight/2, backgroundColor: 'yellow'});
     var linesBox = Thing.classes.Box.make({w:pixelWidth, h:pixelHeight, overflow:'hidden'});
     var imgPath = 'img/KIM/eye_right/';
-
-    // var IGR = ImgGrid.make({
-    //   path: 'img/KIM/eye_right/',
-    //   names: imgNamesEyesRight,
-    //   box: rightEyesBox,
-    //   columns: 6
-    // }).render();
-
-    // var IGL = ImgGrid.make({
-    //   path: 'img/faceparts/',
-    //   names: imgNamesEyesLeft,
-    //   box: leftEyesBox
-    // }).render();
-
     var dim = linesBox.getDimensions();
     var lines = makeArrayOfLines(dim);
+
     lines = addRandomStuff(dim, lines, imgPath, mainScale);
     linesBox.add(lines);
     background.add(linesBox);

@@ -6,17 +6,17 @@
 //
 
 $(function () {
+  var Thing = window.Thing;
+  var Meninas = window.Meninas;
   var Rand = Thing.classes.Rand;
-  var Img = Thing.classes.Img;
-  var TextPane = Thing.classes.TextPane;
 
   // setup the stage
-  var aspectRatio = .72;
+  var aspectRatio = 0.72;
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
-  var mainScale = pixelWidth * .001;  // assume design is 1000 pixels wide, this will be 1
-  var background = makeBackground(pixelWidth, pixelHeight, mainScale);
-  var stage = makeStage(pixelWidth, pixelHeight, mainScale);
+  var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
+  var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale);
+  var stage = Meninas.makeStage(pixelWidth, pixelHeight, mainScale);
   var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
 
   // background aliasing is smoother at a larger size
@@ -28,27 +28,27 @@ $(function () {
     transformOrigin: '0 0'
   });
 
-  background.add(makeTextPane(0, 0, 1200, 2800));
+  background.add(Meninas.makeTextPane(0, 0, 1200, 2800));
 
-  background.add(makePattern('GraphPaper'));
-  background.add(makePattern('PlaidRedLarge'));
-  background.add(makePattern('Sofa', Rand.randItem(sofaSizes)));
-  background.add(makePattern('PatternPolkaDots', Rand.randInt(100,650)));
-  background.add(makePattern('PatternStripes', Rand.randInt(130,600)));
-  background.add(makePattern('DiagonalStripesViolet', Rand.randInt(10,40)));
+  background.add(Meninas.makePattern('GraphPaper'));
+  background.add(Meninas.makePattern('PlaidRedLarge'));
+  background.add(Meninas.makePattern('Sofa', Rand.randItem(sofaSizes)));
+  background.add(Meninas.makePattern('PatternPolkaDots', Rand.randInt(100,650)));
+  background.add(Meninas.makePattern('PatternStripes', Rand.randInt(130,600)));
+  background.add(Meninas.makePattern('DiagonalStripesViolet', Rand.randInt(10,40)));
 
-  var menina = makeMenina();
+  var menina = Meninas.makeMenina();
   menina.css({border: '9px solid rgba(255, 192, 203, 1)'});
-  background.add(makeMenina());
+  background.add(Meninas.makeMenina());
   background.add(menina);
 
   window.menina = menina;
   window.BG = background;
 
-  background.add(makeCouch());
+  background.add(Meninas.makeCouch());
 
-  background.add(makeRightWall());
-  // background.add(makeFloor())
+  background.add(Meninas.makeRightWall());
+  // background.add(Meninas.makeFloor())
 
   // Room edge right side
   var edge = Thing.classes.Line.make({
@@ -60,7 +60,7 @@ $(function () {
   });
   background.add(edge);
 
-  background.add( makeBubbleArrow(
+  background.add( Meninas.makeBubbleArrow(
           Rand.randInt(100,3000), Rand.randInt(100,500),
           menina.x, menina.y,
           '#ceff34', '', false, Rand.randInt(3000,15000)) );
@@ -104,9 +104,9 @@ $(function () {
   function makeImgPointers () {
     var dim = menina.getDimensions();
     var point = [500, 100];
-    var M = makeMatrix2D( menina.getCSSTransform() );
-    var tp = transformPoint (point, M, [dim.w/2, dim.h/2]);
-    background.add( makeTextArrow(
+    var M = Meninas.makeMatrix2D( menina.getCSSTransform() );
+    var tp = Meninas.transformPoint(point, M, [dim.w/2, dim.h/2]);
+    background.add( Meninas.makeTextArrow(
       Rand.randInt(tp[0]-100, tp[0]+100), Rand.randInt(tp[1]-150, tp[1]-350),
       tp[0], tp[1],
       '#5dff1d', parseInt(tp[0]), 60, pos[2]+5000) );

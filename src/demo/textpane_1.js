@@ -1,3 +1,5 @@
+var Thing = window.Thing;
+
 class TextPane extends Thing {
     init (props) {
         var defaultProps = {
@@ -16,7 +18,7 @@ class TextPane extends Thing {
         this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
     }
 
-    fillText (textString) {
+    fillText () {
         var maxHeight = this.$element.height();
         var max = 1000;
         var $span = $('<span></span>');
@@ -24,11 +26,11 @@ class TextPane extends Thing {
 
         // element has to be appended to body prior, or spanHeight will be 0
         this.$element.append($span);
-        console.log('PRE ADD SPAN', maxHeight);
+        window.console.log('PRE ADD SPAN', maxHeight);
         while (spanHeight < maxHeight && max-- > 0) {
             $span.append(this.text);
             spanHeight = $span.height();
-            console.log('ADD SPAN', maxHeight, spanHeight, max);
+            window.console.log('ADD SPAN', maxHeight, spanHeight, max);
         }
     }
 

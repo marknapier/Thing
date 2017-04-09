@@ -1,3 +1,5 @@
+var Thing = window.Thing;
+var Meninas = window.Meninas;
 
 function makePattern (name, size) {
   var Rand = Thing.classes.Rand;
@@ -15,7 +17,7 @@ function makePattern (name, size) {
     overflow: 'hidden'
   });
 
-  box.add( P )
+  box.add( P );
   return box;
 }
 
@@ -42,16 +44,16 @@ function makeMeninaSandwich(props) {
   var meninaPatterns = Thing.classes.Box.make({
     width: '100%',
     height: '100%',
-    backgroundColor: Rand.randItem(greens),
+    backgroundColor: Rand.randItem(Meninas.greens),
     WebkitMaskImage: 'url(img/las_meninas_girl_mask.png)',   // 846 X 1150     .735
     WebkitMaskRepeat: 'no-repeat',
     WebkitMaskSize: '100%',
-    opacity: .85
+    opacity: 0.85
   });
 
   mWich.add(solidMenina);
 
-  meninaPatterns.add(makeTextPane(0, 0, Rand.randInt(100,650), 2000));
+  meninaPatterns.add(Meninas.makeTextPane(0, 0, Rand.randInt(100,650), 2000));
   meninaPatterns.add(makePattern('GraphPaper'));
   meninaPatterns.add(makePattern('PlaidRedLarge'));
   meninaPatterns.add(makePattern('Sofa', Rand.randItem(sofaSizes)));
@@ -66,14 +68,13 @@ function makeMeninaSandwich(props) {
 $(function () {
   var Rand = Thing.classes.Rand;
   var Img = Thing.classes.Img;
-  var TextPane = Thing.classes.TextPane;
 
   // setup the stage
-  var aspectRatio = .72;
+  var aspectRatio = 0.72;
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
-  var mainScale = pixelWidth * .001;  // assume design is 1000 pixels wide, this will be 1
-  var background = makeBackground(pixelWidth, pixelHeight, mainScale).css({backgroundColor:'#ffe78b'});
+  var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
+  var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale).css({backgroundColor:'#ffe78b'});
 
   var menina = Img.make({
     src:'img/las_meninas_girl_t.png',
@@ -87,7 +88,7 @@ $(function () {
       w: 2000,
       h: 2000,
       z: 2000,
-      opacity: .05
+      opacity: 0.05
     })
     .css({
       transform: 'translate(2500px, 200px) rotateY(100deg) scale(2.2)'
@@ -151,25 +152,25 @@ $(function () {
   function makeImgPointers () {
     var dim = menina.getDimensions();
     var point = [500, 100];
-    var M = makeMatrix2D( menina.getCSSTransform() );
-    var tp = transformPoint (point, M, [dim.w/2, dim.h/2]);
+    var M = Meninas.makeMatrix2D( menina.getCSSTransform() );
+    var tp = Meninas.transformPoint(point, M, [dim.w/2, dim.h/2]);
 
     // point to Menina
-    var pointer = makeTextArrow(
+    var pointer = Meninas.makeTextArrow(
       Rand.randInt(tp[0]-100, tp[0]+100), Rand.randInt(tp[1]-150, tp[1]-350),
       tp[0], tp[1],
       '#5dff1d', parseInt(tp[0]), 60, pos[2]+5000);
     pointer[1].css({fontSize:'200px', fontWeight: 'bold'});
 
     // update the code text AFTER render
-    // var codeText = makeMatrix2D(meninaSandwich4.getCSSTransform()).inspect();
+    // var codeText = Meninas.makeMatrix2D(meninaSandwich4.getCSSTransform()).inspect();
     // var codeText = Thing.classes.Rand.randItem(meninaSandwich4.items[1].items).items[0].$element.css('background-image');
     var codeText = JSON.stringify(Thing.classes.Rand.randItem(meninaSandwich4.items[1].items).props, null, 4);
     codeLabel.setText( codeText );
 
     // Arrow with letter
     var meninaPosition = Rand.randItem(meninaSandwiches).getBoundingBox();
-    background.add( makeBubbleArrow(
+    background.add( Meninas.makeBubbleArrow(
             Rand.randInt(100,3000), Rand.randInt(100,500),
             meninaPosition.x+meninaPosition.w/2, meninaPosition.y,
             '#ceff34', Rand.randItem(['A','B','C','D']), false, Rand.randInt(3000,15000)) );
@@ -181,12 +182,7 @@ $(function () {
 
   window.BG = background;
 
-  // Prevents the screenshot plugin from including scrollbars in large screenshots.
-  $('body').css({
-    overflow: 'hidden',
-    transformOrigin: '0 0',
-    transform: 'scale(1)'  // .8 TEMPORARILY for testing on laptop sized screen
-  });
+  Meninas.scaleDocument(1);
 
   backWall.add(lightSpot);
   backWall.add(meninaSandwich1);
@@ -201,11 +197,6 @@ $(function () {
   background.add(rightWall);
   background.add(edge);
   background.add(floorImg);
-
-  var L = Thing.classes.Line.make({x1:2000, y1:3300, x2:4000, y2:3300, color:'#ff0', width:20, zIndex:50000, arrow:true})
-      .dashed(200)
-      .css({ filter: 'drop-shadow(rgba(0, 0, 0, 0.8) 1px 1px 0px)' })
-      .render();
 
   var T = Thing.make({
     w:5000,
@@ -225,7 +216,7 @@ $(function () {
     adam and eve menacing
     break wall into sections, pattern each
     doorways
-    windows 
+    windows
       with patterns
       landscape
       view into other room
@@ -256,6 +247,6 @@ $(function () {
       in wall
       like trees/woods in durer's adam and eve
       adam and eve woven through verticals of large text
-      MMMTYHHI vertical collonade letters 
+      MMMTYHHI vertical collonade letters
   */
 });
