@@ -33,48 +33,48 @@ var imgNamesEyesRight = [
 //     'yoda_left_eye.png'
 // ];
 
-class ImgGrid extends Thing {
-    init (props) {
-        this.initialize(props);
-        this.path = props.path;
-        this.imgNames = props.names;
-        this.columns = props.columns || 10;
-        this.box = props.box;
-    }
+// class ImgGrid extends Thing {
+//     init (props) {
+//         this.initialize(props);
+//         this.path = props.path;
+//         this.imgNames = props.names;
+//         this.columns = props.columns || 10;
+//         this.box = props.box;
+//     }
 
-    render () {
-        this.pickImages(this.path, this.imgNames, this.box, this.columns);
-    }
+//     render () {
+//         this.pickImages(this.path, this.imgNames, this.box, this.columns);
+//     }
 
-    pickImages (path, names, box, columns) {
-        var Rand = Thing.classes.Rand;
-        var dim = box.getDimensions();
-        var size = dim.w/columns;
-        var howMany = columns * columns;
+//     pickImages (path, names, box, columns) {
+//         var Rand = Thing.classes.Rand;
+//         var dim = box.getDimensions();
+//         var size = dim.w/columns;
+//         var howMany = columns * columns;
 
-        for (var i=0; i < howMany; i++) {
-            var facepart = Thing.classes.Img.make({
-                src: path + Rand.randItem(names),
-                x: (i % columns) * size,
-                y: Math.floor(i/columns) * size,
-                w: size,
-                h: size
-            });
-            box.add(facepart);
-        }
+//         for (var i=0; i < howMany; i++) {
+//             var facepart = Thing.classes.Img.make({
+//                 src: path + Rand.randItem(names),
+//                 x: (i % columns) * size,
+//                 y: Math.floor(i/columns) * size,
+//                 w: size,
+//                 h: size
+//             });
+//             box.add(facepart);
+//         }
 
-        var L = Thing.classes.Label.make({
-            x: 50,
-            y: 50,
-            text:''+howMany,
-            color: 'red',
-            fontSize: 120
-        });
-        box.add(L);
+//         var L = Thing.classes.Label.make({
+//             x: 50,
+//             y: 50,
+//             text:''+howMany,
+//             color: 'red',
+//             fontSize: 120
+//         });
+//         box.add(L);
 
-        box.render();
-    }
-}
+//         box.render();
+//     }
+// }
 
 class RedTextLabel extends Thing.classes.Label {
     init (props) {
@@ -138,11 +138,11 @@ class TextPane extends Thing {
 window.TextPane = TextPane;
 window.RedTextLabel = RedTextLabel;
 
-function scaleDocument (n) {
-    var el = document.body;
-    el.style.transformOrigin = 'left top';
-    el.style.transform = 'scale(' + n + ')';
-}
+// function scaleDocument (n) {
+//     var el = document.body;
+//     el.style.transformOrigin = 'left top';
+//     el.style.transform = 'scale(' + n + ')';
+// }
 
 function gradient(gradientCSS) {
     return Thing.make({position:'absolute', width:'100%', height:'100%', background:gradientCSS});

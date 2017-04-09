@@ -244,6 +244,7 @@ window.Meninas = (function () {
 
   // return a Sylvester.js matrix from an array of 6 values
   function makeMatrix2D (mA) {
+    var $M = window.$M;  // sylvester library
     var m = null;
     if (mA && mA.length === 6) {
       m = $M([
@@ -259,6 +260,7 @@ window.Meninas = (function () {
   // CSS Elements by default have transform-origin at center. Pass
   // the position of the origin in originOffset (defaults to 0,0).
   function transformPoint (point, M, originOffset) {
+    var Vector = window.Vector;  // sylvester library
     originOffset = originOffset || [0,0];
     // shift point to center around origin
     var v = Vector.create([point[0]-originOffset[0], point[1]-originOffset[1], 1]);

@@ -1,8 +1,0 @@
-
-.Line {
-  /* For some nice animation on the rotates: */
-  -webkit-transition: -webkit-transform .2s;
-     -moz-transition:    -moz-transform .2s;
-          transition:         transform .2s;
-}
-
