@@ -7,6 +7,7 @@ var less = require('gulp-less');
 var prefix = require('gulp-autoprefixer');
 var minifyCSS = require('gulp-minify-css');
 var jshint = require('gulp-jshint');
+var newer = require('gulp-newer');
 
 // get modules for browserify in gulp
 var browserify = require('browserify');
@@ -16,16 +17,15 @@ var buffer = require('vinyl-buffer');
 // so we can require() css and html in code
 var stringify = require('stringify');
 
-
 var bases = {
- src: 'src/lib/',
- dist: 'dist/',
+	src: 'src/lib/',
+	dist: 'dist/',
 };
 
 var paths = {
- scripts: ['src/lib/**/*.js'],
- // html: ['src/demo/index.html', '!src/demo/test.html'],
- dist: 'dist/'
+	scripts: ['src/lib/**/*.js'],
+	// html: ['src/demo/index.html', '!src/demo/test.html'],
+	dist: 'dist/'
 };
 
 var config = {
@@ -75,6 +75,13 @@ var config = {
 ////////////////
 // Tasks
 
+gulp.task('images', function() {
+  // Pass through newer images only
+  return gulp.src('src/demo/img/**')
+      .pipe(newer('dist/img'))
+      .pipe(gulp.dest('dist/img'));
+});
+
 gulp.task('demo', function() {
     gulp.src('src/demo/**/*.js')
         .pipe(gulp.dest('dist'));
@@ -93,19 +100,6 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('browserify', ['jshint'], function () {
-  // set up the browserify instance for use in Gulp
-  var options = {
-	entries: 'src/lib/index.js',
-	debug: true,
-	// insertGlobals: true,
-	// defining transforms here will avoid crashing your stream
-	transform: [
-		[stringify, {
-	        appliesTo: { includeExtensions: ['.html', '.css'] },
-	        minify: true
-	    }]
-	]
-  };
   var b = browserify(config.browserify.options);
 
   return b.bundle()
