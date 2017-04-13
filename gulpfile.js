@@ -112,6 +112,7 @@ gulp.task('browserify', ['jshint'], function () {
 
 gulp.task('publish',  ['browserify', 'demo'], function() {
    gulp.src('./dist/**/*')
+   .pipe(newer('../htdocs/Thing'))
    .pipe(gulp.dest('../htdocs/Thing'));
 });
 

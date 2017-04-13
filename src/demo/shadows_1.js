@@ -78,10 +78,26 @@ $(function () {
 
   var menina = Img.make({
     src:'img/las_meninas_girl_t.png',
-    x: 1100,
-    y: 1700,
-    zIndex: 40000
+    zIndex: 50000,
+    opacity: 0.7
   }).scaleTo(1.8);
+
+  var eveLeg = Img.make({
+    src: 'img/leg_eve_left_1.png',
+    x: 3500, 
+    y: 1200,
+    w: 600,
+    zIndex: 50000
+  });
+
+  var eveLegShadow = Thing.make({
+    backgroundImage: 'radial-gradient(at 50% 50%, rgba(60, 60, 10, 0.8) 1%, transparent 37%)',
+    x: 3337, 
+    y: 2715,
+    w: 500,
+    h: 500,
+    zIndex: 49000
+  }).css({transform: 'rotateX(90)'});
 
   var rightWall = Img.make({
       src: 'img/vintagewallpaper4_crop.png',
@@ -191,51 +207,47 @@ $(function () {
   backWall.add(meninaSandwich4);
   backWall.add(codeLabel);
 
+  // menina as a shadow on floor
+  menina.css({
+    transform: 'translate(1900px, 2400px) rotateX(90deg) rotateZ(43deg) scale(1.6)',
+    WebkitMaskImage: 'url(img/las_meninas_girl_mask.png)',
+    WebkitMaskRepeat: 'no-repeat',
+    WebkitMaskSize: '100%',
+    backgroundImage: 'linear-gradient(0deg, #635b5a 5%, rgba(255, 255, 25, 0) 80%)'
+  });
+
   background.add(wallpaper);
   background.add(backWall);
   background.add(menina);
+  background.add(eveLegShadow);
+  background.add(eveLeg);
   background.add(rightWall);
   background.add(edge);
   background.add(floorImg);
 
+  var floor1 = Thing.make({
+    w:5000,
+    h:3600,
+    zIndex:38000,
+    transform: 'translate(0px, 1605px) rotateX(85deg)',
+    background: 'url(img/wood_texture_smooth_panel_red_oak.jpg) center center / 100% 100% no-repeat',
+  });
+
+  var floor2 = Thing.make({
+    w:5000,
+    h:3600,
+    zIndex:40000,
+    transform: 'translate(0px, 1600px) rotateX(85deg)',
+    backgroundImage: 'linear-gradient(90deg, #f3daac 0.4%, #6a5f4b .8%, #6a5f4b 1.6%, #ffdc8d 2.0%, #f3daac 3%)',
+    backgroundSize: '400px 400px',
+    opacity: 0.85
+  });
+
+  background.add(floor1).add(floor2);
+
   background.render();
 
-  /*
-    legs around wall, floor to thigh. parade of legs.
-    adam and eve menacing
-    break wall into sections, pattern each
-    doorways
-    windows
-      with patterns
-      landscape
-      view into other room
-    other patterns
-      wood
-      tile
-    doorway
-      into other room
-      figure enters/leaves
-    rugs
-    floorboards
-      wood
-      yellowish (magritte)
-    dog on floor (meninas)
-    dog on couch (titian venus)
-    olympia's cat on couch
-    wall-as-space
-      like aquarium
-      blurred bluish, with depth
-    other patterned figures
-      magritte's man in hat
-      outline
-      blurred
-    multiple spaces
-      small rooms (telephone booth sized) left-right across stage
-      divide one space down middle A vs. B  left/right
-    multi-layered text (from genesis)
-      in wall
-      like trees/woods in durer's adam and eve
-      adam and eve woven through verticals of large text
-      MMMTYHHI vertical collonade letters
-  */
+/* spot shadow
+<div class="Img" id="Img104" style="position: absolute;opacity: .6;width: 225px;transform: translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1);height: 400px;z-index: 50000;background: url(&quot;file:///C:/Users/Mark/GIT/htdocs/Thing/img/spot_shadow_2.png&quot;) center center / 100% 100% no-repeat;"></div>
+*/
 });
