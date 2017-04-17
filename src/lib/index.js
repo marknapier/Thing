@@ -14,6 +14,7 @@ require('./Pattern/Pattern.js');
 require('./PatternPolkaDots/PatternPolkaDots.js');
 require('./PatternStripes/PatternStripes.js');
 require('./PatternSofa/PatternSofa.js');
+require('./PatternTileMarble/PatternTileMarble.js');
 require('./BGImg/BGImg.js');
 require('./TextPane/TextPane.js');
 require('./Circle/Circle.js');

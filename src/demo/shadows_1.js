@@ -23,35 +23,31 @@ function makePattern (name, size) {
 
 function makeMeninaSandwich(props) {
   var Rand = Thing.classes.Rand;
-  var Img = Thing.classes.Img;
   var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
 
   var mWich = Thing.classes.Box.make({
     x: props.x,
-    y: 1030,
-    w: 1300,
-    h: 1770,
+    y: 0,
+    w: 2500,
+    h: 3000,
     zIndex: 10000
   });
 
-  var solidMenina = Img.make({
-    src:'img/las_meninas_girl_mask.png',
-    w: 1300,
-    h: 1770,
-    filter: 'drop-shadow(10px 10px 20px rgba(0,0,0,0.7))'
-  }).scaleTo(1.01);
+  var backgroundMasks = [
+    'linear-gradient(0deg, transparent 0%, transparent 25%, #fff 25%, #fff 55%, transparent 55.15%, transparent 85%, #fff 85%)',
+    'linear-gradient(45deg, #0e0030 25%, transparent 25.15%, transparent 50%, #0e0030 50.15%, #0e0030 75%, transparent 75.15%, transparent)',
+    'radial-gradient(transparent 300px, #fff 300px, #fff 600px, transparent 600px, transparent 900px, #fff 900px, #fff 1200px, transparent 1200px)'
+  ];
 
   var meninaPatterns = Thing.classes.Box.make({
     width: '100%',
     height: '100%',
     backgroundColor: Rand.randItem(Meninas.greens),
-    WebkitMaskImage: 'url(img/las_meninas_girl_mask.png)',   // 846 X 1150     .735
+    WebkitMaskImage: Rand.randItem(backgroundMasks),   // 846 X 1150     .735
     WebkitMaskRepeat: 'no-repeat',
     WebkitMaskSize: '100%',
     opacity: 0.85
   });
-
-  mWich.add(solidMenina);
 
   meninaPatterns.add(Meninas.makeTextPane(0, 0, Rand.randInt(100,650), 2000));
   meninaPatterns.add(makePattern('GraphPaper'));
@@ -84,20 +80,36 @@ $(function () {
 
   var eveLeg = Img.make({
     src: 'img/leg_eve_left_1.png',
-    x: 3500, 
+    x: 3500,
     y: 1200,
     w: 600,
     zIndex: 50000
   });
 
+  //   <div class="Img" id="Img104" style="position: absolute
+  //   opacity: .6
+  //   width: 225px
+  //   transform: translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1)
+  //   height: 400px
+  //   z-index: 50000
+  //   background: url(&quot
+  //     file:///C:/Users/Mark/GIT/htdocs/Thing/img/spot_shadow_2.png&quot
+  //   ) center center / 100% 100% no-repeat
+  // "></div>
+
+
   var eveLegShadow = Thing.make({
-    backgroundImage: 'radial-gradient(at 50% 50%, rgba(60, 60, 10, 0.8) 1%, transparent 37%)',
-    x: 3337, 
-    y: 2715,
-    w: 500,
-    h: 500,
-    zIndex: 49000
-  }).css({transform: 'rotateX(90)'});
+    background: 'url(img/spot_shadow_2.png) center center / 100% 100% no-repeat',
+    x: 3473,
+    y: 2721,
+    w: 225,
+    h: 400,
+    opacity: 0.6,
+    zIndex: 50000
+  }).css({
+    // background: 'url(img/spot_shadow_2.png) center center / 100% 100% no-repeat',
+    transform: 'translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1)'
+  });
 
   var rightWall = Img.make({
       src: 'img/vintagewallpaper4_crop.png',
@@ -144,11 +156,12 @@ $(function () {
       zIndex: 20000
     });
 
-  var meninaSandwich1 = makeMeninaSandwich({x: -200});
+  var meninaSandwich0 = makeMeninaSandwich({x: -500});
+  var meninaSandwich1 = makeMeninaSandwich({x:  800});
   var meninaSandwich2 = makeMeninaSandwich({x: 1100});
-  var meninaSandwich3 = makeMeninaSandwich({x: 2400});
-  var meninaSandwich4 = makeMeninaSandwich({x: 3700});
-  var meninaSandwiches = [meninaSandwich1,meninaSandwich2,meninaSandwich3,meninaSandwich4];
+  var meninaSandwich3 = makeMeninaSandwich({x: 1600});
+  var meninaSandwich4 = makeMeninaSandwich({x: 2000});
+  var meninaSandwiches = [meninaSandwich0,meninaSandwich1,meninaSandwich2,meninaSandwich3,meninaSandwich4];
 
   var codeLabel = Thing.classes.Label.make({
     text: 'waiting...',
@@ -201,6 +214,7 @@ $(function () {
   Meninas.scaleDocument(1);
 
   backWall.add(lightSpot);
+  backWall.add(meninaSandwich0);
   backWall.add(meninaSandwich1);
   backWall.add(meninaSandwich2);
   backWall.add(meninaSandwich3);
@@ -247,7 +261,54 @@ $(function () {
 
   background.render();
 
-/* spot shadow
-<div class="Img" id="Img104" style="position: absolute;opacity: .6;width: 225px;transform: translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1);height: 400px;z-index: 50000;background: url(&quot;file:///C:/Users/Mark/GIT/htdocs/Thing/img/spot_shadow_2.png&quot;) center center / 100% 100% no-repeat;"></div>
-*/
+  /* spot shadow
+  <div class="Img" id="Img104" style="position: absolute;opacity: .6;width: 225px;transform: translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1);height: 400px;z-index: 50000;background: url(&quot;file:///C:/Users/Mark/GIT/htdocs/Thing/img/spot_shadow_2.png&quot;) center center / 100% 100% no-repeat;"></div>
+  */
+
+  // marble bg
+  //<div class="Thing" id="Thing6" style="background-image: url(img/white-marble-texture-1.jpg);position: absolute;width: 4150px;height: 2800px;transform: scale(1);"></div>
+
+  //white bathroom tile:
+  //<div class="Thing" id="Thing106" style="background-color: rgb(242, 242, 242);border: 1px solid rgba(0, 0, 0, 0.15);box-shadow: rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px;position: absolute;width: 500px;margin: 40px;height: 500px;transform: scale(1);"></div>
+
+  //tile with overall gradient:
+  //<div class="Thing" id="Thing106" style="background-color: rgb(242, 242, 242);border: 1px solid rgba(0, 0, 0, 0.15);box-shadow: rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px;background-image: radial-gradient(ellipse farthest-corner at 140px 20px , #fafafa 30%, #eeeeee 85%);position: absolute;left: 525px;width: 500px;margin: 40px;height: 500px;transform: scale(1);"></div>
+
+  //tile with transparency (marble BG shows through a little)
+  //<div class="Thing" id="Thing106" style="/* background-color: rgb(242, 242, 242); */border: 1px solid rgba(0, 0, 0, 0.15);box-shadow: rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px;background-image: radial-gradient(ellipse farthest-corner at 140px 20px , rgba(250, 250, 250, 0.9) 30%, rgba(238, 238, 238, 0.8) 85%);position: absolute;left: 505px;width: 500px;margin: 40px;height: 500px;transform: scale(1);"></div>
+
+  var patternW = 3630;
+  var patternH = 3000;
+  var tileW = 500;
+  var tileH = 500;
+  var numTiles = (parseInt(patternW/tileW) + 1) * (parseInt(patternH/tileH) + 1);
+
+  var BG = Thing.classes.Box.make({
+    backgroundImage: 'url(img/concrete_1.jpg)',
+    position: 'absolute',
+    w: patternW,
+    h: patternH
+  });
+
+  for (var i=0; i < numTiles; i++) {
+    var randX = Thing.classes.Rand.randInt(0,2000) * -1;  // less than width of background Texture
+    var randY = Thing.classes.Rand.randInt(0,1000) * -1;  // less than height of background Texture
+    var tile = Thing.make({
+      border: '1px solid rgba(0, 0, 0, 0.15)',
+      boxShadow: 'rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px',
+      // backgroundImage: 'radial-gradient(ellipse farthest-corner at 140px 20px , rgba(250, 250, 250, 0.9) 30%, rgba(238, 238, 238, 0.8) 85%)',
+      backgroundImage: 'url(img/white-marble-texture-lite.jpg)',
+      backgroundPosition: randX+'px '+ randY+'px',
+      backgroundRepeat: 'no-repeat',
+      position: 'relative',
+      float: 'left',
+      w: tileW,
+      h: tileH,
+      margin: '5px'
+    });
+    BG.add(tile);
+  }
+
+  // BG.render();
+
 });
