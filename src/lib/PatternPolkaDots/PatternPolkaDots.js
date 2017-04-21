@@ -14,7 +14,7 @@ class PatternPolkaDots extends Thing {
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     // polka dots background
     this.css({
-      backgroundImage: 'radial-gradient(' +props.color+ ' ' +props.radius+ 'px, transparent ' +(props.radius+3)+ 'px), radial-gradient(' +props.color+ ' ' +props.radius+ 'px, transparent ' +(props.radius+3)+ 'px)',
+      backgroundImage: 'radial-gradient(' +props.color+ ' ' +props.radius+ 'px, transparent ' +(props.radius+2)+ 'px), radial-gradient(' +props.color+ ' ' +props.radius+ 'px, transparent ' +(props.radius+2)+ 'px)',
       backgroundSize: props.size + 'px',
       backgroundPosition: '0 0, ' +(props.size/2)+ 'px ' +(props.size/2)+ 'px'
     });
