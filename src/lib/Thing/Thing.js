@@ -10,11 +10,13 @@ class Thing {
   }
 
   initialize (props) {
-    props = props || {};
     // CSS props go into this.props
-    this.props = Thing.cleanup(props);
+    props = props || {};
+    props.position = props.position || 'absolute';   // default to absolute positioning
+    this.props = props;
+
     // keep these properties on 'this'
-    this.rotation = props.rotate || 0;
+    this.rotation = props.rotate || null;
     this.scaleFactor = props.scale || 1;
     this.x = props.x || 0;
     this.y = props.y || 0;
@@ -74,15 +76,30 @@ class Thing {
     return mVal;
   }
 
-  rotate (degrees) {
-    this.rotation += degrees;
-    this.transform();
+  // Increment the current rotation by the given degrees.
+  // Expecting 'axes' to be {x: 90, y: 0, z: 45}
+  // Axes are in the order they will be applied, and can be just one e.g.:
+  // {z:180, y:90, x:45}  or  {y:45, x:90}   or   {z: 180}
+  rotate (axes) {
+    if (axes) {
+      if (typeof axes !== 'object') {
+        axes = {x:0, y:0, z:axes};    // assuming axes is a number here
+      }
+      this.rotation = this.rotation || {x:0, y:0, z:0};
+      axes.x && (this.rotation.x += axes.x);
+      axes.y && (this.rotation.y += axes.y);
+      axes.z && (this.rotation.z += axes.z);
+      this.transform();
+    }
     return this;
   }
 
-  rotateTo (angle) {
-    this.rotation = angle;
-    this.transform();
+  rotateTo (axes) {
+    if (axes) {
+      this.rotation = {x:0, y:0, z:0};  // reset rotation
+      this.rotate(axes);
+      this.transform();
+    }
     return this;
   }
 
@@ -179,6 +196,7 @@ class Thing {
       transform: props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y)),
       position: props.position || 'absolute'
     });
+    // These are not true CSS properties, so remove them
     delete styles.rotate;
     delete styles.scale;
     delete styles.x;
@@ -192,7 +210,7 @@ class Thing {
   static makeTransformCSS (rotate, scale, tx, ty) {
     var transform = '';
     transform += (tx || ty) ? (Thing.makeTranslateCSS(tx, ty) + ' ') : '';
-    transform += Thing.isNumeric(rotate) ? (Thing.makeRotationCSS(rotate) ) : '';
+    transform += rotate ? (Thing.makeRotationCSS(rotate) ) : '';
     transform += scale ? (Thing.makeScaleCSS(scale) + ' ') : '';
     return transform;
   }
@@ -201,6 +219,7 @@ class Thing {
     var css = '';
     if (angle !== undefined && angle !== null) {
       if (typeof angle === 'object') {
+        // turn object {x:10, y:20, z:30} into a css transform command
         $.each(angle, function (axisName, angle) {
           css += 'rotate' + axisName.toUpperCase() + '(' +angle+ 'deg) ';
         });
@@ -235,20 +254,6 @@ class Thing {
 
   static isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
-  }
-
-  // Make sure necessary CSS properties are present or defaulted to something sane
-  static cleanup (props) {
-    var cp = props || {};
-    cp.position = props.position || 'absolute';   // default to absolute positioning
-    // cp.x = props.x || props.left || 0;
-    // cp.y = props.y || props.top || 0;
-    // cp.z = props.z || props.zIndex;
-    // cp.w = props.w || props.width;
-    // cp.h = props.h || props.height;
-    cp.rotation = props.rotation || 0;
-    cp.scale = props.scale || 1;
-    return cp;
   }
 
   static addCSSFile(fileName, id) {

@@ -12,10 +12,7 @@ class Img extends Thing {
 
     props = props || {};
     props.src = props.src || placeholder;
-    // props.background = 'url("' + props.src + '") no-repeat ' + (props.center ? 'center' : 'left top');
-    // props.backgroundSize = (props.size === 'contain' || props.size === 'cover' ? props.size : (props.size==='stretch' ? '100% 100%' : undefined) );
-
-    this.props = Thing.cleanup(props);
+    props.position = props.position || 'absolute';
 
     this.type = 'Img';
     this.aspectRatio = 1;
