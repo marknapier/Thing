@@ -24,13 +24,13 @@ class Img extends Thing {
     this.h = props.h || undefined;
 
     Img.loading(this);
-    loadImage(props.src, this.onload.bind(this), this.onError.bind(this));
+    loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
 
     super.initialize(props);
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
-  onload (img) {
+  onLoad (img) {
     this.loaded = true;
     this.aspectRatio = img.height / img.width;  // aspect ratio of original image
     this.w = this.w || img.width;
@@ -41,6 +41,7 @@ class Img extends Thing {
         background: 'url(' +img.src+ ') no-repeat center',
         backgroundSize: '100% 100%'
     });
+    this.transform();
     Img.loaded(this);
   }
 

@@ -2,6 +2,7 @@ var Thing = window.Thing;
 var Meninas = window.Meninas;
 
 $(function () {
+  // var Rand = Thing.classes.Rand;
   var Img = Thing.classes.Img;
 
   // setup the stage
@@ -9,7 +10,7 @@ $(function () {
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
   var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
-  var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale).css({backgroundColor:'rgb(46, 0, 0)'});
+  var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale).css({backgroundColor:'rgb(124, 10, 0)'});
 
   var rightWall = Img.make({
       src: 'img/vintagewallpaper4_crop.png',
@@ -58,6 +59,33 @@ $(function () {
       zIndex: 20000
     });
 
+  var leg1 = Img.make({
+    src: 'img/leg_durer_adam_right_and_foot_1.png',
+    x: 3000,
+    y: 1250,
+    w: 800,
+    zIndex: 50000
+  });
+  var leg2 = Img.make({
+    src: 'img/leg_durer_eve_vase_1.png',
+    x: 0,
+    y: 1200,
+    w: 800,
+    zIndex: 50000
+  });
+  var leg3 = Img.make({
+    src: 'img/leg_durer_right_1.png',
+    x: 4300,
+    y: 900,
+    w: 700
+  });
+  var leg4 = Img.make({
+    src: 'img/leg_titian_venus_right_1.png',
+    x: 4150,
+    y: 1000,
+    w: 600
+  });
+
   var eveLeg = Img.make({
     src: 'img/leg_eve_left_1.png',
     x: 3500,
@@ -72,44 +100,18 @@ $(function () {
     y: 2721,
     w: 200,
     h: 410,
-    rotate: {x: 90, z: 25},
+    rotate: {x: 90, z:25},
     opacity: 0.6,
     zIndex: 50000
   });
 
-  // Leg in doorway
-  var doorwayAndLeg = Thing.classes.Box.make({   // this contains wall and leg
-    x: -700, 
-    y: -200, 
-    w: 5000, 
-    h: 3600,
-    rotate: {y:-90},
-    transformStyle: 'preserve-3d', 
-    zIndex: 90000
-  });
-  var wallWithDoorway = Thing.classes.Box.make({    // this masks a 'doorway' in the wall pattern
-    w: 3800,
-    h: 3600,
-    backgroundColor: 'gray',
-    WebkitMaskImage: 'url(img/wall_with_door_mask.png)',
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskSize: '100%',
-    backgroundImage:
-      'linear-gradient(90deg, transparent 51%, #ffffc8 51%, #ffffc8 59%, transparent 59%),' +
-      'linear-gradient(90deg, transparent 43%, #f33054 43%, #f33054 67%, transparent 67%),' +
-      'linear-gradient(90deg, #029b4f 34%, #262626 34%, #262626 75%, #029b4f 75%)',
-    backgroundPosition: '0%, 0%, 0%',
-    backgroundSize: '20%, 20%, 20%'
-  });
+  // Big Leg
   var leg = Img.make({                   // the leg image, rotated to intersect the 'doorway'
     src: 'img/leg_eve_left_1.png',
-    rotate: {x: 90, y:78},
-    x: 1350,
-    y: 1000,
+    x: 1550,
+    y: 300,
     w: 900
   });
-  doorwayAndLeg.add(wallWithDoorway);
-  doorwayAndLeg.add(leg);
 
   // Bleached wood floor
   var floor1 = Thing.make({
@@ -140,10 +142,15 @@ $(function () {
   background.add(eveLegShadow);
   background.add(eveLeg);
 
+  background.add(leg);
+  background.add(leg1);
+  background.add(leg2);
+  background.add(leg3);
+  background.add(leg4);
+
   background.add(rightWall);
   background.add(edge);
   background.add(floorImg);
-  background.add(doorwayAndLeg);
 
   background.add(floor1).add(floor2);
 

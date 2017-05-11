@@ -104,36 +104,27 @@ window.Meninas = (function () {
         src:'img/wood_texture_smooth_panel_red_oak.jpg',
         w: 1000,
         h: 600,
-        z: 20000
-      })
-      .css({transform: 'translate(0px, 780px) rotateX(90deg) scale(2)'})  ;
+        x: 0,
+        y: 780,
+        z: 20000,
+        rotate: {x: 90},
+        scale: 2
+      });
     return i;
   }
-
-  // function makeRightWall () {
-  //   var i = Thing.classes.Img
-  //     .make({
-  //       src:'img/vintagewallpaper4_crop_edges_1.png',   // 'vintagewallpaper4_crop.png',
-  //       w: 1000,
-  //       h: 1000,
-  //       z: 1000,
-  //       opacity: .1
-  //     })
-  //     .css({transform: 'translate(800px, -60px) rotateY(110deg) scale(2)'})  ;
-  //   return i;
-  // }
 
   function makeRightWall () {
     var i = Thing.classes.Img
       .make({
-        src: 'img/vintagewallpaper4_crop.png',   //'img/vintagewallpaper4_crop_cutout_1.png',
+        src: 'img/vintagewallpaper4_crop.png',
         w: 2000,
         h: 2000,
+        scale: 2,
+        rotate: {y: 110},
+        x: 2500,
+        y: 0,
         z: 2000,
         opacity: 0.85
-      })
-      .css({
-        transform: 'translate(2500px, 0px) rotateY(110deg) scale(2)'
       });
 
     var g = Thing.make({
@@ -221,6 +212,7 @@ window.Meninas = (function () {
           display: 'block',
           overflow: 'hidden',
           perspective: '4000px',
+          perspectiveOrigin: '50% 50%',
           transformStyle: 'preserve-3d'
         });
   }

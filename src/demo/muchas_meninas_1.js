@@ -87,11 +87,12 @@ $(function () {
       src: 'img/vintagewallpaper4_crop.png',
       w: 2000,
       h: 2000,
+      scale: 2.2,
+      rotate: {y: 100},
+      x: 2500,
+      y: 200,
       z: 2000,
       opacity: 0.05
-    })
-    .css({
-      transform: 'translate(2500px, 200px) rotateY(100deg) scale(2.2)'
     });
 
   var lightSpot = Thing.make({

@@ -193,19 +193,21 @@
   background-size: 5% 100%, 3% 100%, 9% 100%, 8% 100%;
 }
 
- /*Perlin Noise-ish radial blurs*/
-  /*RGB*/
-  /*background-image: radial-gradient(rgba(255, 42, 0, .5) 1%, transparent 200%), radial-gradient(rgba(86, 250, 2, .5) 1%, transparent 200%), radial-gradient(rgba(0, 7, 255, 0.6) 1%, transparent 150%);
+/*Perlin Noise-ish radial blurs*/
+.Pattern.BlurryPlaid {
+  background-image: radial-gradient(rgba(255, 42, 0, .5) 1%, transparent 200%), radial-gradient(rgba(86, 250, 2, .5) 1%, transparent 200%), radial-gradient(rgba(0, 7, 255, 0.6) 1%, transparent 150%);
   background-size: 161px, 134px, 188px;
   background-position: -54px, 57px, 55px;
-  */
+}
+/* also parent element: background-color: #31ff00; */
 
-  /*Monochrome - better blurs*/
-/*
+/*Monochrome - better blurs*/
+.Pattern.BlurryBlueGrid {
   background-image: radial-gradient(rgba(9, 1, 112, 0.56) 0%, rgba(9, 1, 112, 0.25) 48%, rgba(9, 1, 112, 0.16) 65%, rgba(9, 1, 112, 0.12) 94%), radial-gradient(rgba(9, 1, 112, 0.56) 0%, rgba(9, 1, 112, 0.25) 48%, rgba(9, 1, 112, 0.16) 65%, rgba(9, 1, 112, 0.12) 94%), radial-gradient(rgba(9, 1, 112, 0.56) 0%, rgba(9, 1, 112, 0.25) 48%, rgba(9, 1, 112, 0.16) 65%, rgba(9, 1, 112, 0.12) 94%);
   background-size: 188px 347px, 170px, 209px;
   background-position: -54px, 57px, 55px;
-*/
+}
+/* also parent element: background-color: #31ff00; */
 
 .Pattern.GreenOvalsXray {
   background-color: #131c0c;
@@ -224,3 +226,30 @@
     background-size: 800px;
     background-position: 0 0, 400px 400px;
 }
+
+.Pattern.PolkaDotsOchreOverlap {
+    background-image: 
+      radial-gradient(#fc0 15%, transparent 17%, #c90 42%, transparent 45%, #c90 65%, transparent 70%), 
+      radial-gradient(#e90 15%, transparent 17%, #c90 42%, transparent 45%, #c90 65%, transparent 70%);
+    background-size: 370px, 370px;
+    background-position: 0 0, 185px 185px;
+}
+
+.Pattern.PolkaDotsYellowSpeakersWithShadows {
+    background-image: 
+      radial-gradient(transparent 17%, rgba(255, 0, 0, 0.8) 18%, transparent 25%, rgba(255, 0, 0, 0.85) 26%, transparent 27%, rgba(255, 0, 0, 0.8) 33%, transparent 34%, rgba(255, 0, 0, 0.8) 36%, transparent 37%), 
+      radial-gradient(#fc0 15%, transparent 17%, #c90 42%, transparent 45%, #f6d11d 65%, transparent 70%), 
+      radial-gradient(#360 15%, transparent 17%, #360 42%, transparent 45%, #360 65%, transparent 70%);
+    background-size: 300px, 300px, 300px;
+    background-position: 0px 0px, 0px 0px, 60px 60px;
+}
+
+.Pattern.PolkaDotsOchreOverlapWithCyan {
+    background-image: 
+      radial-gradient(transparent 17%, rgba(255, 0, 0, 0.8) 18%, transparent 25%, rgba(255, 0, 0, 0.85) 26%, transparent 27%, rgba(255, 0, 0, 0.8) 33%, transparent 34%, rgba(255, 0, 0, 0.8) 36%, transparent 37%), 
+      radial-gradient(#fc0 15%, transparent 17%, #c90 42%, transparent 45%, #0c7d6d 65%, transparent 70%), 
+      radial-gradient(cyan 5%, rgba(0, 156, 243, 0.86) 42%, rgba(0, 156, 243, 0.86) 45%, transparent 47%, #39f 50%, transparent 52%, #3cf 65%, transparent 68%);
+    background-size: 300px, 300px, 300px;
+    background-position: 0px 0px, 0px 0, 169px 154px;
+}
+/* also parent element: #31ff00; */

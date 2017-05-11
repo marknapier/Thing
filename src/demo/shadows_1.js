@@ -72,11 +72,16 @@ $(function () {
   var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
   var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale).css({backgroundColor:'#ffe78b'});
 
+  // menina as a shadow on floor
   var menina = Img.make({
     src:'img/las_meninas_girl_t.png',
     zIndex: 50000,
-    opacity: 0.7
-  }).scaleTo(1.8);
+    opacity: 0.7,
+    scale: 1.6,
+    x: 1900,
+    y: 2400,
+    rotate: {x: 90, z: 43}
+  });
 
   var eveLeg = Img.make({
     src: 'img/leg_eve_left_1.png',
@@ -86,47 +91,34 @@ $(function () {
     zIndex: 50000
   });
 
-  //   <div class="Img" id="Img104" style="position: absolute
-  //   opacity: .6
-  //   width: 225px
-  //   transform: translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1)
-  //   height: 400px
-  //   z-index: 50000
-  //   background: url(&quot
-  //     file:///C:/Users/Mark/GIT/htdocs/Thing/img/spot_shadow_2.png&quot
-  //   ) center center / 100% 100% no-repeat
-  // "></div>
-
-
   var eveLegShadow = Thing.make({
     background: 'url(img/spot_shadow_2.png) center center / 100% 100% no-repeat',
     x: 3473,
     y: 2721,
-    w: 225,
-    h: 400,
+    w: 200,
+    h: 410,
     opacity: 0.6,
-    zIndex: 50000
-  }).css({
-    // background: 'url(img/spot_shadow_2.png) center center / 100% 100% no-repeat',
-    transform: 'translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1)'
+    zIndex: 50000,
+    rotate: {x: 90, z: 25}
+  });
+  
+  var rightWall = Img.make({
+    src: 'img/vintagewallpaper4_crop.png',
+    w: 2000,
+    h: 2000,
+    scale: 2.2,
+    rotate: {y: 100},
+    x: 2500,
+    y: 200,
+    z: 2000,
+    opacity: 0.05
   });
 
-  var rightWall = Img.make({
-      src: 'img/vintagewallpaper4_crop.png',
-      w: 2000,
-      h: 2000,
-      z: 2000,
-      opacity: 0.05
-    })
-    .css({
-      transform: 'translate(2500px, 200px) rotateY(100deg) scale(2.2)'
-    });
-
   var lightSpot = Thing.make({
-      w: 4150,
-      h: 2800,
-      background: 'radial-gradient(at 40% 30%, rgba(250, 239, 200, 0.89) 10%, transparent 50%, rgba(124, 72, 82, 0.54) 90%)'
-    });
+    w: 4150,
+    h: 2800,
+    background: 'radial-gradient(at 40% 30%, rgba(250, 239, 200, 0.89) 10%, transparent 50%, rgba(124, 72, 82, 0.54) 90%)'
+  });
 
   var backWall = Thing.classes.Box.make({
     w: 4150,
@@ -221,15 +213,6 @@ $(function () {
   backWall.add(meninaSandwich4);
   backWall.add(codeLabel);
 
-  // menina as a shadow on floor
-  menina.css({
-    transform: 'translate(1900px, 2400px) rotateX(90deg) rotateZ(43deg) scale(1.6)',
-    WebkitMaskImage: 'url(img/las_meninas_girl_mask.png)',
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskSize: '100%',
-    backgroundImage: 'linear-gradient(0deg, #635b5a 5%, rgba(255, 255, 25, 0) 80%)'
-  });
-
   background.add(wallpaper);
   background.add(backWall);
   background.add(menina);
@@ -260,55 +243,4 @@ $(function () {
   background.add(floor1).add(floor2);
 
   background.render();
-
-  /* spot shadow
-  <div class="Img" id="Img104" style="position: absolute;opacity: .6;width: 225px;transform: translate(3473px, 2721px) rotateX(90deg) rotateZ(25deg) scaleX(.9) scaleY(1.1);height: 400px;z-index: 50000;background: url(&quot;file:///C:/Users/Mark/GIT/htdocs/Thing/img/spot_shadow_2.png&quot;) center center / 100% 100% no-repeat;"></div>
-  */
-
-  // marble bg
-  //<div class="Thing" id="Thing6" style="background-image: url(img/white-marble-texture-1.jpg);position: absolute;width: 4150px;height: 2800px;transform: scale(1);"></div>
-
-  //white bathroom tile:
-  //<div class="Thing" id="Thing106" style="background-color: rgb(242, 242, 242);border: 1px solid rgba(0, 0, 0, 0.15);box-shadow: rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px;position: absolute;width: 500px;margin: 40px;height: 500px;transform: scale(1);"></div>
-
-  //tile with overall gradient:
-  //<div class="Thing" id="Thing106" style="background-color: rgb(242, 242, 242);border: 1px solid rgba(0, 0, 0, 0.15);box-shadow: rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px;background-image: radial-gradient(ellipse farthest-corner at 140px 20px , #fafafa 30%, #eeeeee 85%);position: absolute;left: 525px;width: 500px;margin: 40px;height: 500px;transform: scale(1);"></div>
-
-  //tile with transparency (marble BG shows through a little)
-  //<div class="Thing" id="Thing106" style="/* background-color: rgb(242, 242, 242); */border: 1px solid rgba(0, 0, 0, 0.15);box-shadow: rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px;background-image: radial-gradient(ellipse farthest-corner at 140px 20px , rgba(250, 250, 250, 0.9) 30%, rgba(238, 238, 238, 0.8) 85%);position: absolute;left: 505px;width: 500px;margin: 40px;height: 500px;transform: scale(1);"></div>
-
-  var patternW = 3630;
-  var patternH = 3000;
-  var tileW = 500;
-  var tileH = 500;
-  var numTiles = (parseInt(patternW/tileW) + 1) * (parseInt(patternH/tileH) + 1);
-
-  var BG = Thing.classes.Box.make({
-    backgroundImage: 'url(img/concrete_1.jpg)',
-    position: 'absolute',
-    w: patternW,
-    h: patternH
-  });
-
-  for (var i=0; i < numTiles; i++) {
-    var randX = Thing.classes.Rand.randInt(0,2000) * -1;  // less than width of background Texture
-    var randY = Thing.classes.Rand.randInt(0,1000) * -1;  // less than height of background Texture
-    var tile = Thing.make({
-      border: '1px solid rgba(0, 0, 0, 0.15)',
-      boxShadow: 'rgb(255, 255, 255) 12px 12px 25px inset, rgb(180, 180, 180) -12px -12px 25px inset, rgba(33, 33, 33, 0.4) 6px 6px 8px',
-      // backgroundImage: 'radial-gradient(ellipse farthest-corner at 140px 20px , rgba(250, 250, 250, 0.9) 30%, rgba(238, 238, 238, 0.8) 85%)',
-      backgroundImage: 'url(img/white-marble-texture-lite.jpg)',
-      backgroundPosition: randX+'px '+ randY+'px',
-      backgroundRepeat: 'no-repeat',
-      position: 'relative',
-      float: 'left',
-      w: tileW,
-      h: tileH,
-      margin: '5px'
-    });
-    BG.add(tile);
-  }
-
-  // BG.render();
-
 });
