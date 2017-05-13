@@ -1,8 +1,106 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
 
-$(function () {
+function makeFloor() {
+  var floor = Thing.classes.Box.make({
+    w: 6100,
+    h: 3600,
+    transform: 'translate(-1200px, 1605px) rotateX(85deg)'
+  })
+  .add([  
+    Thing.make({  // wood texture
+      width: '100%',
+      height: '100%',
+      background: 'url(img/wood_texture_smooth_panel_red_oak.jpg) center center / 100% 100% no-repeat',
+    }),
+    Thing.make({  // lines pattern
+      width: '100%',
+      height: '100%',
+      backgroundImage: 'linear-gradient(90deg, #f3daac 0.4%, #6a5f4b .8%, #6a5f4b 1.6%, #ffdc8d 2.0%, #f3daac 3%)',
+      backgroundSize: '400px 400px',
+      opacity: 0.85
+    }),
+    Thing.make({   // light spot
+      width: '100%',
+      height: '100%',
+      background: 'radial-gradient(at 50% 40%, rgba(255, 252, 195, 0.3) 20%, transparent 35%, rgba(124, 72, 82, 0.55) 90%)'
+    })
+  ]);
+  // floor.addMask('radial-gradient(transparent 25%, white 26%)');
+  return floor;
+}
+
+function makeBunchOfLegs (width) {
   var Rand = Thing.classes.Rand;
+  var Img = Thing.classes.Img;
+  var arrayOLegs = [
+    Img.make({
+      src: 'img/leg_durer_adam_right_and_foot_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: 1250,
+      w: 800
+    }),
+    Img.make({
+      src: 'img/leg_durer_eve_vase_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: 1200,
+      w: 800
+    }),
+    Img.make({
+      src: 'img/leg_durer_right_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: 900,
+      w: 700
+    }),
+    Img.make({
+      src: 'img/leg_titian_venus_right_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: 1000,
+      w: 600
+    }),
+    Img.make({
+      src: 'img/titian_venus_both_legs_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: 500,
+      w: 750
+    }),
+    Img.make({
+      src: 'img/leg_eve_left_1.png',
+      x: Rand.randInt(0,width),
+      y: 1200,
+      w: 600
+    }),
+    Img.make({         // Big Leg
+      src: 'img/leg_eve_left_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: 300,
+      w: 900
+    }),
+    Img.make({
+      src: 'img/titian_venus_both_legs_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: Rand.randInt(-100,500),
+      w: 750
+    }),
+    Img.make({
+      src: 'img/leg_eve_left_1.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: Rand.randInt(-100,500),
+      w: 900
+    })
+  ];
+  return arrayOLegs;
+}
+
+$(function () {
   var Img = Thing.classes.Img;
 
   // setup the stage
@@ -49,139 +147,43 @@ $(function () {
   });
 
   // Bleached wood floor
-  var floor1 = Thing.make({
-    w:6100,
-    h:3600,
-    transform: 'translate(-1200px, 1605px) rotateX(85deg)',
-    background: 'url(img/wood_texture_smooth_panel_red_oak.jpg) center center / 100% 100% no-repeat',
-  });
-  var floor2 = Thing.make({
-    w:6100,
-    h:3600,
-    transform: 'translate(-1200px, 1600px) rotateX(85deg)',
-    backgroundImage: 'linear-gradient(90deg, #f3daac 0.4%, #6a5f4b .8%, #6a5f4b 1.6%, #ffdc8d 2.0%, #f3daac 3%)',
-    backgroundSize: '400px 400px',
-    opacity: 0.85
-  });
-
-  var leg1 = Img.make({
-    src: 'img/leg_durer_adam_right_and_foot_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    y: 1250,
-    w: 800
-  });
-
-  var leg2 = Img.make({
-    src: 'img/leg_durer_eve_vase_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    y: 1200,
-    w: 800
-  });
-
-  var leg3 = Img.make({
-    src: 'img/leg_durer_right_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    y: 900,
-    w: 700
-  });
-
-  var leg4 = Img.make({
-    src: 'img/leg_titian_venus_right_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    y: 1000,
-    w: 600
-  });
-
-  var leg5 = Img.make({
-    src: 'img/titian_venus_both_legs_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    y: 500,
-    w: 750
-  });
-
-  var eveLeg = Img.make({
-    src: 'img/leg_eve_left_1.png',
-    x: 3500,
-    y: 1200,
-    w: 600
-  });
-
-  var eveLegShadow = Thing.make({
-    background: 'url(img/spot_shadow_2.png) center center / 100% 100% no-repeat',
-    x: 3475,
-    y: 2721,
-    w: 200,
-    h: 410,
-    rotate: {x: 90, z: 25},
-    opacity: 0.6
-  });
-
-  // Big Leg
-  var bigleg = Img.make({                   // the leg image, rotated to intersect the 'doorway'
-    src: 'img/leg_eve_left_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    y: 300,
-    w: 900
-  });
-
-  var anotherLeg = Img.make({
-    src: 'img/titian_venus_both_legs_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    w: 750
-  });
-
-  var newleg = Img.make({                   // the leg image, rotated to intersect the 'doorway'
-    src: 'img/leg_eve_left_1.png',
-    rotate: {y: Rand.randInt(-45, 45)},
-    x: Rand.randInt(0,legContainerWidth),
-    w: 900
-  });
-
+  var floor = makeFloor();
 
   // put all the legs into one box
-  var legContainer = Thing.classes.Box.make({   // this contains wall and leg
-    x: 100,
-    y: 100,
+  var legContainer = Thing.classes.Box.make({
+    x: 50,
+    y: 50,
     w: legContainerWidth,
     h: 3100,
-    transformStyle: 'preserve-3d', 
-    zIndex: 90000
-  });
+    transformStyle: 'preserve-3d'
+  })
+  .add(makeBunchOfLegs(legContainerWidth));
 
-  legContainer
-    .add(anotherLeg)
-    .add(newleg)
-    .add(bigleg)
-    .add(leg1)
-    .add(leg2)
-    .add(leg3)
-    .add(leg4)
-    .add(leg5);
-
-  window.BG = background;
+  // another bunch of legs
+  var bunchOfLegs = Thing.classes.Box.make({
+    x: 3300,
+    y: 300,
+    w: legContainerWidth * 0.75,
+    h: 2000,
+    transformStyle: 'preserve-3d',
+    scale: 0.7,
+    rotate: {z:-5}
+  })
+  .add(makeBunchOfLegs(legContainerWidth/2));
 
   Meninas.scaleDocument(1);
 
   background.add(wallpaper);
   background.add(backWall);
+  background.add(bunchOfLegs);
   background.add(rightWall);
   background.add(edge);
-  background.add(floor1).add(floor2);
-
-  background.add(eveLegShadow);
-  background.add(eveLeg);
-
+  background.add(floor);
   background.add(legContainer);
 
-
   background.render();
+
+  window.BG = background;
 });
 
 

@@ -21,6 +21,20 @@ class Box extends Thing {
     return this;
   }
 
+  // mask the contents of this box
+  // addMask('url(img/my_mask_image.png)')
+  // addMask('radial-gradient(white 25%, transparent 26%)')
+  addMask (imageDefinition) {
+    if (imageDefinition) {
+      this.css({
+        WebkitMaskImage: imageDefinition,
+        WebkitMaskRepeat: 'no-repeat',
+        WebkitMaskSize: '100%',
+        WebkitMaskPosition: '50% 50%'      
+      });      
+    }
+  }
+
   // remove item from this box (from the dom and the items list)
   remove (item) {
   	if (item) {
