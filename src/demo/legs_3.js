@@ -1,35 +1,6 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
 
-function makeFloor() {
-  var floor = Thing.classes.Box.make({
-    w: 6100,
-    h: 3600,
-    transform: 'translate(-1200px, 1605px) rotateX(85deg)'
-  })
-  .add([  
-    Thing.make({  // wood texture
-      width: '100%',
-      height: '100%',
-      background: 'url(img/wood_texture_smooth_panel_red_oak.jpg) center center / 100% 100% no-repeat',
-    }),
-    Thing.make({  // lines pattern
-      width: '100%',
-      height: '100%',
-      backgroundImage: 'linear-gradient(90deg, #f3daac 0.4%, #6a5f4b .8%, #6a5f4b 1.6%, #ffdc8d 2.0%, #f3daac 3%)',
-      backgroundSize: '400px 400px',
-      opacity: 0.85
-    }),
-    Thing.make({   // light spot
-      width: '100%',
-      height: '100%',
-      background: 'radial-gradient(at 50% 40%, rgba(255, 252, 195, 0.3) 20%, transparent 35%, rgba(124, 72, 82, 0.55) 90%)'
-    })
-  ]);
-  // floor.addMask('radial-gradient(transparent 25%, white 26%)');
-  return floor;
-}
-
 function makeBunchOfLegs (width) {
   var Rand = Thing.classes.Rand;
   var Img = Thing.classes.Img;
@@ -147,7 +118,7 @@ $(function () {
   });
 
   // Bleached wood floor
-  var floor = makeFloor();
+  var floor = Meninas.makeFloorBleached();
 
   // put all the legs into one box
   var legContainer = Thing.classes.Box.make({

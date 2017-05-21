@@ -264,6 +264,39 @@ window.Meninas = (function () {
     return [tx, ty];
   }
 
+  function makeFloorBleached(options) {
+    var defaultOptions = {
+      x: -1200,
+      y: 1605,
+      w: 6100,
+      h: 3600,
+      rotate: {x: 85}
+    };
+    var _options = $.extend(defaultOptions, options);
+    var floor = Thing.classes.Box.make(_options)
+      .add([  
+        Thing.make({  // wood texture
+          width: '100%',
+          height: '100%',
+          background: 'url(img/wood_texture_smooth_panel_red_oak.jpg) center center / 100% 100% no-repeat',
+        }),
+        Thing.make({  // lines pattern
+          width: '100%',
+          height: '100%',
+          backgroundImage: 'linear-gradient(90deg, #f3daac 0.4%, #6a5f4b .8%, #6a5f4b 1.6%, #ffdc8d 2.0%, #f3daac 3%)',
+          backgroundSize: '400px 400px',
+          opacity: 0.85
+        }),
+        Thing.make({   // light spot
+          width: '100%',
+          height: '100%',
+          background: 'radial-gradient(at 50% 40%, rgba(255, 252, 195, 0.3) 20%, transparent 35%, rgba(124, 72, 82, 0.55) 90%)'
+        })
+      ]);
+    // floor.addMask('radial-gradient(transparent 25%, white 26%)');
+    return floor;
+  }
+
   return {
     greens: greens,
     scaleDocument: scaleDocument,
@@ -279,5 +312,6 @@ window.Meninas = (function () {
     makeStage: makeStage,
     makeMatrix2D: makeMatrix2D,
     transformPoint: transformPoint,
+    makeFloorBleached: makeFloorBleached
   };
 }());
