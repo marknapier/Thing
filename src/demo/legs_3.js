@@ -66,7 +66,36 @@ function makeBunchOfLegs (width) {
       x: Rand.randInt(0,width),
       y: Rand.randInt(-100,500),
       w: 900
-    })
+    }),
+    //
+    Img.make({
+      src: 'img/rubens_adonis_leg_left.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: Rand.randInt(500,900),
+      w: 800
+    }),
+    Img.make({
+      src: 'img/rubens_adonis_leg_right.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: Rand.randInt(-100,500),
+      w: 800
+    }),
+    Img.make({
+      src: 'img/rubens_venus_leg_left.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: Rand.randInt(-100,500),
+      w: 500
+    }),
+    Img.make({
+      src: 'img/birth_of_venus_leg_left.png',
+      rotate: {y: Rand.randInt(-45, 45)},
+      x: Rand.randInt(0,width),
+      y: Rand.randInt(-100,500),
+      w: 600
+    }),
   ];
   return arrayOLegs;
 }
@@ -80,7 +109,7 @@ $(function () {
   var pixelHeight = pixelWidth * aspectRatio;
   var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
   var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale).css({backgroundColor:'rgb(124, 10, 0)'});
-  var legContainerWidth = 2300;
+  var legContainerWidth = Thing.classes.Rand.randInt(2000,3000);
 
   var rightWall = Img.make({
       src: 'img/vintagewallpaper4_crop.png',
@@ -151,6 +180,8 @@ $(function () {
   background.add(edge);
   background.add(floor);
   background.add(legContainer);
+
+  background.$element.append('<div class="Circle" id="Circle41" style="left: 2200px;top: 2739px; font-family: Calibri, Arial, sans-serif;font-size: 24px;font-weight: bold;color: rgb(0, 255, 0);background-color: rgb(34, 34, 34); position: absolute;width: 900px;height: 900px;line-height: 50px;border-radius: 10000px;text-align: center;overflow: hidden;transform: rotateX(80deg) rotateY(0deg);"></div>');
 
   background.render();
 

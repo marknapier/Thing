@@ -34,7 +34,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start karma.conf.js"
+    "test": "karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
