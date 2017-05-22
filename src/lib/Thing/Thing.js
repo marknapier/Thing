@@ -271,6 +271,23 @@ class Thing {
     }
   }
 
+  /*
+
+  function bindargs(func, props) {
+    return function (moreProps) {
+      let p = $.extend({}, props, moreProps);
+      return func.call({}, p);
+    }
+  }
+
+  function instantiator(cls, props) {
+    return function (moreProps) {
+      let p = $.extend({}, props, moreProps);
+      return cls.make.call(cls, p);
+    }
+  }
+
+  */
   //---------------------------------------------------------
 
   static msg(s) {
