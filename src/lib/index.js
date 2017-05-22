@@ -10,6 +10,7 @@ require('./Do/Do.js');
 require('./Label/Label.js');
 require('./Line/Line.js');
 require('./Img/Img.js');
+require('./ImgSVG/ImgSVG.js');
 require('./Pattern/Pattern.js');
 require('./PatternPolkaDots/PatternPolkaDots.js');
 require('./PatternStripes/PatternStripes.js');
