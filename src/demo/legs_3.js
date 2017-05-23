@@ -102,6 +102,7 @@ function makeBunchOfLegs (width) {
 
 $(function () {
   var Img = Thing.classes.Img;
+  var Rand = Thing.classes.Rand;
 
   // setup the stage
   var aspectRatio = 0.72;
@@ -171,8 +172,19 @@ $(function () {
   })
   .add(makeBunchOfLegs(legContainerWidth/2));
 
+  // random dark circle on floor
+  var darkspot = Thing.classes.Circle.make({
+    r: 500,
+    x: Rand.randInt(1000,4500),
+    y: Rand.randInt(800,2000),
+    backgroundColor: 'rgba(0,0,40,.95)',
+    borderColor: 'transparent',
+    borderWidth: 0
+  });
+
   Meninas.scaleDocument(1);
 
+  floor.add(darkspot);
   background.add(wallpaper);
   background.add(backWall);
   background.add(bunchOfLegs);
@@ -180,9 +192,6 @@ $(function () {
   background.add(edge);
   background.add(floor);
   background.add(legContainer);
-
-  background.$element.append('<div class="Circle" id="Circle41" style="left: 2200px;top: 2739px; font-family: Calibri, Arial, sans-serif;font-size: 24px;font-weight: bold;color: rgb(0, 255, 0);background-color: rgb(34, 34, 34); position: absolute;width: 900px;height: 900px;line-height: 50px;border-radius: 10000px;text-align: center;overflow: hidden;transform: rotateX(80deg) rotateY(0deg);"></div>');
-
   background.render();
 
   window.BG = background;

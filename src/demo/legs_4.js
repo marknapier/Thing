@@ -296,11 +296,11 @@ $(function () {
   floor.add(darkspot);
   background.add(wallpaper);
   background.add(backWall);
+  // background.add(bunchOfLegs);
   background.add(rightWall);
   background.add(edge);
   background.add(floor);
   background.add(legContainer);
-  // legContainer.add(bunchOfLegs);
   background.render();
 
   window.BG = background;

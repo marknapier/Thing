@@ -34,7 +34,7 @@ function makePattern (name, size) {
     y: 0,
     w: Rand.randInt(200,1600),
     h: 3000,
-    z: Rand.randInt(1,1000) * 10,
+    zIndex: Rand.randInt(1,1000) * 10,
     backgroundColor: 'transparent',   //Rand.randItem(greens),
     position: 'absolute',
     display: 'block',

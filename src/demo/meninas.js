@@ -21,7 +21,7 @@ window.Meninas = (function () {
       y: 0,
       w: Rand.randInt(400,1600),
       h: 3600,
-      z: Rand.randInt(1,1000) * 10,
+      zIndex: Rand.randInt(1,1000) * 10,
       backgroundColor: Rand.randItem(greens),
       position: 'absolute',
       display: 'block',
@@ -77,7 +77,7 @@ window.Meninas = (function () {
         src:'img/las_meninas_girl_t.png',
         x: Rand.randInt(-500, 4500),
         y: Rand.randInt(500, 2000),
-        z: Rand.randInt(500,1000) * 10
+        zIndex: Rand.randInt(500,1000) * 10
       })
       .scaleTo(0.8 + (Rand.randFloat()*2))
       .rotate(Rand.randInt(180)-90)  ;
@@ -91,7 +91,7 @@ window.Meninas = (function () {
         src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
         x: 600,
         y: 1600,
-        z: Rand.randInt(9000, 10000),
+        zIndex: Rand.randInt(9000, 10000),
         filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
       })
       .scaleTo(1.8) ;
@@ -106,7 +106,7 @@ window.Meninas = (function () {
         h: 600,
         x: 0,
         y: 780,
-        z: 20000,
+        zIndex: 20000,
         rotate: {x: 90},
         scale: 2
       });
@@ -123,7 +123,7 @@ window.Meninas = (function () {
         rotate: {y: 110},
         x: 2500,
         y: 0,
-        z: 2000,
+        zIndex: 2000,
         opacity: 0.85
       });
 

@@ -33,7 +33,7 @@ function makePattern (name) {
       y: 0,
       w: Rand.randInt(80,500),
       h: 1000,
-      z: Rand.randInt(1,1000) * 10,
+      zIndex: Rand.randInt(1,1000) * 10,
       backgroundColor: 'green',
       position: 'absolute',
       display: 'block',
@@ -89,7 +89,7 @@ function makeMenina() {
       src:'img/las_meninas_girl_t.png',
       x: Rand.randInt(-200, 1000),
       y: Rand.randInt(0, 300),
-      z: Rand.randInt(500,1000) * 10
+      zIndex: Rand.randInt(500,1000) * 10
     })
     .scaleTo(.2 + (Rand.randFloat()*.8))
     .rotate(Rand.randInt(180)-90)  ;
@@ -103,7 +103,7 @@ function makeCouch() {
       src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
       x: -200,
       y: 500,
-      z: Rand.randInt(5000, 10000),
+      zIndex: Rand.randInt(5000, 10000),
       filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
     })
     .scaleTo(.6) ;
@@ -120,7 +120,7 @@ function makeFloor () {
       rotate: {x: 90},
       x: 0,
       y: 780,
-      z: 20000
+      zIndex: 20000
     });
   return i;
 }
@@ -133,7 +133,7 @@ function makeRightWall () {
       h: 1000,
       x: 800,
       y: -60,
-      z: 1000,
+      zIndex: 1000,
       scale: 2,
       opacity: .85,
       rotate: {y: 110}

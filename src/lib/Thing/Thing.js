@@ -20,6 +20,7 @@ class Thing {
     this.scaleFactor = props.scale || 1;
     this.x = props.x || 0;
     this.y = props.y || 0;
+    this.z = props.z || 0;
     this.$element = null;
     this.parent = null;
   }
@@ -131,7 +132,7 @@ class Thing {
 
   transform () {
     this.css({
-      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor, this.x, this.y)
+      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor, this.x, this.y, this.z)
     });
     return this;
   }
@@ -191,9 +192,9 @@ class Thing {
       // top: props.top || (props.y && (props.y + "px")),
       width: props.width || (props.w && (props.w + "px")),
       height: props.height || (props.h && (props.h + "px")),
-      zIndex: props.zIndex || props.z,
+      // zIndex: props.zIndex || props.z,
       backgroundColor: props.backgroundColor,
-      transform: props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y)),
+      transform: props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y, props.z)),
       position: props.position || 'absolute'
     });
     // These are not true CSS properties, so remove them
@@ -207,9 +208,9 @@ class Thing {
     return styles;
   }
 
-  static makeTransformCSS (rotate, scale, tx, ty) {
+  static makeTransformCSS (rotate, scale, tx, ty, tz) {
     var transform = '';
-    transform += (tx || ty) ? (Thing.makeTranslateCSS(tx, ty) + ' ') : '';
+    transform += (tx || ty || tz) ? (Thing.makeTranslateCSS(tx, ty, tz) + ' ') : '';
     transform += rotate ? (Thing.makeRotationCSS(rotate) ) : '';
     transform += scale ? (Thing.makeScaleCSS(scale) + ' ') : '';
     return transform;
@@ -238,10 +239,11 @@ class Thing {
   // NOTE: translation coords are relative to the element's position in the document flow.
   // They are not the same as setting left/top values, which are absolute coordinates
   // relative to the parent element.
-  static makeTranslateCSS (x, y) {
+  static makeTranslateCSS (x, y, z) {
     x = x || '0';
     y = y || '0';
-    return 'translate('+ x + 'px, ' + y +'px)';
+    z = z || '0';
+    return 'translate3d('+ x + 'px, ' + y + 'px, ' + z +'px)';
   }
 
   static makeElement (html, props, type) {
