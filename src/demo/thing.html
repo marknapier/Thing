@@ -141,18 +141,30 @@ $(function(){
     }
   }
 
+  function makeDemoBox (props) {
+    let defaultProps = {
+      display: 'inline-block',
+      position: 'relative',
+      margin: '20px',
+      width: '200px', 
+      height: '200px', 
+      border: '2px dashed #eee'
+    };
+    props = $.extend({}, defaultProps, props);
+    return Thing.classes.Box.make(props);
+  }
+
   //---------------------------------------------------------
 
   var arrows = [];
   var Box = Thing.getClass('Box');
-  var DemoBox = Thing.getClass('DemoBox');
   var Arrow = Thing.getClass('Arrow');
   var Img = Thing.classes.Img;
 
   function makeBoxOfArrows () {
-    var outerBox = DemoBox.make({position:'relative', width:'70%', height:'inherit'});
+    var outerBox = makeDemoBox({position:'relative', width:'70%', height:'inherit'});
     for (var i=0; i < 10; i++) {
-      var db = DemoBox.make({
+      var db = makeDemoBox({
         overflow:'hidden',
         borderColor: '#ccc',
         width: '400px',
@@ -183,32 +195,6 @@ $(function(){
 
   window.funboxItems = [];
 
-  class Line extends Thing {
-    init (props) {
-      // expecting props: { x1:0, y1:0, x2:50, y2:50 }
-      props.backgroundColor = props && (props.backgroundColor || props.color || 'black');
-      super.init(props);
-      this.type = 'Line';
-      this.$element = Thing.makeElement(this.html(), this.props, this.type);
-      this.$element.addClass(this.type)
-      this.createLine(props.x1, props.y1, props.x2, props.y2, props.width);
-    }
-
-    createLine (x1,y1, x2,y2, width) {
-      var length = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
-      var angle  = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-      this.css({
-          'left': '' + x1 + 'px',
-          'top': '' + y1 + 'px',
-          'width': '' + length + 'px',
-          'height': '' + (width || 2) + 'px',
-          // rotate around start point of line
-          'transform-origin': '0 50%'
-        });
-      this.rotateTo(angle);
-    }
-  }
-
   class FunBox extends Box {
     init (props) {
       // prep some params
@@ -224,14 +210,14 @@ $(function(){
       this.$element = Thing.makeElement(this.html(), this.props, this.type);
 
       for (var i=0; i < 10; i++) {
-        var db = DemoBox.make({
+        var db = makeDemoBox({
           overflow:'hidden',
           borderColor: '#ccc',
           position: 'relative'
         });
 
         for (var j=0; j < 10; j++) {
-          var a = Line.make({
+          var a = Thing.classes.Line.make({
             x1: (Math.random()*100),
             y1: (Math.random()*200),
             x2: (100 + Math.random()*100),
@@ -261,300 +247,6 @@ $(function(){
 
 });
 </script>
-
-<script type="text/javascript">
-
-
-// class Action {
-//   constructor() {
-//   }
-
-//   init (props) {
-//     this.props = props || {};
-//     return this;
-//   }
-
-//   go () {
-//     window.console.log('Action.go()');
-//   }
-
-//   stop () {
-//     window.console.log('Action.stop()');
-//   }
-
-//   static make () {
-//     var cls = this;
-//     var instance = new cls();
-//     instance.init.apply(instance, arguments);
-//     return instance;
-//   }
-// }
-
-// module.exports = Action;
-
-// class Timer extends Action {
-//   init (props) {
-//     props = props || {};
-//     this.callback = props.callback || function () {};
-//     this.delay = props.delay || 1000;
-//     this.timerID = null;
-//     return this;
-//   }
-
-//   go () {
-//     clearTimeout(this.timerID);
-//     this.timerID = setTimeout(this.callback, this.delay);
-//     return this;
-//   }
-
-//   stop () {
-//     clearTimeout(this.timerID);
-//     this.timerID = null;
-//   }
-// }
-
-
-
-// class Pulsar extends Action {
-//   init (props) {
-//     props = props || {};
-//     this.callback = props.callback || function () {};
-//     this.delay = props.delay || 1000;
-//     this.T = Timer.make({callback: this.trigger.bind(this), delay: this.delay});
-//     return this;
-//   }
-
-//   go () {
-//     this.T.go();
-//     return this;
-//   }
-
-//   stop () {
-//     this.T.stop();
-//   }
-
-//   trigger () {
-//     this.callback();
-//     this.T.go();
-//   }
-// }
-
-
-
-// var PI = 3.14159265359;
-// var HALFPI = PI/2.0;
-
-// class Rand {
-//   static randItem(arr) {
-//     if (arr && arr.length > 0) {
-//       return arr[ Rand.randInt(0, arr.length-1) ];
-//     }
-//   }
-
-//   // Returns a random integer between min (included) and max (included)
-//   // Using Math.round() will give you a non-uniform distribution!
-//   static randInt(min, max) {
-//     min = Math.ceil(min||0);
-//     max = Math.floor(max||1);
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-//   }
-
-//   // return float between 0 and .999999
-//   static randfloat() {
-//       return Math.random();
-//   }
-
-//   static randPercent(threshold) {
-//     return Rand.randInt(1,100) < threshold;
-//   }
-
-//   // random integer within maxDistance of target (distributed in a bell curve around target)
-//   static randCloseTo(target, maxDistance) {
-//     // return target + (maxDistance * randNormal());    // concentrated towards center 50% of range
-//     // return target + (maxDistance * randSin2());   // spread over entire range, somewhat concentrated towards center
-//     return target + (maxDistance * Rand.randPow2());   // spread over entire range, with sharp concentration around center
-//   }
-
-//   // return float between 0 and 1, distributed exponentially closer to 0
-//   static randPow() {
-//     return Math.pow(1.0 - Rand.randfloat(), 4);
-//   }
-
-//   // return float between 0 and 1, distributed toward 1
-//   static randSin() {
-//     return Math.sin(Rand.randfloat() * HALFPI);
-//   }
-
-//   // return float between -1 and 1, distributed exponentially closer to 0
-//   static randPow2() {
-//     return Rand.randPow() - Rand.randPow();
-//   }
-
-//   // return float between -1 and 1, distributed in a bell curve around 0
-//   static randNormal() {
-//     return ((Rand.randfloat() + Rand.randfloat() + Rand.randfloat() + Rand.randfloat() + Rand.randfloat() + Rand.randfloat()) - 3.0) / 3.0;
-//   }
-
-//   // return float between -1 and 1, distributed closer to 0
-//   static randSin2() {
-//     return Rand.randSin() - Rand.randSin();
-//   }
-// }
-
-
-class Blinky extends Thing {
-  init () {
-    this.colors = ['yellow', 'red', 'blue', 'green', 'magenta', 'cyan', 'orange', 'black'];
-
-    this.square = Thing.make({
-      w: 50,
-      h: 50,
-      backgroundColor: '#ccc',
-      transition: 'background-color 11.5s',
-      position: 'relative',
-      margin: '0',
-      display: 'inline-block',
-      lineHeight: 0,
-      fontSize: 0
-    });
-
-    // this.pulse = Pulsar.make({
-    //   callback: this.changeColor.bind(this),
-    //   delay: 2000
-    // });
-  }
-
-  changeColor () {
-    this.square.css({backgroundColor: Rand.randItem(this.colors)});
-  }
-
-  render () {
-    this.square.render();
-    // this.pulse.go();
-  }
-}
-
-
-var Pulsar = Thing.getClass('Pulsar');
-var Rand = Thing.getClass('Rand');
-
-
-class BlinkyBunch extends Thing {
-  init () {
-    this.blinkies = [];
-
-    for (var i=0; i < 100; i++) {
-      this.blinkies.push(Blinky.make());
-    }
-
-    this.pulse = Pulsar.make({
-      callback: this.changeColor.bind(this),
-      delay: 4000
-    });
-  }
-
-  changeColor () {
-    this.blinkies.forEach( function (blinky) {
-      blinky.changeColor();
-    });
-  }
-
-  render () {
-    for (var i=0; i < this.blinkies.length; i++) {
-      this.blinkies[i].render();
-    }
-    this.pulse.go();
-  }
-
-  stop () {
-    this.pulse.stop();
-  }
-}
-
-var imgNames = [
-  'elvis_eye_left_round.png',
-  'elvis_eye_left_square.png',
-  'elvis_eye_right_round.png',
-  'elvis_eye_right_square.png',
-  'elvis_mouth_round.png',
-  'elvis_mouth_square.png',
-  'marilyn_eye_left_fuzzy.png',
-  'marilyn_eye_left_round.png',
-  'marilyn_eye_left_square.png',
-  'marilyn_eye_right_fuzzy.png',
-  'marilyn_eye_right_round.png',
-  'marilyn_eye_right_square.png',
-  'marilyn_mouth.png',
-  'marilyn_mouth_round.png',
-  'marilyn_mouth_square.png',
-  'mona_eye_left_circle.png',
-  'mona_eye_left_fuzzy.png',
-  'mona_eye_right_circle.png',
-  'mona_eye_right_fuzzy.png',
-  'mona_eye_right_square.png',
-  'washington_eye_left_fuzzy.png',
-  'washington_eye_left_round.png',
-  'washington_eye_left_square.png',
-  'washington_eye_right_fuzzy.png',
-  'washington_eye_right_round.png',
-  'washington_eye_right_square.png',
-  'washington_mouth_fuzzy.png',
-  'washington_mouth_round.png',
-  'washington_mouth_square.png',
-  'yoda_eye_left_fuzzy.png',
-  'yoda_eye_right.png',
-  'yoda_eye_right_fuzzy.png',
-  'yoda_left_eye.png',
-  'yoda_mouth_circle.png'
-];
-
-function blinkies () {
-  BlinkyBunch.make().render();
-}
-
-function imgBunch () {
-  var Imgs = [];
-
-  for (var i=0; i < imgNames.length; i++) {
-    var facepart = Img.make({
-      src: 'img/faceparts/' + imgNames[i],
-      x: i*10,
-      y: i*10,
-      opacity: .1 + Rand.randFloat(),
-      scale: .5 + Rand.randFloat()
-    });
-    Imgs.push(facepart);
-  }
-
-  for (var i=0; i < Imgs.length; i++) {
-    Imgs[i].render();
-  }
-}
-
-
-function scatterBox () {
-  var DemoBox = Thing.getClass('DemoBox');
-  var Rand = Thing.getClass('Rand');
-  var d = DemoBox.make({});
-
-  d.render();
-
-  for (var i=0; i < 500; i++) {
-    var t = Thing.make({
-      w:5,
-      h:5,
-      x:Rand.randFloat()*200,
-      y:Rand.randFloat()*200,
-      backgroundColor:'#000',
-      opacity:.3
-    });
-    d.add(t);
-    t.render();
-  }
-}
-
-</script>
-
 
   </body>
 </html>

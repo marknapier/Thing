@@ -17,7 +17,7 @@ class Circle extends Thing {
     };
 
     props = $.extend({}, defaultProps, props);
-    super.init(props);
+    this.initialize(props);
     this.type = 'Circle';
     this.text = props.text;
 

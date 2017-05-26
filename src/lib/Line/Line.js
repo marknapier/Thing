@@ -4,13 +4,12 @@ class Line extends Thing {
   init (props) {
     // expecting props: { x1:0, y1:0, x2:50, y2:50 }
     props.backgroundColor = props && (props.backgroundColor || props.color || 'black');
-    super.init(props);
+    super.initialize(props);
     this.type = 'Line';
     this.length = 10;
     this.width = 1;
     this.angle = 0;
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
-    this.$element.addClass(this.type);
     this.createLine(props.x1, props.y1, props.x2, props.y2, props.width, props.arrow, props.shorten);
   }
 

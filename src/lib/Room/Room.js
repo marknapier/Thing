@@ -27,11 +27,6 @@ class Room extends Box {
 		this.makeRoom(this.$element);
 	}
 
-	render () {
-		super.render();
-		return this;
-	}
-
 	makeRoom() {
 		var room = this;
 		var walls = [];
@@ -150,10 +145,6 @@ class Room extends Box {
 		// wall.$element.append(which);
 		wall.which = which;
 		return wall;
-	}
-
-	static css () {
-		// return require('./Room.css');
 	}
 }
 Thing.addClass(Room);

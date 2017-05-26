@@ -12,11 +12,6 @@ class DemoBox extends Box {
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);
 	}
 
-	render () {
-		super.render();
-		return this;
-	}
-
 	static css () {
 		return require('./DemoBox.css');
 	}
