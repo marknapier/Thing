@@ -62,7 +62,7 @@ function makePattern (name, size) {
 // var radgradCSS = {
 //   backgroundImage: 'radial-gradient(rgb(255, 242, 0) 4.8px, transparent 47.8px), radial-gradient(blue 9px, rgb(255, 255, 174) 5.8px, transparent 63.8px)',
 //   backgroundSize: '230px, 230px',
-//   backgroundPosition: '0px 0px, 115px 115px',  
+//   backgroundPosition: '0px 0px, 115px 115px',
 // };
 
 // background-image: radial-gradient(rgb(255, 242, 0) 4.8px, transparent 47.8px, rgb(255, 200, 241) 50px, transparent 60px);
@@ -72,15 +72,17 @@ function makePattern (name, size) {
 // background-image: radial-gradient(rgb(0, 23, 255) 5px, transparent 10px, rgb(255, 200, 241) 60px, rgba(82, 255, 160, 0.98) 62px, transparent 65px);
 // background-size: 230px 230px;
 // background-position: 115px 115px;
-      
+
 function makeMeninaSandwich(props) {
   var Rand = Thing.classes.Rand;
   var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
   var backgroundMasks = [
     // 'linear-gradient(0deg, transparent 0%, transparent 15%, rgb(255, 255, 255) 15%, rgb(255, 255, 255) 55%, transparent 55.15%, transparent 65%, rgb(255, 255, 255) 65%, rgb(255,255,255) 90%, transparent 90%)',
     // 'linear-gradient(45deg, #0e0030 25%, transparent 25.15%, transparent 50%, #0e0030 50.15%, #0e0030 75%, transparent 75.15%, transparent)',
-    'radial-gradient(transparent 300px, #fff 300px, #fff 600px, transparent 600px, transparent 900px, #fff 900px, #fff 1200px, transparent 1200px)',
-    'radial-gradient(transparent 300px, #fff 300px, #fff 800px, transparent 800px, transparent 850px, #fff 850px, #fff 1400px, transparent 1400px)'
+    // 'radial-gradient(transparent 300px, #fff 300px, #fff 600px, transparent 600px, transparent 900px, #fff 900px, #fff 1200px, transparent 1200px)',
+    // 'radial-gradient(transparent 300px, #fff 300px, #fff 800px, transparent 800px, transparent 850px, #fff 850px, #fff 1400px, transparent 1400px)',
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4000' height='4000'><circle shape-rendering='geometricPrecision' cx='2000' cy='2000' r='1000' stroke='black' stroke-width='1000' fill='none'/></svg>\")",
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4000' height='4000'><circle shape-rendering='geometricPrecision' cx='2000' cy='2000' r='1000' stroke='black' stroke-width='1000' fill='none'/></svg>\")"
   ];
     // 'url(img/zebra_print_t.png)'
 
