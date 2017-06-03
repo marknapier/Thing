@@ -1,4 +1,5 @@
 var Thing = require('../Thing/Thing.js');
+var CSS = require('./Pattern.css');
 
 class Pattern extends Thing {
   init (props) {
@@ -17,6 +18,9 @@ class Pattern extends Thing {
     if (props.pattern === 'grid') {
       this.css( Pattern.makeGridCSS(props.cellWidth, props.cellWidth, props.lineWidth) );
     }
+
+    // Add the Patterns css (will add only once)
+    Thing.addCSSString(CSS, 'Pattern');
   }
 
   render () {
@@ -47,10 +51,6 @@ class Pattern extends Thing {
       'linear-gradient(rgba(255,255,255,.5) ' +lineWidth+ 'px, transparent ' +lineWidth+ 'px),' +
       'linear-gradient(90deg, rgba(255,255,255,.5) ' +lineWidth+ 'px, transparent ' +lineWidth+ 'px)';
     return props;
-  }
-
-  static css () {
-    return require('./Pattern.css');
   }
 }
 Thing.addClass(Pattern);

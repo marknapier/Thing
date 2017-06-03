@@ -3,17 +3,18 @@ var Box = require('../Box/Box.js');
 
 class DemoBox extends Box {
 	init (props) {
-		props = props || {};
+		var defaultProps = {
+		  display: 'inline-block',
+		  position: 'relative',
+		  margin: '20px',
+		  width: '200px',
+		  height: '200px',
+		  border: '2px dashed #eee'
+		};
+		props = $.extend({}, defaultProps, props);
 		super.init(props);
-		props.width = props.width || 200;
-		props.height = props.height || 200;
-		props.position = 'relative';
 		this.type = 'DemoBox';
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);
-	}
-
-	static css () {
-		return require('./DemoBox.css');
 	}
 }
 Thing.addClass(DemoBox);

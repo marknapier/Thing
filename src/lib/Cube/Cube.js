@@ -73,25 +73,25 @@ class Cube extends Thing {
 		this.setupFace($faceRight, {
 			background: 'rgba(255,   0,  55, .5)',
 		  	width: this.d + 'px',
-		  	height: this.h + 'px', 
+		  	height: this.h + 'px',
 		  	transform: 'rotateY(   90deg ) translateZ( ' + (halfWidth + (halfWidth-halfDepth)) + 'px )'  /* halfWidth + (halfWidth-halfDepth) */
 		});
 		this.setupFace($faceLeft, {
 			background: 'rgba(255, 255,   0, .5)',
 		  	width: this.d + 'px',
-		  	height: this.h + 'px', 
+		  	height: this.h + 'px',
 		  	transform: 'rotateY(  -90deg ) translateZ( ' + (halfWidth - (halfWidth-halfDepth)) + 'px )'  /* halfWidth - (halfWidth-halfDepth) */
 		});
 		this.setupFace($faceTop, {
 			background: 'rgba(  0,  55, 255, .5)',
 		  	width: this.w + 'px',
-		  	height: this.d + 'px', 
+		  	height: this.d + 'px',
 		  	transform: 'rotateX(   90deg ) translateZ( ' + halfDepth + 'px )'
 		});
 		this.setupFace($faceBottom, {
 			background: 'rgba(  0, 255,   0, .5)',
 		  	width: this.w + 'px',
-		  	height: this.d + 'px', 
+		  	height: this.d + 'px',
 		  	transform: 'rotateX(  -90deg ) translateZ( ' + (halfHeight + (halfHeight-halfDepth)) + 'px )'
 		});
 	}
@@ -111,10 +111,6 @@ class Cube extends Thing {
 
 	html () {
 		return require('./Cube.html');
-	}
-
-	static css () {
-		// return require('./Cube.css');
 	}
 }
 Thing.addClass(Cube);

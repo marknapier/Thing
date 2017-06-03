@@ -45,11 +45,6 @@ class Circle extends Thing {
     this.$element.empty().append(txt);
     return this;
   }
-
-  render () {
-    super.render();
-    return this;
-  }
 }
 Thing.addClass(Circle);
 

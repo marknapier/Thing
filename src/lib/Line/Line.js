@@ -37,8 +37,8 @@ class Line extends Thing {
     this.arrowHead = $('<div></div>');
     this.arrowHead.css({
       position: 'absolute',
-      width: 0, 
-      height: 0, 
+      width: 0,
+      height: 0,
       fontSize: 0,
       lineHeight: 0,
       left: len + 'px',
@@ -58,10 +58,6 @@ class Line extends Thing {
       backgroundSize: dashSize + 'px'
     });
     return this;
-  }
-
-  static css () {
-  	return require('./Line.css');
   }
 }
 Thing.addClass(Line);

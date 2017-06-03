@@ -13,60 +13,26 @@
       }
 
       /* Lines can be styled with normal css: */
-      div.Line{
+      div.Line {
         height: 5px; /* Line width of 3 */
         background: #948C79; /* Black fill */
         opacity: 0.5;
         box-shadow: 0 0 8px #B99B7E;
-
-        /* For some nice animation on the rotates: */
-        -webkit-transition: -webkit-transform 1s;
-           -moz-transition:    -moz-transform 1s;
-                transition:         transform 1s;
+        transition: transform 1s;
       }
 
-      div.Line:hover{
+      div.Line:hover {
         background: #C30;
         box-shadow: 0 0 8px #C30;
         opacity: 1;
       }
 
-      div.Line.active{
+      div.Line.active {
         background: #666;
         box-shadow: 0 0 8px #666;
         opacity: 1;
       }
 
-      /* required for arrow */
-/*      .arrow-head {
-        display: inline-block;
-        vertical-align: middle;
-        width: 0;
-        height: 0;
-        border-top: 30px solid transparent;
-        border-bottom: 30px solid transparent;
-        border-left: 30px solid green;
-      }
-
-      .arrow-body {
-        display: inline-block;
-        vertical-align: middle;
-        background-color: green;
-        width: 40px;
-        height: 20px;
-        margin: 0;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        border-left: 0;
-        border-right: 0;
-      }
-
-      .arrow {
-        -webkit-transition: -webkit-transform .2s;
-           -moz-transition:    -moz-transform .2s;
-                transition:         transform .2s;
-      }
-*/
       .Thing {
         border-color: #F00;
       }
@@ -245,6 +211,7 @@ $(function(){
   window.FB = FB;
   window.Img = Img;
 
+  // Thing.addCSSString('.Line { transition: transform .2s; }');
 });
 </script>
 

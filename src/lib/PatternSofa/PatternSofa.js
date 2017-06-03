@@ -1,4 +1,5 @@
 var Thing = require('../Thing/Thing.js');
+var CSS = require('./PatternSofa.css');
 
 class PatternSofa extends Thing {
   init (props) {
@@ -11,6 +12,7 @@ class PatternSofa extends Thing {
     this.type = 'PatternSofa';
     this.patternSizes = [5, 10, 12.5, 16.6, 25, 50]; // percent background sizes that don't distort pattern
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
+    Thing.addCSSString(CSS, 'PatternSofa');
   }
 
   render () {
@@ -29,10 +31,6 @@ class PatternSofa extends Thing {
       Thing.msg('Pattern.render(): Pattern needs to be added to a parent before calling render.');
     }
     return this;
-  }
-
-  static css() {
-    return require('./PatternSofa.css');
   }
 }
 Thing.addClass(PatternSofa);

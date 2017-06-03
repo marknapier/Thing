@@ -1,4 +1,5 @@
 var Thing = require('../Thing/Thing.js');
+var CSS = require('./Arrow.css');
 
 class Arrow extends Thing {
 	init (props) {
@@ -6,6 +7,7 @@ class Arrow extends Thing {
 		this.type = 'Arrow';
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
 		this.setColor(this.props.color);  // have to make arrow before calling this
+		Thing.addCSSString(CSS, 'Arrow');
 	}
 
 	render () {
@@ -26,10 +28,6 @@ class Arrow extends Thing {
 	static createArrowElement () {
 		var $arrow = $("<div class='arrow-wrapper'><div class='arrow-body'></div><div class='arrow-head'></div></div>");
 		return $arrow;
-	}
-
-	static css () {
-		return require('./Arrow.css');
 	}
 }
 Thing.addClass(Arrow);

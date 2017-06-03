@@ -159,10 +159,6 @@ class Thing {
     }
   }
 
-  static css () {
-    return null;
-  }
-
   static make () {
     var cls = this;
     var instance = new cls();
@@ -173,9 +169,6 @@ class Thing {
   static addClass (cls) {
     Thing.classes = Thing.classes || {};
     Thing.classes[cls.name] = cls;
-
-    // load the class styles (these are included in the bundle at build time)
-    cls.css && Thing.addCSSString(cls.css(), cls.name);
   }
 
   static getClass (name) {
@@ -258,23 +251,27 @@ class Thing {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  static addCSSFile(fileName, id) {
-     var link = '<link rel="stylesheet" type="text/css" href="' + fileName + '" id="' + id + '">';
-     $('head').find('#' + id).remove();
-     $('head').append(link);
+  static addCSSFile(fileName, id='Thing') {
+    if (fileName) {
+      var link = '<link rel="stylesheet" type="text/css" href="' + fileName + '" id="' + id + '">';
+      $('head').find('#' + id).remove();
+      $('head').append(link);
+    }
   }
 
-  static addCSSString(cssString, id) {
+  static addCSSString(cssString, id='Thing') {
     if (cssString) {
-      // var doc = window.document;
+      var styleID = id + '-styles';
       var styleEl = $('<style type="text/css">' +cssString+ '</style>')
-        .attr('id', (id || 'Thing') + '-styles');
+        .attr('id', styleID);
+      $('head #' + styleID).remove(); // clear the existing style if any
       $('head').append(styleEl);
     }
   }
 
-  /*
+  //---------------------------------------------------------
 
+  /*
   function bindargs(func, props) {
     return function (moreProps) {
       let p = $.extend({}, props, moreProps);
@@ -288,9 +285,7 @@ class Thing {
       return cls.make.call(cls, p);
     }
   }
-
   */
-  //---------------------------------------------------------
 
   static msg(s) {
     window.console.log(s);
