@@ -20,7 +20,7 @@ $(function () {
       rotate: {y: 90},
       x: 4000,
       y: 433,
-      z: 2000,
+      zIndex: 2000,
       opacity: 0.5
     });
 

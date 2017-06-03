@@ -33,7 +33,7 @@ function makePattern (name, size) {
     y: 0,
     w: Rand.randInt(200,1600),
     h: 2000,
-    z: Rand.randInt(1,1000) * 10,
+    zIndex: Rand.randInt(1,1000) * 10,
     backgroundColor: 'transparent',   //Rand.randItem(greens),
     position: 'absolute',
     display: 'block',
@@ -102,7 +102,7 @@ $(function () {
       h: 2000,
       x: 2500,
       y: 200,
-      z: 2000,
+      zIndex: 2000,
       rotate: {y: 100},
       scale: 2.2,
       opacity: 0.05
