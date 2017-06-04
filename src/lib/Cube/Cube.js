@@ -20,11 +20,6 @@ class Cube extends Thing {
 		this.setupCube(this.$element);
 	}
 
-	render () {
-		super.render();
-		return this;
-	}
-
 	setupCube($el) {
 		var $container  = $el;
 		var $cube       = $el.find('#cube');

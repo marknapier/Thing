@@ -15,7 +15,7 @@ class Box extends Thing {
       }
       for (var i=0; i < addItems.length; i++) {
         this.items.push(addItems[i]);
-        addItems[i].parent = this;        
+        addItems[i].parent = this;
       }
   	}
     return this;
@@ -30,8 +30,8 @@ class Box extends Thing {
         WebkitMaskImage: imageDefinition,
         WebkitMaskRepeat: 'no-repeat',
         WebkitMaskSize: '100%',
-        WebkitMaskPosition: '50% 50%'      
-      });      
+        WebkitMaskPosition: '50% 50%'
+      });
     }
   }
 
@@ -74,6 +74,11 @@ class Box extends Thing {
   	for (var i=0; i < this.items.length; i++) {
   		this.items[i].render();
   	}
+    return this;
+  }
+
+  each (func) {
+    func && this.items.forEach(func);
     return this;
   }
 }

@@ -46,7 +46,6 @@
       <div id='controls'>
         <a href='#' id='rotate-lines'>Rotate Lines</a>
         | <a href='#' id='rotate-arrows'>Rotate Arrows</a>
-        | <a href='#' id='clear-lines'>Remove Lines</a>
       </div>
     </div>
   </div>
@@ -60,24 +59,6 @@
 $(function(){
   var x1 = null, y1 = null;
 
-  function createNotation(x,y){
-    var note = $('<div>' + '(' + x + ',' + y + ')' + '</div>')
-      .css({
-        'position': 'absolute',
-        'left': '' + x + 'px',
-        'top': '' + y + 'px'
-      });
-
-    return note;
-  }
-
-  function createLineWithNumbers (x1,y1, x2,y2) {
-    var line = createLine(x1,y1,x2,y2);
-    line.appendTo('#demo');
-    createNotation(x1,y1).appendTo('#demo');
-    createNotation(x2,y2).appendTo('#demo');
-  }
-
   $('#rotate-lines').click(function(event){
     event.preventDefault();
     rotateLineThings();
@@ -87,11 +68,6 @@ $(function(){
     event.preventDefault();
     rotateArrowThings();
   });
-
-  // createLineWithNumbers(100,50, 200,200);
-  // createLineWithNumbers(150,200, 10,30);
-  // createArrow(300,300).appendTo('#demo');
-
 
   function rotateArrowThings() {
     var degrees = (Math.random() * 360) - 180;   // +- 180
@@ -112,8 +88,8 @@ $(function(){
       display: 'inline-block',
       position: 'relative',
       margin: '20px',
-      width: '200px', 
-      height: '200px', 
+      width: '200px',
+      height: '200px',
       border: '2px dashed #eee'
     };
     props = $.extend({}, defaultProps, props);
@@ -123,38 +99,19 @@ $(function(){
   //---------------------------------------------------------
 
   var arrows = [];
-  var Box = Thing.getClass('Box');
-  var Arrow = Thing.getClass('Arrow');
+  var Box = Thing.classes.Box;
+  var Arrow = Thing.classes.Arrow;
   var Img = Thing.classes.Img;
 
   function makeBoxOfArrows () {
-    var outerBox = makeDemoBox({position:'relative', width:'70%', height:'inherit'});
-    for (var i=0; i < 10; i++) {
-      var db = makeDemoBox({
-        overflow:'hidden',
-        borderColor: '#ccc',
-        width: '400px',
-        height: '400px'
-      });
-      // var a = Arrow.make({
-      //   rotate: (Math.random()*360),
-      //   scale: .2 + (Math.random()*4),
-      //   x: (Math.random()*200),
-      //   y: (Math.random()*200),
-      //   color: ["red", "yellow", "green", "blue"][parseInt(Math.random()*4)]
-      // });
-      var a = Img.make({
-        rotate: (Math.random()*360),
-        scale: 1,
-        x: (Math.random()*50),
-        y: (Math.random()*50)
-      });
-      outerBox.add(db);
-      db.add(a);
-      arrows.push(a);
-    }
-
-    outerBox.render();
+    makeDemoBox({
+      position:'relative',
+      maxWidth:'1240px', minWidth:'500px',
+      width: 'auto', height:'auto'
+    })
+    .add( makeTenBoxes() )
+    .each( box => {box.add(makeRandomArrow())} )
+    .render();
   }
 
   //---------------------------------------------------------
@@ -163,55 +120,74 @@ $(function(){
 
   class FunBox extends Box {
     init (props) {
-      // prep some params
       props = $.extend({
         position: 'relative',
         border: '2px solid #ddd',
         borderRadius: '6px',
-        margin: '10px'
+        margin: '10px',
+        maxWidth:'1240px',
+        minWidth:'500px',
+        width: 'auto', height:'auto'
       }, props);
 
       super.init(props);
       this.type = 'FunBox';
       this.$element = Thing.makeElement(this.html(), this.props, this.type);
-
-      for (var i=0; i < 10; i++) {
-        var db = makeDemoBox({
-          overflow:'hidden',
-          borderColor: '#ccc',
-          position: 'relative'
-        });
-
-        for (var j=0; j < 10; j++) {
-          var a = Thing.classes.Line.make({
-            x1: (Math.random()*100),
-            y1: (Math.random()*200),
-            x2: (100 + Math.random()*100),
-            y2: (Math.random()*200),
-            width: parseInt(1 + (Math.random()*3), 10),
-            opacity: .1 + (Math.random()*.9)
-          });
-          db.add(a);
-          funboxItems.push(a);
-        }
-
-        this.add(db);
-      }
     }
   }
 
   //---------------------------------------------------------
 
+  function makeRandomArrow() {
+    let a = Thing.classes.Arrow.make({
+      rotate: {z: (Math.random()*360)},
+      scale: .2 + (Math.random()*4),
+      x: (Math.random()*200),
+      y: (Math.random()*200),
+      color: ["red", "yellow", "green", "blue"][parseInt(Math.random()*4)]
+    });
+    arrows.push(a);
+    return a;
+  }
+
+  function makeTenBoxes() {
+    let boxes = [];
+    for (var i=0; i < 10; i++) {
+      boxes.push(makeDemoBox({
+        overflow:'hidden',
+        borderColor: '#ccc',
+        position: 'relative'
+      }));
+    }
+    return boxes;
+  }
+
+  function makeTenLines() {
+    let lines = [];
+    for (var j=0; j < 10; j++) {
+      var a = Thing.classes.Line.make({
+        x1: (Math.random()*100),
+        y1: (Math.random()*200),
+        x2: (100 + Math.random()*100),
+        y2: (Math.random()*200),
+        width: parseInt(1 + (Math.random()*3), 10),
+        opacity: .1 + (Math.random()*.9)
+      });
+      funboxItems.push(a);
+      lines.push(a);
+    }
+    return lines;
+  }
+
   makeBoxOfArrows();
 
   var FB = FunBox.make();
-  FB.css({width: '70%'});
+  FB.add(makeTenBoxes());
+  FB.each( box => { box.add(makeTenLines()) } );
   FB.render();
 
   window.FB = FB;
   window.Img = Img;
-
-  // Thing.addCSSString('.Line { transition: transform .2s; }');
 });
 </script>
 

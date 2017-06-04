@@ -13,17 +13,12 @@ class Triangle extends Thing {
 		this.makeTriangle(this.props.size, this.props.color);  // have to make element before calling this
 	}
 
-	render () {
-		super.render();
-		return this;
-	}
-
 	makeTriangle (size, color) {
 		color = color || '#BADA55';
 		size = size || 10;
 		this.css({
-			width: 0, 
-			height: 0, 
+			width: 0,
+			height: 0,
 			fontSize: 0,
 			lineHeight: 0,
 			borderBottom: size + 'px solid transparent',

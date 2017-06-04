@@ -171,10 +171,6 @@ class Thing {
     Thing.classes[cls.name] = cls;
   }
 
-  static getClass (name) {
-    return Thing.classes[name];
-  }
-
   //---------------------------------------------------------
   // CSS management functions
 
@@ -249,6 +245,14 @@ class Thing {
 
   static isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  // add font family to page - will load only once
+  static addFontURL(fontFamilyURL, id) {
+    if (fontFamilyURL && id && $('head').find('#' + id).length === 0) {
+      var link = '<link rel="stylesheet" href="' + fontFamilyURL + '" id="' + id + '">';
+      $('head').append(link);
+    }
   }
 
   static addCSSFile(fileName, id='Thing') {

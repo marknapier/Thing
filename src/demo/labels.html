@@ -1,0 +1,79 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Thing Demo</title>
+    <link href="reset.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  let Rand = Thing.classes.Rand;
+
+  function makeDemoBox (props) {
+    let defaultProps = {
+      display: 'inline-block',
+      position: 'relative',
+      margin: '20px',
+      width: '200px',
+      height: '200px',
+      border: '2px dashed #eee'
+    };
+    props = $.extend({}, defaultProps, props);
+    return Thing.classes.Box.make(props);
+  }
+
+  function makeRandomLabel() {
+    let size = Rand.randInt(18,180);
+    let a = Thing.classes.Label.make({
+      fontSize: Rand.randInt(18,180) + 'px',
+      rotate: {z: Rand.randInt(-120, 120)},
+      x: Rand.randInt(0,100 - size),
+      y: Rand.randInt(0,100 - size),
+      color: ["red", "yellow", "green", "blue"][Rand.randInt(0,3)],
+      fontWeight: ["400", "500", "700", "900"][Rand.randInt(0,3)],
+      text: 'Blarg'
+    });
+    return a;
+  }
+
+  function makeTenBoxes() {
+    let boxes = [];
+    for (var i=0; i < 10; i++) {
+      boxes.push(makeDemoBox({
+        overflow:'hidden',
+        borderColor: '#ccc',
+        position: 'relative',
+        backgroundColor: ["black", "white", "magenta", "cyan"][Rand.randInt(0,3)]
+      }));
+    }
+    return boxes;
+  }
+
+  function makeBoxOfLabels () {
+    var b = makeDemoBox({
+      position:'relative',
+      maxWidth:'1240px', minWidth:'500px',
+      width: 'auto', height:'auto'
+    })
+    .add( makeTenBoxes() )
+    .each( box => {box.add(makeRandomLabel())} )
+    .render();
+
+    return b;
+  }
+
+  window.BOX = makeBoxOfLabels();
+});
+</script>
+
+  </body>
+</html>

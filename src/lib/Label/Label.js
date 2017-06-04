@@ -4,7 +4,7 @@ class Label extends Thing {
 	init (props) {
 		var defaultProps = {
 			text: '',
-			fontFamily: 'Calibri, Arial, sans-serif',
+			fontFamily: 'Roboto, Calibri, Arial, sans-serif',
 			fontSize: '14px',
 			color: '#000'
 		};
@@ -13,16 +13,15 @@ class Label extends Thing {
 		this.type = 'Label';
 		this.text = props.text;
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
-		this.$element.append(this.text);
+		this.setText(props.text);
+
+		Thing.addFontURL('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900', 'roboto_font');
 	}
 
 	setText (txt) {
 		this.text = txt;
 		this.$element.empty().text(txt);
-	}
-
-	render () {
-		super.render();
+		return this;
 	}
 }
 Thing.addClass(Label);

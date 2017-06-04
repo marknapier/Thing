@@ -10,11 +10,6 @@ class Arrow extends Thing {
 		Thing.addCSSString(CSS, 'Arrow');
 	}
 
-	render () {
-		super.render();
-		return this;
-	}
-
 	setColor (c) {
 		this.$element.find('.arrow-head').css({borderLeftColor:c});
 		this.$element.find('.arrow-body').css({backgroundColor:c});
