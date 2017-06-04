@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>BGImg (Background Image) Demo</title>
+  <link href="reset.css" rel="stylesheet">
+</head>
+
+<body>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  let Rand = Thing.classes.Rand;
+  let bgImage = 'img/marilyn_mouth_square.png'
+
+  function makeDemoBox (props) {
+    return Thing.classes.Box.make($.extend({
+        display: 'inline-block',
+        position: 'relative',
+        margin: '20px',
+        width: '300px',
+        height: '300px',
+        overflow: 'hidden',
+        border: '1px dotted #f33',
+        backgroundColor: '#fff'
+      }, props));
+  }
+
+  function makeLabel (props) {
+    return Thing.classes.Label.make($.extend({
+      color: '#fcffce',
+      textShadow: '1px 1px 2px black',
+      fontSize: '16px',
+      fontWeight: '700',
+      margin: '6px'
+    }, props));
+  }
+
+  function makeBGBoxes() {
+    return [
+      // 3 sizes
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: 'cover',
+          center: false,
+          repeat: false
+      })).add(makeLabel({text: 'size=cover center=false repeat=false'})),
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: 'cover',
+          center: true,
+          repeat: false
+      })).add(makeLabel({text: 'size=cover center=true repeat=false'})),
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: 'contain',
+          center: false,
+          repeat: false
+      })).add(makeLabel({text: 'size=contain center=false repeat=false'})),
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: 'contain',
+          center: true,
+          repeat: true
+      })).add(makeLabel({text: 'size=contain center=true repeat=true'})),
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: '100% 100%',
+          center: false,
+          repeat: false
+      })).add(makeLabel({text: 'size=100% center=false repeat=false'})),
+
+      // Center / repeat
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: '50% 50%',
+          center: false,
+          repeat: false
+      })).add(makeLabel({text: 'size=50% center=false repeat=false'})),
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: '50% 50%',
+          center: true,
+          repeat: false
+      })).add(makeLabel({text: 'size=50% center=true repeat=false'})),
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: '50% 50%',
+          center: true,
+          repeat: true
+      })).add(makeLabel({text: 'size=50% center=true repeat=true'})),
+      makeDemoBox().add(
+        Thing.classes.BGImg.make({
+          url: bgImage,
+          size: '50% 50%',
+          center: false,
+          repeat: true
+      })).add(makeLabel({text: 'size=50% center=false repeat=true'}))
+    ];
+  }
+
+  // Render sample image
+  makeDemoBox({display: 'block', height: '100px', width: '200px', border: 'none'})
+    .add(Thing.classes.Img.make({src: bgImage}))
+    .add(makeLabel({text: 'actual image'}))
+    .render();
+
+  // Render demos
+  makeDemoBox({
+      width: '800px',
+      height: 'auto',
+      border: 'none'
+  })
+  .add(makeBGBoxes())
+  .render();
+
+  // Reference image link
+  Thing.classes.Label.make({
+    position: 'relative',
+    margin: '10px',
+    text: '<a href="BGImg_demo_page.png" target="blank">Reference:<br><img src="BGImg_demo_page.png" width="100px"></a>',
+    html: true
+  }).render();
+});
+</script>
+
+</body>
+</html>

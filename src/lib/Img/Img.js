@@ -2,8 +2,6 @@ var Thing = require('../Thing/Thing.js');
 
 /*
     src: <file path>
-    center: true|false
-    size: contain|cover|stretch
 */
 
 class Img extends Thing {
@@ -41,6 +39,7 @@ class Img extends Thing {
         background: 'url(' +img.src+ ') no-repeat center',
         backgroundSize: '100% 100%'
     });
+    // apply transforms now that we know image width and height
     this.transform();
     Img.loaded(this);
   }

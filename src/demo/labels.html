@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Thing Demo</title>
+    <title>Label Demo</title>
     <link href="reset.css" rel="stylesheet">
   </head>
 
@@ -19,59 +19,82 @@ $(function(){
   let Rand = Thing.classes.Rand;
 
   function makeDemoBox (props) {
-    let defaultProps = {
-      display: 'inline-block',
-      position: 'relative',
-      margin: '20px',
-      width: '200px',
-      height: '200px',
-      border: '2px dashed #eee'
-    };
-    props = $.extend({}, defaultProps, props);
-    return Thing.classes.Box.make(props);
-  }
-
-  function makeRandomLabel() {
-    let size = Rand.randInt(18,180);
-    let a = Thing.classes.Label.make({
-      fontSize: Rand.randInt(18,180) + 'px',
-      rotate: {z: Rand.randInt(-120, 120)},
-      x: Rand.randInt(0,100 - size),
-      y: Rand.randInt(0,100 - size),
-      color: ["red", "yellow", "green", "blue"][Rand.randInt(0,3)],
-      fontWeight: ["400", "500", "700", "900"][Rand.randInt(0,3)],
-      text: 'Blarg'
-    });
-    return a;
-  }
-
-  function makeTenBoxes() {
-    let boxes = [];
-    for (var i=0; i < 10; i++) {
-      boxes.push(makeDemoBox({
-        overflow:'hidden',
-        borderColor: '#ccc',
+    return Thing.classes.Box.make($.extend({
+        display: 'inline-block',
         position: 'relative',
-        backgroundColor: ["black", "white", "magenta", "cyan"][Rand.randInt(0,3)]
-      }));
-    }
-    return boxes;
+        margin: '20px',
+        width: '700px',
+        height: '80px',
+        overflow: 'hidden',
+        border: '1px dotted #ccc',
+        backgroundColor: '#fff'
+      }, props));
   }
 
-  function makeBoxOfLabels () {
-    var b = makeDemoBox({
-      position:'relative',
-      maxWidth:'1240px', minWidth:'500px',
-      width: 'auto', height:'auto'
-    })
-    .add( makeTenBoxes() )
-    .each( box => {box.add(makeRandomLabel())} )
-    .render();
-
-    return b;
+  function makeLabelBoxes() {
+    return [
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '18px',
+        fontWeight: "100",
+        text: "Small thin 100 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '18px',
+        fontWeight: "400",
+        text: "Small regular 400 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '18px',
+        fontWeight: "700",
+        text: "Small bold 700 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '18px',
+        fontWeight: "900",
+        text: "Small heavy 900 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '48px',
+        fontWeight: "400",
+        text: "Large regular 400 weight blah blah blah blah 0123456789 $#@!%^&* (){}<>..."
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '20px',
+        fontWeight: "400",
+        text: "Ignore html: <p>I will rise</p><p>After a thousand years</p><p>And set my teeth in the silver of the moon</p>"
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '20px',
+        fontWeight: "400",
+        text: "Respect html:<p>I will rise</p><p>After a thousand years</p><p>And set my teeth in the silver of the moon</p>",
+        html: true
+      })),
+      makeDemoBox({backgroundColor:'black', height:'180px'}).add(
+        Thing.classes.Label.make({
+        fontSize: '200px',
+        fontWeight: "900",
+        text: "BANG!",
+        color: 'magenta',
+        rotate: {z: -10}
+      }))
+    ];
   }
 
-  window.BOX = makeBoxOfLabels();
+  // Render Label demos
+  makeDemoBox({
+      width: '800px',
+      height: 'auto',
+      border: 'none'
+  })
+  .add(makeLabelBoxes())
+  .render();
 });
 </script>
 
