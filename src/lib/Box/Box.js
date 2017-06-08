@@ -29,7 +29,7 @@ class Box extends Thing {
       this.css({
         WebkitMaskImage: imageDefinition,
         WebkitMaskRepeat: 'no-repeat',
-        WebkitMaskSize: '100%',
+        WebkitMaskSize: '100% 100%',
         WebkitMaskPosition: '50% 50%'
       });
     }
