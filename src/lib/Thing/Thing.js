@@ -15,7 +15,7 @@ class Thing {
     props.position = props.position || 'absolute';   // default to absolute positioning
     this.props = props;
 
-    // keep these properties on 'this'
+    // keep these shorthand properties on 'this'
     this.rotation = props.rotate || null;
     this.scaleFactor = props.scale || 1;
     this.x = props.x || 0;
@@ -157,6 +157,7 @@ class Thing {
         width: parentElementSize, height: parentElementSize
       });
     }
+    return this;
   }
 
   static make () {
@@ -174,26 +175,25 @@ class Thing {
   //---------------------------------------------------------
   // CSS management functions
 
-  static makeStyles (props) {
-    var styles = props || {};
-    $.extend(styles, {
-      // left: props.left || (props.x && (props.x + "px")),
-      // top: props.top || (props.y && (props.y + "px")),
-      width: props.width || (props.w && (props.w + "px")),
-      height: props.height || (props.h && (props.h + "px")),
-      // zIndex: props.zIndex || props.z,
-      backgroundColor: props.backgroundColor,
-      transform: props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y, props.z)),
-      position: props.position || 'absolute'
-    });
-    // These are not true CSS properties, so remove them
+  // Return the props converted to legit CSS properties.
+  // Most props are already css properties, and will be returned unchanged.
+  // Shorthand properties (x,y,z,w,h,rotate,scale,size) will be converted to
+  // css properties and removed from the props object.
+  static convertToCSS (props) {
+    var styles = $.extend({}, props);
+    styles.width = props.width || (props.w && (props.w + "px")),
+    styles.height = props.height || (props.h && (props.h + "px")),
+    styles.transform = props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y, props.z)),
+    // These are not true CSS properties so remove them
     delete styles.rotate;
     delete styles.scale;
+    delete styles.size;
     delete styles.x;
     delete styles.y;
     delete styles.z;
     delete styles.w;
     delete styles.h;
+    delete styles.r;
     return styles;
   }
 
@@ -222,7 +222,7 @@ class Thing {
   }
 
   static makeScaleCSS (scale) {
-    return 'scale('+scale+')';
+    return (scale === undefined || scale === null) ? '' : 'scale('+scale+') ';
   }
 
   // NOTE: translation coords are relative to the element's position in the document flow.
@@ -237,7 +237,7 @@ class Thing {
 
   static makeElement (html, props, type) {
     var $element = $(html)
-      .css(Thing.makeStyles(props))
+      .css(Thing.convertToCSS(props))
       .addClass(type || 'random')
       .attr('id', (type || 'random') + (++elementCounter));
     return $element;

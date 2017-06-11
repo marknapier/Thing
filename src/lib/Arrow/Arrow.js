@@ -19,11 +19,6 @@ class Arrow extends Thing {
 	html () {
 		return "<div><div class='arrow-wrapper'><div class='arrow-body'></div><div class='arrow-head'></div></div></div>";
 	}
-
-	static createArrowElement () {
-		var $arrow = $("<div class='arrow-wrapper'><div class='arrow-body'></div><div class='arrow-head'></div></div>");
-		return $arrow;
-	}
 }
 Thing.addClass(Arrow);
 

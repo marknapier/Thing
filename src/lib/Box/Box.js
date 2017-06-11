@@ -33,6 +33,7 @@ class Box extends Thing {
         WebkitMaskPosition: '50% 50%'
       });
     }
+    return this;
   }
 
   // remove item from this box (from the dom and the items list)
