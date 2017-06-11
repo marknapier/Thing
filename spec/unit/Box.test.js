@@ -46,4 +46,26 @@ describe('Box', function () {
 		expect($('body').find('.Box').find('.Thing').length).toBe(1);
 		b.unRender();
 	});
+	it('knows its bounds on the page', function () {
+		let b = Thing.classes.Box.make({x:100, y:200, w:300, h:400});
+
+		// remove any default whitespace from body tag
+		$('body').css({padding:0, margin:0, border:0});
+
+		b.render();
+		expect(b.getBoundingBox()).toEqual({x:100, y:200, w:300, h:400, bottom:600, right:400});
+		b.unRender();
+	});
+	it('knows the bounds of its elements on the page (even if they overflow the box)', function () {
+		let b = Thing.classes.Box.make({x:100, y:200, w:20, h:20});  // 20x20 box
+		b.add(Thing.make({x:0, y:0, w:100, h:100}));
+		b.add(Thing.make({x:50, y:50, w:200, h:200}));   // 200x200 thing at 50,50
+
+		// remove any default whitespace from body tag
+		$('body').css({padding:0, margin:0, border:0});
+
+		b.render();
+		expect(b.getElementBounds()).toEqual({x:100, y:200, w:250, h:250, bottom:450, right:350});
+		b.unRender();
+	});
 });
