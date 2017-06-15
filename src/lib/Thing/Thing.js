@@ -148,13 +148,16 @@ class Thing {
   }
 
   // Size element to fill parent with a square aspect ratio
-  fillParent () {
+  fillParent (stretch) {
     if (this.parent) {
-      let parentElementSize = Math.max(this.parent.$element.width(), this.parent.$element.height());
+      let parentW = this.parent.$element.width();
+      let parentH = this.parent.$element.height();
+      let parentElementSize = Math.max(parentW, parentH);
       this.css({
         position: 'absolute',
         left: '0px', top: '0px',
-        width: parentElementSize, height: parentElementSize
+        width: stretch ? parentW : parentElementSize, 
+        height: stretch ? parentH : parentElementSize
       });
     }
     return this;
