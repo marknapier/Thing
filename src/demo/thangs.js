@@ -1,5 +1,6 @@
 $(function(){
   var Thing = window.Thing;
+  var Meninas = window.Meninas;
   var Rand = Thing.classes.Rand;
 
   var imgNamesEyesRight = [
@@ -60,61 +61,115 @@ $(function(){
     "yoda_nose_fuzzy.png"
   ];
 
+  var imgNamesHair = [
+    "elvis_hair.png",
+    "marilyn_hair.png",
+    "mona_hair.png",
+    "washington_hair.png",
+    "chaplin_hat.png"
+  ];
+
+  function makeLines (things) {
+    var lines = things.map(function(t) {
+      var y = -200 + ((t.y / 1800) * 300);
+      return Thing.classes.Line.make({
+        x1: t.x + (t.x < 580 ? -100 : 100),   // left side vs. right
+        y1: t.y,
+        x2: (t.x < 580 ? -100 : 1100),   // left side vs. right
+        y2: (t.y + y),
+        width: 6,
+        color: '#6F0',
+        zIndex: 1000
+      });
+    });
+    return lines;
+  }
+
+  function makeLabels (things) {
+    var labels = things.map(function(t) {
+      var y = -200 + ((t.y / 1800) * 300);
+      return Thing.classes.Label.make({
+        x: (t.x < 580 ? -300 : 1100),   // left side vs. right
+        y: (t.y + y) - 25,
+        w: 200,
+        h: 50,
+        color: '#6F0',
+        fontSize: '' + (1800 * 0.03) + 'px',
+        fontWeight: 700,
+        textShadow: 'rgba(0, 0, 0, 0.8) 1px 1px 1px',
+        text: '' + t.x.toFixed(0) + ',' + t.y.toFixed(0),
+        zIndex: 1100
+      });
+    });
+    return labels;
+  }
+
   function makeFaceParts (dim) {
-    // var dim = box.getDimensions();
     var midW = dim.w * 0.5;
-    var leftW = dim.w * 0.70;
-    var riteW = dim.w * 0.30;
-    var eyeH = dim.h * 0.50;
-    var noseH = dim.h * 0.40;
-    var mouthH = dim.h * 0.75;
-    var jitter = Rand.randInt(0,50);
-    var scale = function () {return 0.80 + (Rand.randSin() * 0.4);};
+    var midH = dim.h * 0.50;
+    var eyeW = dim.w * 0.375;
+    var eyeLX = dim.w * 0.70;
+    var eyeRX = dim.w * 0.30;
+    var noseY = dim.h * 0.60;  // vertical center of nose
+    var mouthY = dim.h * 0.812;  // vertical center of mouth
+    var jitter = Rand.randInt(0,80);
+    var variation = function () {return 0.80 + (Rand.randSin() * 0.4);};
     var parts = [];
 
     var eyeLeft = Thing.classes.Img.make({
       src: 'img/faceparts/' + Rand.randItem(imgNamesEyesLeft),
-      x: (leftW + (Rand.randNormal() * jitter)) - 75,   // rough attempt at centering
-      y: (eyeH + (Rand.randNormal() * jitter)) - 60,
-      w: 150 * scale(),
+      x: (eyeLX + (Rand.randNormal() * jitter)),
+        // rough attempt at centering
+      y: (midH + (Rand.randNormal() * jitter)),
+      w: eyeW * variation(),
+      renderOnCenter: true,
+      border: '1px solid red',
     });
     var eyeRight = Thing.classes.Img.make({
       src: 'img/faceparts/' + Rand.randItem(imgNamesEyesRight),
-      x: (riteW + (Rand.randNormal() * jitter)) - 75,
-      y: (eyeH + (Rand.randNormal() * jitter)) - 60,
-      w: 150 * scale(),
+      x: (eyeRX + (Rand.randNormal() * jitter)),
+      y: (midH + (Rand.randNormal() * jitter)),
+      w: eyeW * variation(),
+      renderOnCenter: true,
     });
     var nose = Thing.classes.Img.make({
       src: 'img/faceparts/' + Rand.randItem(imgNamesNoses),
-      x: (midW + (Rand.randNormal() * jitter)) - 75,
-      y: noseH + (Rand.randNormal() * jitter),
-      w: 150 * scale(),
+      x: (midW + (Rand.randNormal() * (jitter/2))),      // keep the nose closer to center (less jitter)
+      y: noseY + (Rand.randNormal() * jitter),
+      w: (0.32 * dim.w) * variation(),
+      renderOnCenter: true,
     });
     var mouth = Thing.classes.Img.make({
       src: 'img/faceparts/' + Rand.randItem(imgNamesMouths),
-      x: (midW + (Rand.randNormal() * jitter)) - 125,
-      y: mouthH + (Rand.randNormal() * jitter),
-      w: 250 * scale(),
+      x: (midW + (Rand.randNormal() * jitter)),
+      y: mouthY + (Rand.randNormal() * jitter),
+      w: (0.625 * dim.w) * variation(),
+      renderOnCenter: true,
     });
-    var hair = Thing.make({
-      x: (dim.w * 0.05) + (Rand.randNormal() * jitter),
-      y: (dim.h * 0.05) + (Rand.randNormal() * jitter),
-      w: (dim.w * 0.8) * scale(),
-      h: (dim.h * 0.2) * scale(),
-      backgroundColor: '#630'
+
+    var hairW = (dim.w * 1.2) * variation();
+    var hair = Thing.classes.Img.make({
+      src: 'img/faceparts/' + Rand.randItem(imgNamesHair),
+      x: ((dim.w-hairW)*0.5) + (Rand.randNormal() * jitter),
+      y: 0 + (Rand.randNormal() * jitter),
+      w: hairW,
     });
-    parts = [mouth, nose, eyeLeft, eyeRight, hair];
+
+    parts = [hair, mouth, nose, eyeLeft, eyeRight];
+    Rand.randItem(parts).props.backgroundColor = '#6f0';  // sneaky... inject into props  :()
+
     return parts;
   }
 
   function makeDividerLines(dim) {
+    let lineWidth = 6;
     let lines = [
       Thing.classes.Line.make({  // vertical center 
         x1: (dim.w/2),
         y1: (0),
         x2: (dim.w/2),
         y2: (dim.h),
-        width: 2,
+        width: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // horizontal center
@@ -122,7 +177,7 @@ $(function(){
         y1: (dim.h/2),
         x2: (dim.w),
         y2: (dim.h/2),
-        width: 2,
+        width: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // horizontal top quarter
@@ -130,7 +185,7 @@ $(function(){
         y1: (dim.h * 0.25),
         x2: (dim.w),
         y2: (dim.h * 0.25),
-        width: 2,
+        width: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // horizontal bottom quarter
@@ -138,23 +193,23 @@ $(function(){
         y1: (dim.h * 0.75),
         x2: (dim.w),
         y2: (dim.h * 0.75),
-        width: 2,
+        width: lineWidth,
         color: '#6C0'
       }),
-      Thing.classes.Line.make({  // vertical eye centerline
+      Thing.classes.Line.make({  // vertical eye centerline 1/3
         x1: (dim.w * 0.33),
         y1: (dim.h * 0.35),
         x2: (dim.w * 0.33),
         y2: (dim.h * 0.65),
-        width: 2,
+        width: lineWidth,
         color: '#6C0'
       }),
-      Thing.classes.Line.make({  // vertical eye centerline
+      Thing.classes.Line.make({  // vertical eye centerline 2/3
         x1: (dim.w * 0.66),
         y1: (dim.h * 0.35),
         x2: (dim.w * 0.66),
         y2: (dim.h * 0.65),
-        width: 2,
+        width: lineWidth,
         color: '#6C0'
       })
     ];
@@ -162,7 +217,12 @@ $(function(){
   }
 
   function makeGridBox(dim) {
+    var gridW = dim.w * 0.1;
+    var lineW = dim.w * 0.004;
+    var halfLineW = lineW * 0.5;
     var b = Thing.classes.Box.make({
+      x: 500,
+      y: 500,
       w: dim.w, 
       h: dim.h, 
       border: '2px solid #699',
@@ -170,9 +230,9 @@ $(function(){
     });
     b.add(Thing.classes.Pattern.make({
       pattern:'none', 
-      backgroundSize: '50px 50px, 50px 50px',
-      backgroundPosition: '-2px -2px, -2px -2px',
-      backgroundImage: 'linear-gradient(rgba(120, 120, 120, 0.3) 2px, transparent 2px), linear-gradient(90deg, rgba(120, 120, 120, 0.3) 2px, transparent 2px)',
+      backgroundSize: `${gridW}px ${gridW}px, ${gridW}px ${gridW}px`,
+      backgroundPosition: `-${halfLineW}px -${halfLineW}px, -${halfLineW}px -${halfLineW}px`,
+      backgroundImage: `linear-gradient(rgba(120, 120, 120, 0.25) ${lineW}px, transparent ${lineW}px), linear-gradient(90deg, rgba(120, 120, 120, 0.25) ${lineW}px, transparent ${lineW}px)`,
       stretch: true
     }));
     return b;
@@ -180,10 +240,17 @@ $(function(){
 
   //---------------------------------------------------------
 
-  var dim = {w: 400, h: 600};
-  var b = makeGridBox(dim);
-  b.add(makeDividerLines({w: dim.w, h: dim.h}));
-  b.add(makeFaceParts({w: dim.w, h: dim.h}));
-  b.render();
+  var background = Meninas.makeBackground().css({backgroundColor: '#ffe'});
+  var dim = {w: 1200, h: 1800};
+  var box = makeGridBox(dim);
+  var faceParts = makeFaceParts(dim);
+
+  box.add(makeDividerLines(dim));
+  box.add(faceParts);
+  box.add(makeLines(faceParts));
+  box.add(makeLabels(faceParts));
+
+  background.add(box);
+  background.render();
 });
 
