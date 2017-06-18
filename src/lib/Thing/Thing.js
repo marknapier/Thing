@@ -16,6 +16,7 @@ class Thing {
     this.props = props;
 
     // keep these shorthand properties on 'this'
+    this.renderOnCenter = props.renderOnCenter || false;
     this.rotation = props.rotate || null;
     this.scaleFactor = props.scale || 1;
     this.x = props.x || 0;
@@ -132,7 +133,7 @@ class Thing {
 
   transform () {
     this.css({
-      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor, this.x, this.y, this.z)
+      transform: Thing.makeTransformCSS(this.rotation, this.scaleFactor, this.x, this.y, this.z, this.renderOnCenter, this.w, this.h)
     });
     return this;
   }
@@ -148,13 +149,16 @@ class Thing {
   }
 
   // Size element to fill parent with a square aspect ratio
-  fillParent () {
+  fillParent (stretch) {
     if (this.parent) {
-      let parentElementSize = Math.max(this.parent.$element.width(), this.parent.$element.height());
+      let parentW = this.parent.$element.width();
+      let parentH = this.parent.$element.height();
+      let parentElementSize = Math.max(parentW, parentH);
       this.css({
         position: 'absolute',
         left: '0px', top: '0px',
-        width: parentElementSize, height: parentElementSize
+        width: stretch ? parentW : parentElementSize, 
+        height: stretch ? parentH : parentElementSize
       });
     }
     return this;
@@ -183,7 +187,7 @@ class Thing {
     var styles = $.extend({}, props);
     styles.width = props.width || (props.w && (props.w + "px")),
     styles.height = props.height || (props.h && (props.h + "px")),
-    styles.transform = props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y, props.z)),
+    styles.transform = props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y, props.z, props.renderOnCenter, props.w, props.h)),
     // These are not true CSS properties so remove them
     delete styles.rotate;
     delete styles.scale;
@@ -197,9 +201,9 @@ class Thing {
     return styles;
   }
 
-  static makeTransformCSS (rotate, scale, tx, ty, tz) {
+  static makeTransformCSS (rotate, scale, tx, ty, tz, renderOnCenter, w, h) {
     var transform = '';
-    transform += (tx || ty || tz) ? (Thing.makeTranslateCSS(tx, ty, tz) + ' ') : '';
+    transform += (tx || ty || tz) ? (Thing.makeTranslateCSS(tx, ty, tz, renderOnCenter, w, h) + ' ') : '';
     transform += rotate ? (Thing.makeRotationCSS(rotate) ) : '';
     transform += scale ? (Thing.makeScaleCSS(scale) + ' ') : '';
     return transform;
@@ -228,10 +232,14 @@ class Thing {
   // NOTE: translation coords are relative to the element's position in the document flow.
   // They are not the same as setting left/top values, which are absolute coordinates
   // relative to the parent element.
-  static makeTranslateCSS (x, y, z) {
+  static makeTranslateCSS (x, y, z, renderOnCenter, w, h) {
     x = x || '0';
     y = y || '0';
     z = z || '0';
+    if (renderOnCenter) {
+      x -= w/2;
+      y -= h/2;
+    }
     return 'translate3d('+ x + 'px, ' + y + 'px, ' + z +'px)';
   }
 

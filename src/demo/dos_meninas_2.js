@@ -16,11 +16,7 @@ $(function () {
   var pixelHeight = pixelWidth * aspectRatio;
   var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
   var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale);
-  var stage = Meninas.makeStage(pixelWidth, pixelHeight, mainScale);
   var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
-
-  // background aliasing is smoother at a larger size
-  // scaleDocument(3);
 
   // Prevents the screenshot plugin from including scrollbars in large screenshots.
   $('body').css({
@@ -97,9 +93,7 @@ $(function () {
     });
   background.add(floorImg);
 
-  stage.add(background);
-  stage.render();
-
+  background.render();
 
   function makeImgPointers () {
     var dim = menina.getDimensions();
@@ -114,19 +108,4 @@ $(function () {
   }
 
   Thing.classes.Img.onAllLoaded = makeImgPointers;
-
-  // background: linear-gradient( 45deg, red 0%, red 50%, white 51%, white 100% );
-  // radial-gradient(ellipse at 40% 30%, rgba(255, 255, 0, 0.13) 20%, transparent 60%, rgba(249, 0, 0, .2) 90%),
-  // $('#Img22').css('transform').replace(/[^0-9\-.,]/g, '').split(',')
-  // clip-path: inset(0px 120px 646px 0px);
-  //perspective-origin: 50% 25%
-  //backface-visibility: hidden
-
-  // mask image:
-  // -webkit-mask-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/234228/alpha-cat.png);
-  //
-  // -webkit-mask-image: url(file:///Users/mark.napier/Projects/htdocs/Thing/img/las_meninas_girl_t.png);
-  // -webkit-mask-repeat: no-repeat;
-  // -webkit-mask-size: 140%;
-  // opacity: .85;
 });

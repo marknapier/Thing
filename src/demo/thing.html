@@ -223,6 +223,48 @@ $(function(){
     return b;
   }
 
+  function makeImageMask() {
+    var b = Thing.classes.Box.make({
+      w: 230, 
+      h: 575, 
+      backgroundColor: '#0c7436', 
+      left: '400px'
+    });
+    b.add(Thing.classes.Pattern.make({
+      pattern:'none', 
+      backgroundSize: '50px 50px, 50px 50px',
+      backgroundPosition: '-2px -2px, -2px -2px',
+      backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
+    }));
+    b.add(Thing.classes.Img.make({
+      src: 'img/rubens_adonis_leg_left.png', 
+      w: 200, 
+    }));
+    b.addMask('url(img/rubens_adonis_leg_left.png)');
+    return b;
+  }
+
+  function makeImageShadow() {
+    var b = Thing.classes.Box.make({
+      w: 200, 
+      h: 580, 
+      left: '800px'
+    });
+    b.add(Thing.classes.Pattern.make({
+      pattern:'none', 
+      backgroundSize: '50px 50px, 50px 50px',
+      backgroundPosition: '-2px -2px, -2px -2px',
+      backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
+      stretch: true
+    }));
+    b.add(Thing.classes.Img.make({
+      src: 'img/rubens_adonis_leg_left.png', 
+      w: 200, 
+      filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
+    }));
+    return b;
+  }
+
   //---------------------------------------------------------
 
   makeBoxOfArrows();
@@ -235,6 +277,8 @@ $(function(){
   makeGradientMask().render()
 
   makePatternMask().render()
+  makeImageMask().render()
+  makeImageShadow().render()
 
   window.FB = FB;
   window.Img = Img;

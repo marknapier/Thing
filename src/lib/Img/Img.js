@@ -16,10 +16,10 @@ class Img extends Thing {
     this.aspectRatio = 1;
     this.loaded = false;
     this.src = props.src;
-    this.x = props.x || undefined;
-    this.y = props.y || undefined;
-    this.w = props.w || undefined;
-    this.h = props.h || undefined;
+    this.x = props.x;
+    this.y = props.y;
+    this.w = props.w;
+    this.h = props.h;
 
     Img.loading(this);
     loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
@@ -33,10 +33,11 @@ class Img extends Thing {
     this.aspectRatio = img.height / img.width;  // aspect ratio of original image
     this.w = this.w || img.width;
     this.h = this.h || (this.w * this.aspectRatio);
+    // set the image as the div's background
     this.css({
         width: this.w,
         height: this.h,
-        background: 'url(' +img.src+ ') no-repeat center',
+        background: 'url(' +img.src+ ') no-repeat center ' + (this.props.backgroundColor || ''),
         backgroundSize: '100% 100%'
     });
     // apply transforms now that we know image width and height

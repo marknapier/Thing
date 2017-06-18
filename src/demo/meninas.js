@@ -205,28 +205,14 @@ window.Meninas = (function () {
   function makeBackground (w, h) {
     return Thing.classes.Box
         .make({
-          w: w,
-          h: h,
+          w: w || 5000,
+          h: h || 3600,
           backgroundColor: '#ff6400',
           position: 'absolute',
           display: 'block',
           overflow: 'hidden',
           perspective: '4000px',
           perspectiveOrigin: '50% 50%',
-          transformStyle: 'preserve-3d'
-        });
-  }
-
-  function makeStage (w, h) {
-    return Thing.classes.Box
-        .make({
-          w: w,
-          h: h,
-          backgroundColor: '#ff64cc',
-          position: 'absolute',
-          display: 'block',
-          overflow: 'hidden',
-          perspective: '2000px',
           transformStyle: 'preserve-3d'
         });
   }
@@ -309,7 +295,6 @@ window.Meninas = (function () {
     makeBubbleArrow: makeBubbleArrow,
     makeTextArrow: makeTextArrow,
     makeBackground: makeBackground,
-    makeStage: makeStage,
     makeMatrix2D: makeMatrix2D,
     transformPoint: transformPoint,
     makeFloorBleached: makeFloorBleached
