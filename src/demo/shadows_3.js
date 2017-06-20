@@ -1,5 +1,6 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
+var Rand = Thing.classes.Rand;
 
 var greens = [
   'rgba(0, 255, 160, 1.0)',   // light aqua
@@ -25,8 +26,14 @@ var greens = [
   'rgba(0, 55, 33, 0.95)'
 ];
 
+// var florals = [
+//   'victorian_roses_on_black.jpg',
+//   'pink_and_red_roses_on_white.jpg',
+//   'red_on_white_floral_pattern.jpg',
+//   'roses_on_beige_pattern.jpg',
+// ];
+
 function makePattern (name, size) {
-  var Rand = Thing.classes.Rand;
   var Pattern = Thing.classes[name] ? Thing.classes[name] : Thing.classes.Pattern;
   var P =  Pattern.make({pattern: name, size: size});
   var box = Thing.classes.Box.make( {
@@ -45,70 +52,38 @@ function makePattern (name, size) {
   return box;
 }
 
-// function makeRadialGradient (props) {
-//   let defaultProps = {
-//     color: 'rgb(255,255,255)',
-//     radius: 100,
-//     size: 200,
-//   };
-//   let _props = $.extend({}, defaultProps, props);
-//   return {
-//     backgroundImage: _props.backgroundImage || ('radial-gradient(' +_props.color+ ' ' +_props.radius+ 'px, transparent ' +(_props.radius+2)+ 'px)'),
-//     backgroundSize: _props.size + 'px ' + _props.size + 'px',
-//     backgroundPosition: '' +(_props.size/2)+ 'px ' +(_props.size/2)+ 'px'
-//   };
-// }
-
-// var radgradCSS = {
-//   backgroundImage: 'radial-gradient(rgb(255, 242, 0) 4.8px, transparent 47.8px), radial-gradient(blue 9px, rgb(255, 255, 174) 5.8px, transparent 63.8px)',
-//   backgroundSize: '230px, 230px',
-//   backgroundPosition: '0px 0px, 115px 115px',
-// };
-
-// background-image: radial-gradient(rgb(255, 242, 0) 4.8px, transparent 47.8px, rgb(255, 200, 241) 50px, transparent 60px);
-// background-size: 230px 230px;
-// background-position: 0px;
-
-// background-image: radial-gradient(rgb(0, 23, 255) 5px, transparent 10px, rgb(255, 200, 241) 60px, rgba(82, 255, 160, 0.98) 62px, transparent 65px);
-// background-size: 230px 230px;
-// background-position: 115px 115px;
-
 function makeMeninaSandwich(props) {
   var Rand = Thing.classes.Rand;
+  var ImgSVG = Thing.classes.ImgSVG;
   var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
   var backgroundMasks = [
-    // 'linear-gradient(0deg, transparent 0%, transparent 15%, rgb(255, 255, 255) 15%, rgb(255, 255, 255) 55%, transparent 55.15%, transparent 65%, rgb(255, 255, 255) 65%, rgb(255,255,255) 90%, transparent 90%)',
-    // 'linear-gradient(45deg, #0e0030 25%, transparent 25.15%, transparent 50%, #0e0030 50.15%, #0e0030 75%, transparent 75.15%, transparent)',
-    // 'radial-gradient(transparent 300px, #fff 300px, #fff 600px, transparent 600px, transparent 900px, #fff 900px, #fff 1200px, transparent 1200px)',
-    // 'radial-gradient(transparent 300px, #fff 300px, #fff 800px, transparent 800px, transparent 850px, #fff 850px, #fff 1400px, transparent 1400px)',
-    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4000' height='4000'><circle shape-rendering='geometricPrecision' cx='2000' cy='2000' r='1000' stroke='black' stroke-width='1000' fill='none'/></svg>\")",
-    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4000' height='4000'><circle shape-rendering='geometricPrecision' cx='2000' cy='2000' r='1000' stroke='black' stroke-width='1000' fill='none'/></svg>\")"
+    ImgSVG.make({radius: Rand.randInt(500,1000), lineWidth: Rand.randInt(200,600)}).getURL(),
+    ImgSVG.make({radius: Rand.randInt(50,1000), lineWidth: Rand.randInt(500,1000)}).getURL(),
+    ImgSVG.make({radius: Rand.randInt(1000,1800), lineWidth: Rand.randInt(50,200)}).getURL(),
   ];
-    // 'url(img/zebra_print_t.png)'
 
   var mWich = Thing.classes.Box.make({
     x: props.x,
     y: 0,
     w: 3000,
     h: 3000,
-    zIndex: 10000
+    rotate: {y: Rand.randInt(-45,45)},
+    zIndex: props.zIndex
   });
 
   var meninaPatterns = Thing.classes.Box.make({
     width: '100%',
     height: '100%',
     backgroundColor: Rand.randItem(greens),
-    // WebkitMaskImage: backgroundMasks[3],
     WebkitMaskImage: Rand.randItem(backgroundMasks),
     WebkitMaskRepeat: 'no-repeat',
     WebkitMaskSize: '100%',
     opacity: (0.9 + (Rand.randFloat()*0.1)),   // range from slight transparency to fully opaque
-    rotate: {z: Rand.randInt(0,7)*45}
   });
 
   var patterns = [
     Meninas.makeTextPane(0, 0, Rand.randInt(500,2000), 3000),
-    makePattern('GraphPaper'),
+    makePattern('GraphPaper').css({backgroundColor:'none'}),
     makePattern('PlaidRedLarge'),
     makePattern('Sofa', Rand.randItem(sofaSizes)),
     makePattern('PatternPolkaDots', Rand.randInt(10,550)),
@@ -127,12 +102,52 @@ function makeMeninaSandwich(props) {
   return mWich;
 }
 
-$(function () {
-  // var Img = Thing.classes.Img;
-  var Rand = Thing.classes.Rand;
+function makeVerticalBar (props) {
+  var backgrounds = [
+    'url(img/pink_and_red_roses_on_white.jpg) 0 0 / 1000px 2400px',
+    'url(img/victorian_roses_on_black.jpg) 0 0 / 1280px 1920px',
+    'url(img/victorian_rose_pattern.jpg) 0 0 / 500px 750px',
+    'url(img/wood_texture_smooth_panel_red_oak.jpg) 0 0 / 3000px 3125px',
+    '#021',
+    '#010',
+    '#121',
+    '#ffa61f',
+  ];
+  return Thing.make( $.extend({
+    x: Rand.randInt(-100,4000), 
+    y: 0, 
+    w: Rand.randInt(500,2000),
+    h: 3125, 
+    background: Rand.randItem(backgrounds),
+    borderRight: '2px solid #008e00',
+  }, props));
+}
 
+function makeLump (props) {
+  var imgNames = [
+    'birth_of_venus_leg_left.png',
+    'leg_eve_left_1.png',
+    'leg_durer_right_1.png',
+    'rubens_adonis_leg_right.png',
+    'rubens_venus_leg_left.png',
+  ];
+  var imgs = imgNames.map( function (imgName) {
+    return Thing.classes.Img.make({
+      src: 'img/' + imgName,
+      x: Rand.randNormal() * 100,
+      y: Rand.randInt(0, 800),
+      w: Rand.randInt(500, 1000),
+      h: Rand.randInt(500, 2000),
+      opacity: 0.1 + (Rand.randFloat()*0.9),
+      filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
+    });
+  });
+  return Thing.classes.Box.make({x: Rand.randInt(0,4000), y: 800, w:1000, h:1000, zIndex: props.zIndex}).add(imgs);
+}
+
+$(function () {
   // setup the stage
-  var aspectRatio = 0.72;
+  var aspectRatio = 0.625;
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
   var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
@@ -157,20 +172,33 @@ $(function () {
   //radial-gradient(at 50% 40%, rgb(195, 255, 146) 32%, transparent 35%, rgb(255, 67, 103) 40%)
   //linear-gradient(rgba(255, 252, 195, 0.3) 6%, transparent 35%, rgba(124, 72, 82, 0.6) 60%)
 
-  var meninaSandwich0 = makeMeninaSandwich({x: -500}).css({zIndex:Rand.randInt(10000,11000)});
-  var meninaSandwich1 = makeMeninaSandwich({x:  800}).css({zIndex:Rand.randInt(10000,11000)});
-  var meninaSandwich2 = makeMeninaSandwich({x: 1100}).css({zIndex:Rand.randInt(10000,11000)});
-  var meninaSandwich3 = makeMeninaSandwich({x: 2000}).css({zIndex:Rand.randInt(10000,11000)});
-  var meninaSandwich4 = makeMeninaSandwich({x: 3000}).css({zIndex:Rand.randInt(10000,11000)});
+  var circles = [
+    makeMeninaSandwich({x: -500, zIndex:Rand.randInt(10000,11000)}),
+    makeMeninaSandwich({x:  800, zIndex:Rand.randInt(10000,11000)}),
+    makeVerticalBar({zIndex: Rand.randInt(10000,11000)}),
+    makeVerticalBar({zIndex: Rand.randInt(10000,11000)}),
+    makeVerticalBar({zIndex: Rand.randInt(10000,11000)}),
+    makeVerticalBar({zIndex: Rand.randInt(10000,11000)}),
+    makeVerticalBar({zIndex: Rand.randInt(10000,11000)}),
+    makeVerticalBar({
+      zIndex: Rand.randInt(10000,11000), 
+      w: 50, 
+      background: '#ffa61f', 
+      borderLeft: '2px solid mediumvioletred', 
+      borderRight: '2px solid darkgreen'
+    }),
+    makeLump({zIndex: 10800}),
+    makeMeninaSandwich({x: 1100, zIndex:Rand.randInt(10000,11000)}),
+    makeMeninaSandwich({x: 2000, zIndex:Rand.randInt(10000,11000)}),
+    makeMeninaSandwich({x: 3000, zIndex:Rand.randInt(10000,11000)}),
+  ];
+
+  // $('body').css({overflow: 'scroll'});
 
   Meninas.scaleDocument(1);
 
   backWall.add(lightSpot);
-  backWall.add(meninaSandwich0);
-  backWall.add(meninaSandwich1);
-  backWall.add(meninaSandwich2);
-  backWall.add(meninaSandwich3);
-  backWall.add(meninaSandwich4);
+  background.add(circles);
 
   background.add(wallpaper);
   background.add(backWall);

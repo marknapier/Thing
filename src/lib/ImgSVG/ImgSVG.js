@@ -42,7 +42,8 @@ class ImgSVG extends Thing {
     return svgTag;
   }
 
-  makeURL (svgTag) {
+  getURL () {
+    let svgTag = this.makeCircleSVG(this.props.radius, this.props.lineWidth);
     return `url("data:image/svg+xml;utf8,${svgTag}")`;
   }
 }

@@ -3,6 +3,27 @@ var Thing = require('../Thing/Thing.js');
 /**
  *  w, h, depth
  */
+
+ /*
+var c = Thing.classes.Cube.make({
+	x:1000, y:-500, w:1000, h:3625, d:3000, overflow: 'hidden'
+});
+BG.add(c);
+c.render();
+
+$('#cube').css({transform: 'rotateY(25deg)'});
+$('figure.front').hide();
+$('figure.left').hide();
+$('figure.right').css({backgroundColor: 'red'});
+$('figure.back').css({backgroundColor: 'black'});
+
+c.css({
+	WebkitMaskImage: 'url(img/rubens_adonis_leg_left.png)',
+    WebkitMaskSize: '100% 100%',
+    WebkitMaskPosition: '0px 0px',
+});
+
+ */
 class Cube extends Thing {
 	init (props) {
 		var defaultProps = {

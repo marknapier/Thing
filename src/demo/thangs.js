@@ -69,7 +69,7 @@ $(function(){
     "chaplin_hat.png"
   ];
 
-  function makeLines (things) {
+  function makeLabelLines (things) {
     var lines = things.map(function(t) {
       var y = -200 + ((t.y / 1800) * 300);
       return Thing.classes.Line.make({
@@ -216,18 +216,19 @@ $(function(){
     return lines;
   }
 
-  function makeGridBox(dim) {
-    var gridW = dim.w * 0.1;
-    var lineW = dim.w * 0.004;
+  // expect {w, h}
+  function makeGridBox(props) {
+    var gridW = props.w * 0.1;
+    var lineW = props.w * 0.004;
     var halfLineW = lineW * 0.5;
-    var b = Thing.classes.Box.make({
+    var b = Thing.classes.Box.make($.extend({
       x: 500,
       y: 500,
-      w: dim.w, 
-      h: dim.h, 
+      w: props.w,
+      h: props.h,
       border: '2px solid #699',
       margin: '20px'
-    });
+    }, props));
     b.add(Thing.classes.Pattern.make({
       pattern:'none', 
       backgroundSize: `${gridW}px ${gridW}px, ${gridW}px ${gridW}px`,
@@ -240,14 +241,14 @@ $(function(){
 
   //---------------------------------------------------------
 
-  var background = Meninas.makeBackground().css({backgroundColor: '#ffe'});
+  var background = Meninas.makeBackground().css({backgroundColor: '#fff'});
   var dim = {w: 1200, h: 1800};
-  var box = makeGridBox(dim);
   var faceParts = makeFaceParts(dim);
 
+  var box = makeGridBox({w: dim.w, h: dim.h, backgroundColor: '#ffff92'});
   box.add(makeDividerLines(dim));
   box.add(faceParts);
-  box.add(makeLines(faceParts));
+  box.add(makeLabelLines(faceParts));
   box.add(makeLabels(faceParts));
 
   background.add(box);
