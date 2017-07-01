@@ -23,6 +23,10 @@ class Page {
 
     static saveDocToFile() {
         var randnum = parseInt(Math.random()*100000000);
+        
+        // html only: don't save scripts
+        $('script').remove();
+
         Page.download(Page.getDocumentHTML(), 'Thing_saved_file_' + randnum + '.html', 'text/html');
     }
 }
