@@ -139,8 +139,8 @@ function makeRightWall () {
 
 function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
   var l = Thing.classes.Line.make({
-    x1:bubbleX, y1:bubbleY, 
-    x2:targetX, y2:targetY, 
+    x1:bubbleX, y1:bubbleY,
+    x2:targetX, y2:targetY,
     color:'#BADA55',
     width:5,
     arrow:true,
@@ -150,11 +150,11 @@ function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
   l.render();
 
   var c = Thing.classes.Circle.make({
-    text: '' + Thing.classes.Rand.randInt(1, 67), 
-    x: bubbleX, 
+    text: '' + Thing.classes.Rand.randInt(1, 67),
+    x: bubbleX,
     y: bubbleY,
     r: 30,
-    fontSize: '32px', 
+    fontSize: '32px',
     boxShadow: '0px 0px 9px 0px rgba(10,20,0,0.75)'
   })
   .render();
@@ -171,8 +171,6 @@ function makeBackground (w, h, scale) {
         overflow: 'hidden',
         perspective: '2000px'
       })
-      // .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*100, cellHeight:scale*100, lineWidth:scale*3}) )
-      // .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*7, cellHeight:scale*7, lineWidth:scale*1.5, opacity:.2}) )
       .render();
 }
 
@@ -214,7 +212,7 @@ $(function () {
   background.add(makeFloor())
 
   var edge = Thing.classes.Line.make({
-    x1:1345, y1:0, 
+    x1:1345, y1:0,
     x2:1345, y2:1000,
     width: 8,
     zIndex: 10010,
@@ -228,7 +226,7 @@ $(function () {
   makeBubbleArrow(Rand.randInt(100,1000), Rand.randInt(50,400), m.x, m.y);
 
 // background: linear-gradient( 45deg, red 0%, red 50%, white 51%, white 100% );
-// radial-gradient(ellipse at 40% 30%, rgba(255, 255, 0, 0.13) 20%, transparent 60%, rgba(249, 0, 0, .2) 90%), 
+// radial-gradient(ellipse at 40% 30%, rgba(255, 255, 0, 0.13) 20%, transparent 60%, rgba(249, 0, 0, .2) 90%),
 
 });
 </script>

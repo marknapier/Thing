@@ -20,7 +20,7 @@ class PatternSofa extends Thing {
       super.render();
 
       // resize pattern to fill parent element with a square aspect ratio
-      this.fillParent();
+      this.fillParent(this.props.stretch);
 
       // Tweak the pattern size
       if (this.props.size) {
