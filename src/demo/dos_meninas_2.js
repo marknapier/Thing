@@ -7,98 +7,7 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
 var Rand = Thing.classes.Rand;
-
-function oneLine(s) {
-  return (s.replace(/\r?\n|\r|\t/gm, '')).trim();
-}
-
-function makeGridPatternCSS(props) {
-  props = props || {};
-
-  let size = props.size || 100;
-  let color = props.color || 'rgba(255,255,255,.5)';
-  let bgColor = props.backgroundColor || 'transparent';
-  let lineWidth = props.lineWidth || 2;
-  let patternCSS = {
-    backgroundColor: bgColor,
-    backgroundSize: `${size}px ${size}px, ${size}px ${size}px`,
-    backgroundPosition: `-${lineWidth}px -${lineWidth}px, -${lineWidth}px -${lineWidth}px`,
-    backgroundImage: oneLine(`linear-gradient(${color} ${lineWidth}px, transparent ${lineWidth}px),
-        linear-gradient(90deg, ${color} ${lineWidth}px, transparent ${lineWidth}px)`),
-  };
-
-  return patternCSS;
-}
-
-function makeGraphPaperPatternCSS(props) {
-  props = props || {};
-
-  let size = props.size || 100;
-  let divSize = size / 4;
-  let color = props.color || 'rgba(255,255,255,.5)';
-  let bgColor = props.backgroundColor || 'transparent';
-  let lineWidth = props.lineWidth || 2;
-  let lWidth = lineWidth / 2;
-  let bgImg = `
-      linear-gradient(${color} ${lineWidth}px, transparent ${lineWidth}px),
-      linear-gradient(90deg, ${color} ${lineWidth}px, transparent ${lineWidth}px),
-      linear-gradient(${color} ${lWidth}px, transparent ${lWidth}px),
-      linear-gradient(90deg, ${color} ${lWidth}px, transparent ${lWidth}px)`;
-  let patternCSS = {
-    backgroundColor: bgColor,
-    backgroundSize: `${size}px ${size}px, ${size}px ${size}px, ${divSize}px ${divSize}px, ${divSize}px ${divSize}px`,
-    backgroundPosition: `-${lineWidth}px -${lineWidth}px, -${lineWidth}px -${lineWidth}px, -${lWidth}px -${lWidth}px, -${lWidth}px -${lWidth}px`,
-    backgroundImage: oneLine(bgImg),
-  };
-
-  return patternCSS;
-}
-
-function makeDiagonalStripePatternCSS(props) {
-  props = props || {};
-
-  let size = props.size || 100;
-  let color = props.color || '#0e0030';
-  let bgColor = props.backgroundColor || 'transparent';
-  let bgImg = `linear-gradient(45deg, ${color} 25%, transparent 25.15%, transparent 50%, ${color} 50.15%, ${color} 75%, transparent 75.15%, transparent)`;
-  let patternCSS = {
-    backgroundColor: bgColor,
-    backgroundSize: `${size}px ${size}px`,
-    backgroundImage: oneLine(bgImg),
-  };
-
-  return patternCSS;
-}
-
-function makeSofaPatternCSS(props) {
-  props = props || {};
-
-  let size = props.size || 100;
-  let mid = size / 2;
-  let bgColor = props.backgroundColor || '#300';
-  let bg =
-    `radial-gradient(hsl(0, 99%, 40%) 4%, hsl(0, 100%, 18%) 9%, hsla(0, 100%, 20%, 0) 9%) 0 0,
-    radial-gradient(hsl(0, 100%, 40%) 4%, hsl(0, 100%, 18%) 8%, hsla(0, 100%, 20%, 0) 10%) ${mid}px ${mid}px,
-    radial-gradient(hsla(0, 100%, 46%, 0.8) 20%, hsla(0, 100%, 20%, 0)) ${mid}px 0,
-    radial-gradient(hsla(0, 100%, 41%, 0.8) 20%, hsla(0, 100%, 20%, 0)) 0 ${mid}px,
-    radial-gradient(hsl(0, 100%, 23%) 35%, hsla(0, 100%, 20%, 0) 60%) ${mid}px 0,
-    radial-gradient(hsla(0, 100%, 20%, 1) 35%, hsla(0, 100%, 20%, 0) 60%) ${size}px ${mid}px,
-    radial-gradient(hsla(0, 96%, 4%, 0.7), hsla(0, 100%, 20%, 0)) 0 0,
-    radial-gradient(hsla(0, 100%, 15%, 0.7), hsla(0, 100%, 20%, 0)) ${mid}px ${mid}px,
-    linear-gradient(45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0,
-    linear-gradient(-45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0`;
-  let patternCSS = {
-    background: oneLine(bg),  // This has to come before backgroundSize or it doesn't show(?!)
-    backgroundColor: bgColor,
-    backgroundSize: `${size}px ${size}px`,
-  };
-
-  return patternCSS;
-}
-
-function makePatternFromCSS(css) {
-  return Thing.classes.Pattern.make({pattern: 'none', size: null, stretch: true}).css(css);
-}
+var Pattern = Thing.classes.Pattern;
 
 function makeRandomBox(props) {
   return Thing.classes.Box.make($.extend({
@@ -115,7 +24,7 @@ function makeRandomBox(props) {
 }
 
 function makePatternBox(patternCSSProps) {
-  return makeRandomBox().add( makePatternFromCSS(patternCSSProps) );
+  return makeRandomBox().add( Pattern.makePatternFromCSS(patternCSSProps) );
 }
 
 $(function () {
@@ -155,12 +64,12 @@ $(function () {
 
   background.add([
     Meninas.makeTextPane(0, 0, 1200, 2800),
-    makePatternBox( makeGraphPaperPatternCSS({size: Rand.randInt(1,5) * 100, backgroundColor: '#003'}) ),
-    Meninas.makePattern('PlaidRedLarge'),
-    makePatternBox( makeSofaPatternCSS({size: Rand.randInt(2,12) * 50, backgroundColor: '#330'}) ),
-    Meninas.makePattern('PatternPolkaDots', Rand.randInt(100,650)),
-    Meninas.makePattern('PatternStripes', Rand.randInt(130,600)),
-    makePatternBox( makeDiagonalStripePatternCSS({size: Rand.randInt(5,100) * 10}) ),
+    makePatternBox( Pattern.makeGraphPaperPatternCSS({size: Rand.randInt(1,5) * 100, backgroundColor: '#003'}) ),
+    makePatternBox( Pattern.makePlaidRedPatternCSS() ),
+    makePatternBox( Pattern.makeSofaPatternCSS({size: Rand.randInt(2,12) * 50}) ),
+    makePatternBox( Pattern.makePolkaDotPatternCSS({size: Rand.randInt(100,650)}) ),
+    makePatternBox( Pattern.makeVerticalStripePatternCSS({size: Rand.randInt(130,600)}) ),
+    makePatternBox( Pattern.makeDiagonalStripePatternCSS({size: Rand.randInt(5,100) * 10}) ),
     Meninas.makeMenina(),
     menina,
     Meninas.makeCouch(),

@@ -23,13 +23,8 @@ class PatternPolkaDots extends Thing {
   render () {
     if (this.parent) {
       super.render();
-      // Adjust pattern to fill parent with a square aspect ratio
-      var size = Math.max(this.parent.$element.width(), this.parent.$element.height());
-      this.css({
-        position: 'absolute',
-        left: '0px', top: '0px',
-        width: size, height: size
-      });
+      // Adjust pattern to fill parent
+      super.fillParent(this.props.stretch);
     }
     else {
       Thing.msg('Pattern.render(): Pattern needs to be added to a parent before calling render.');
