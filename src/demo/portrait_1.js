@@ -153,9 +153,13 @@ function makeBackground (w, h, scale) {
         .make( {w:w, h:h, backgroundColor: '#f00', position:'relative', display:'inline-block'} )
         .add( gradient('linear-gradient(to bottom, rgba(90,90,0,.1) 0%, rgba(0,90,0,.4) 100%)') )
         .add( gradient('linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,.1))') )
-        // .add( gradient('linear-gradient(135deg, rgba(214,247,49,0.2) 0%, rgba(249,220,0,0.1) 25%, rgba(2,86,255,0.05) 43%,rgba(2,86,255,0) 100%)') )
         .add( gradient('radial-gradient(ellipse at 80% 50%, rgba(228,244,137,.2) 0%, rgba(2,86,255,0.09) 91%, rgba(2,86,255,0) 100%)') )
-        .add( Thing.classes.Pattern.make({pattern: 'grid', cellWidth:scale*100, cellHeight:scale*100, lineWidth:scale*5}) )
+        .add( Thing.classes.Pattern.make({
+            pattern: 'GraphPaper',
+            backgroundColor: 'transparent',
+            size: scale*10,
+            lineWidth: scale*5
+        }) )
         .render();
 }
 
@@ -217,9 +221,9 @@ function addRandomStuff (dim, items, path, scale) {
 
     // Grid
     var gridPattern = Thing.classes.Pattern.make({
-        pattern: 'grid',
-        cellWidth: scale * 130,
-        cellHeight: scale * 130,
+        pattern: 'GraphPaper',
+        backgroundColor: 'transparent',
+        size: scale * 13,
         lineWidth: scale * 2
     });
     items.splice(Rand.randInt(1,items.length), 0, gridPattern);

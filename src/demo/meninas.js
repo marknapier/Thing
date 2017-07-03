@@ -260,7 +260,7 @@ window.Meninas = (function () {
     };
     var _options = $.extend(defaultOptions, options);
     var floor = Thing.classes.Box.make(_options)
-      .add([  
+      .add([
         Thing.make({  // wood texture
           width: '100%',
           height: '100%',

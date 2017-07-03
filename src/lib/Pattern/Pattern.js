@@ -4,11 +4,8 @@ var CSS = require('./Pattern.css');
 class Pattern extends Thing {
   init (props) {
     var defaultProps = {
-      color: '#ddd',
       pattern: 'GraphPaper',
-      cellWidth: 100,
-      cellHeight: 100,
-      lineWidth: 2
+      size: 50,
     };
     this.props = props = $.extend({}, defaultProps, props);
     this.initialize(props);

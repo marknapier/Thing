@@ -4,47 +4,129 @@
 // 1.4084 (.71)      6000x4260
 // 1.618   (.618)     6000x3708.3
 //
+var Thing = window.Thing;
+var Meninas = window.Meninas;
+var Rand = Thing.classes.Rand;
+
+function oneLine(s) {
+  return (s.replace(/\r?\n|\r|\t/gm, '')).trim();
+}
+
+function makeGridPatternCSS(props) {
+  props = props || {};
+
+  let size = props.size || 100;
+  let color = props.color || 'rgba(255,255,255,.5)';
+  let bgColor = props.backgroundColor || 'transparent';
+  let lineWidth = props.lineWidth || 2;
+  let patternCSS = {
+    backgroundColor: bgColor,
+    backgroundSize: `${size}px ${size}px, ${size}px ${size}px`,
+    backgroundPosition: `-${lineWidth}px -${lineWidth}px, -${lineWidth}px -${lineWidth}px`,
+    backgroundImage: oneLine(`linear-gradient(${color} ${lineWidth}px, transparent ${lineWidth}px),
+        linear-gradient(90deg, ${color} ${lineWidth}px, transparent ${lineWidth}px)`),
+  };
+
+  return patternCSS;
+}
+
+function makeGraphPaperPatternCSS(props) {
+  props = props || {};
+
+  let size = props.size || 100;
+  let divSize = size / 4;
+  let color = props.color || 'rgba(255,255,255,.5)';
+  let bgColor = props.backgroundColor || 'transparent';
+  let lineWidth = props.lineWidth || 2;
+  let lWidth = lineWidth / 2;
+  let bgImg = `
+      linear-gradient(${color} ${lineWidth}px, transparent ${lineWidth}px),
+      linear-gradient(90deg, ${color} ${lineWidth}px, transparent ${lineWidth}px),
+      linear-gradient(${color} ${lWidth}px, transparent ${lWidth}px),
+      linear-gradient(90deg, ${color} ${lWidth}px, transparent ${lWidth}px)`;
+  let patternCSS = {
+    backgroundColor: bgColor,
+    backgroundSize: `${size}px ${size}px, ${size}px ${size}px, ${divSize}px ${divSize}px, ${divSize}px ${divSize}px`,
+    backgroundPosition: `-${lineWidth}px -${lineWidth}px, -${lineWidth}px -${lineWidth}px, -${lWidth}px -${lWidth}px, -${lWidth}px -${lWidth}px`,
+    backgroundImage: oneLine(bgImg),
+  };
+
+  return patternCSS;
+}
+
+function makeDiagonalStripePatternCSS(props) {
+  props = props || {};
+
+  let size = props.size || 100;
+  let color = props.color || '#0e0030';
+  let bgColor = props.backgroundColor || 'transparent';
+  let bgImg = `linear-gradient(45deg, ${color} 25%, transparent 25.15%, transparent 50%, ${color} 50.15%, ${color} 75%, transparent 75.15%, transparent)`;
+  let patternCSS = {
+    backgroundColor: bgColor,
+    backgroundSize: `${size}px ${size}px`,
+    backgroundImage: oneLine(bgImg),
+  };
+
+  return patternCSS;
+}
+
+function makeSofaPatternCSS(props) {
+  props = props || {};
+
+  let size = props.size || 100;
+  let mid = size / 2;
+  let bgColor = props.backgroundColor || '#300';
+  let bg =
+    `radial-gradient(hsl(0, 99%, 40%) 4%, hsl(0, 100%, 18%) 9%, hsla(0, 100%, 20%, 0) 9%) 0 0,
+    radial-gradient(hsl(0, 100%, 40%) 4%, hsl(0, 100%, 18%) 8%, hsla(0, 100%, 20%, 0) 10%) ${mid}px ${mid}px,
+    radial-gradient(hsla(0, 100%, 46%, 0.8) 20%, hsla(0, 100%, 20%, 0)) ${mid}px 0,
+    radial-gradient(hsla(0, 100%, 41%, 0.8) 20%, hsla(0, 100%, 20%, 0)) 0 ${mid}px,
+    radial-gradient(hsl(0, 100%, 23%) 35%, hsla(0, 100%, 20%, 0) 60%) ${mid}px 0,
+    radial-gradient(hsla(0, 100%, 20%, 1) 35%, hsla(0, 100%, 20%, 0) 60%) ${size}px ${mid}px,
+    radial-gradient(hsla(0, 96%, 4%, 0.7), hsla(0, 100%, 20%, 0)) 0 0,
+    radial-gradient(hsla(0, 100%, 15%, 0.7), hsla(0, 100%, 20%, 0)) ${mid}px ${mid}px,
+    linear-gradient(45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0,
+    linear-gradient(-45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0`;
+  let patternCSS = {
+    background: oneLine(bg),  // This has to come before backgroundSize or it doesn't show(?!)
+    backgroundColor: bgColor,
+    backgroundSize: `${size}px ${size}px`,
+  };
+
+  return patternCSS;
+}
+
+function makePatternFromCSS(css) {
+  return Thing.classes.Pattern.make({pattern: 'none', size: null, stretch: true}).css(css);
+}
+
+function makeRandomBox(props) {
+  return Thing.classes.Box.make($.extend({
+    x: Rand.randInt(0,3000),
+    y: 0,
+    w: Rand.randInt(400,1600),
+    h: 3600,
+    zIndex: Rand.randInt(1,1000) * 10,
+    backgroundColor: Rand.randItem(Meninas.greens),
+    position: 'absolute',
+    display: 'block',
+    overflow: 'hidden'
+  }, props));
+}
+
+function makePatternBox(patternCSSProps) {
+  return makeRandomBox().add( makePatternFromCSS(patternCSSProps) );
+}
 
 $(function () {
-  var Thing = window.Thing;
-  var Meninas = window.Meninas;
-  var Rand = Thing.classes.Rand;
-
   // setup the stage
   var aspectRatio = 0.72;
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
   var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
   var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale);
-  var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
-
-  // Prevents the screenshot plugin from including scrollbars in large screenshots.
-  $('body').css({
-    overflow: 'hidden',
-    transformOrigin: '0 0'
-  });
-
-  background.add(Meninas.makeTextPane(0, 0, 1200, 2800));
-
-  background.add(Meninas.makePattern('GraphPaper'));
-  background.add(Meninas.makePattern('PlaidRedLarge'));
-  background.add(Meninas.makePattern('Sofa', Rand.randItem(sofaSizes)));
-  background.add(Meninas.makePattern('PatternPolkaDots', Rand.randInt(100,650)));
-  background.add(Meninas.makePattern('PatternStripes', Rand.randInt(130,600)));
-  background.add(Meninas.makePattern('DiagonalStripesViolet', Rand.randInt(10,40)));
-
-  var menina = Meninas.makeMenina();
-  menina.css({border: '9px solid rgba(255, 192, 203, 1)'});
-  background.add(Meninas.makeMenina());
-  background.add(menina);
-
-  window.menina = menina;
-  window.BG = background;
-
-  background.add(Meninas.makeCouch());
-
-  background.add(Meninas.makeRightWall());
-  // background.add(Meninas.makeFloor())
+  var menina = Meninas.makeMenina().css({border: '9px solid rgba(255, 192, 203, 1)'});
+  var pos = menina.getPosition();
 
   // Room edge right side
   var edge = Thing.classes.Line.make({
@@ -54,34 +136,7 @@ $(function () {
     zIndex: 10010,
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });
-  background.add(edge);
 
-  background.add( Meninas.makeBubbleArrow(
-          Rand.randInt(100,3000), Rand.randInt(100,500),
-          menina.x, menina.y,
-          '#ceff34', '', false, Rand.randInt(3000,15000)) );
-
-  var pos = menina.getPosition();
-
-  // Room
-  // var R = Thing.classes.Room.make({
-  //   w: pixelWidth,
-  //   h: pixelHeight,
-  //   d: 2000
-  // });
-  // R.walls.back.add(background);
-
-  // var floorImg = Thing.classes.Img
-  //   .make({
-  //     src:'img/wood_texture_smooth_panel_red_oak.jpg',
-  //     w: pixelWidth,
-  //     h: 2000
-  //   });
-  // R.walls.bottom.add(floorImg);
-
-  // stage.add(R);
-
-  // makeFloor
   var floorImg = Thing.classes.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak_pers_left.png',
@@ -91,7 +146,35 @@ $(function () {
       h: 1000,
       zIndex: 20000
     });
-  background.add(floorImg);
+
+  // Prevents the screenshot plugin from including scrollbars in large screenshots.
+  $('body').css({
+    overflow: 'hidden',
+    transformOrigin: '0 0'
+  });
+
+  background.add([
+    Meninas.makeTextPane(0, 0, 1200, 2800),
+    makePatternBox( makeGraphPaperPatternCSS({size: Rand.randInt(1,5) * 100, backgroundColor: '#003'}) ),
+    Meninas.makePattern('PlaidRedLarge'),
+    makePatternBox( makeSofaPatternCSS({size: Rand.randInt(2,12) * 50, backgroundColor: '#330'}) ),
+    Meninas.makePattern('PatternPolkaDots', Rand.randInt(100,650)),
+    Meninas.makePattern('PatternStripes', Rand.randInt(130,600)),
+    makePatternBox( makeDiagonalStripePatternCSS({size: Rand.randInt(5,100) * 10}) ),
+    Meninas.makeMenina(),
+    menina,
+    Meninas.makeCouch(),
+    Meninas.makeRightWall(),
+    edge,
+    floorImg,
+  ]);
+
+  // makeBubbleArrow() returns array with two objects to render
+  background.add( Meninas.makeBubbleArrow(
+    Rand.randInt(100,3000), Rand.randInt(100,500),
+    menina.x, menina.y,
+    '#ceff34', '', false, Rand.randInt(3000,15000)
+  ));
 
   background.render();
 
@@ -108,4 +191,7 @@ $(function () {
   }
 
   Thing.classes.Img.onAllLoaded = makeImgPointers;
+
+  window.menina = menina;
+  window.BG = background;
 });
