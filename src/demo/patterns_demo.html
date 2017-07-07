@@ -89,7 +89,7 @@ function patternBox() {
 
 $(function () {
   // background aliasing is much smoother at a larger size
-  scaleDocument(3);
+  // scaleDocument(3);
 
   makePattern('GraphPaper');
   makePattern('PlaidRed');
@@ -152,7 +152,7 @@ function makePatternDemo (props) {
   return makeWrapperBox().add([
     makeDemoBox().add(Pattern.make({pattern: props.pattern})),
     makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 50})),
-    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 100})),
+    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 200})),
     makeDemoBox({w:400}).add(Pattern.make({pattern:props.pattern})),
     makeDemoBox({h:400}).add(Pattern.make({pattern:props.pattern})),
   ]);

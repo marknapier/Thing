@@ -63,7 +63,7 @@ class Pattern extends Thing {
     let size = props.size || 100;
     let divSize = size / 5;
     let color = props.color || 'rgba(255,255,255,.3)';
-    let bgColor = props.backgroundColor || 'transparent';
+    let bgColor = props.backgroundColor || '#003';
     let lineWidth = props.lineWidth || 4;
     let lWidth = lineWidth / 2;
     let bgImg = `
@@ -84,7 +84,7 @@ class Pattern extends Thing {
   static makeDiagonalStripePatternCSS(props) {
     props = props || {};
 
-    let size = props.size || 100;
+    let size = props.size || 50;
     let color = props.color || '#0e0030';
     let bgColor = props.backgroundColor || 'transparent';
     let bgImg = `linear-gradient(45deg, ${color} 25%, transparent 25.15%, transparent 50%, ${color} 50.15%, ${color} 75%, transparent 75.15%, transparent)`;
@@ -100,7 +100,7 @@ class Pattern extends Thing {
   static makeVerticalStripePatternCSS(props) {
     props = props || {};
 
-    let size = props.size || 100;
+    let size = props.size || 50;
     let color = props.color || 'rgba(255,205,25,1)';
     let bgColor = props.backgroundColor || 'transparent';
     let bgImg = `linear-gradient(90deg, transparent 50%, ${color} 50%)`;
