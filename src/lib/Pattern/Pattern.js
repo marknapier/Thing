@@ -1,11 +1,16 @@
 var Thing = require('../Thing/Thing.js');
-var CSS = require('./Pattern.css');
+// var CSS = require('./Pattern.css');
+
+function oneLine(s) {
+  return (s.replace(/\r?\n|\r|\t/gm, '')).trim();
+}
+
 
 class Pattern extends Thing {
   init (props) {
     var defaultProps = {
       pattern: 'GraphPaper',
-      // size: 50,
+      stretch: true
     };
     this.props = props = $.extend({}, defaultProps, props);
     this.initialize(props);
@@ -14,7 +19,7 @@ class Pattern extends Thing {
     this.$element.addClass(props.pattern);
 
     // Add the Patterns css (will add only once)
-    Thing.addCSSString(CSS, 'Pattern');
+    // Thing.addCSSString(CSS, 'Pattern');
   }
 
   render () {
@@ -23,16 +28,15 @@ class Pattern extends Thing {
     // Adjust pattern to fill parent with a square aspect ratio
     super.fillParent(this.props.stretch);
 
-    // Tweak the size
-    if (this.props.size) {
+    if (this.props.pattern && patternTemplates[this.props.pattern]) {
+      var patternTemplate = patternTemplates[this.props.pattern];
+      this.css( patternTemplate(this.props) );
+    }
+    else if (this.props.size) { // Tweak the size
       this.css({backgroundSize: this.props.size + '%'});
     }
 
     return this;
-  }
-
-  static oneLine(s) {
-    return (s.replace(/\r?\n|\r|\t/gm, '')).trim();
   }
 
   static makeGridPatternCSS(props) {
@@ -46,7 +50,7 @@ class Pattern extends Thing {
       backgroundColor: bgColor,
       backgroundSize: `${size}px ${size}px, ${size}px ${size}px`,
       backgroundPosition: `-${lineWidth}px -${lineWidth}px, -${lineWidth}px -${lineWidth}px`,
-      backgroundImage: this.oneLine(`linear-gradient(${color} ${lineWidth}px, transparent ${lineWidth}px),
+      backgroundImage: oneLine(`linear-gradient(${color} ${lineWidth}px, transparent ${lineWidth}px),
           linear-gradient(90deg, ${color} ${lineWidth}px, transparent ${lineWidth}px)`),
     };
 
@@ -57,10 +61,10 @@ class Pattern extends Thing {
     props = props || {};
 
     let size = props.size || 100;
-    let divSize = size / 4;
-    let color = props.color || 'rgba(255,255,255,.5)';
+    let divSize = size / 5;
+    let color = props.color || 'rgba(255,255,255,.3)';
     let bgColor = props.backgroundColor || 'transparent';
-    let lineWidth = props.lineWidth || 2;
+    let lineWidth = props.lineWidth || 4;
     let lWidth = lineWidth / 2;
     let bgImg = `
         linear-gradient(${color} ${lineWidth}px, transparent ${lineWidth}px),
@@ -71,7 +75,7 @@ class Pattern extends Thing {
       backgroundColor: bgColor,
       backgroundSize: `${size}px ${size}px, ${size}px ${size}px, ${divSize}px ${divSize}px, ${divSize}px ${divSize}px`,
       backgroundPosition: `-${lineWidth}px -${lineWidth}px, -${lineWidth}px -${lineWidth}px, -${lWidth}px -${lWidth}px, -${lWidth}px -${lWidth}px`,
-      backgroundImage: this.oneLine(bgImg),
+      backgroundImage: oneLine(bgImg),
     };
 
     return patternCSS;
@@ -87,7 +91,7 @@ class Pattern extends Thing {
     let patternCSS = {
       backgroundColor: bgColor,
       backgroundSize: `${size}px ${size}px`,
-      backgroundImage: this.oneLine(bgImg),
+      backgroundImage: oneLine(bgImg),
     };
 
     return patternCSS;
@@ -96,7 +100,7 @@ class Pattern extends Thing {
   static makeVerticalStripePatternCSS(props) {
     props = props || {};
 
-    let size = props.size || 500;
+    let size = props.size || 100;
     let color = props.color || 'rgba(255,205,25,1)';
     let bgColor = props.backgroundColor || 'transparent';
     let bgImg = `linear-gradient(90deg, transparent 50%, ${color} 50%)`;
@@ -112,7 +116,7 @@ class Pattern extends Thing {
   static makePolkaDotPatternCSS(props) {
     props = props || {};
 
-    let size = props.size || 500;
+    let size = props.size || 100;
     let mid = size / 2;
     let radius = props.radius || (size/5);
     let color = props.color || '#fffdd7';
@@ -124,7 +128,7 @@ class Pattern extends Thing {
       backgroundColor: bgColor,
       backgroundSize: `${size}px ${size}px`,
       backgroundPosition: `0 0, ${mid}px ${mid}px`,
-      backgroundImage: this.oneLine(bgImg),
+      backgroundImage: oneLine(bgImg),
     };
 
     return patternCSS;
@@ -148,7 +152,7 @@ class Pattern extends Thing {
       linear-gradient(45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0,
       linear-gradient(-45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0`;
     let patternCSS = {
-      background: this.oneLine(bg),  // This has to come before backgroundSize or it doesn't show(?!)
+      background: oneLine(bg),  // This has to come before backgroundSize or it doesn't show(?!)
       backgroundColor: bgColor,
       backgroundSize: `${size}px ${size}px`,
     };
@@ -159,7 +163,6 @@ class Pattern extends Thing {
   static makePlaidRedPatternCSS(props) {
     props = props || {};
 
-    // let size = props.size || 100;
     let bgColor = props.backgroundColor || 'hsl(0, 86%, 34%)';
     let bgImg =
       `repeating-linear-gradient(transparent,
@@ -180,7 +183,7 @@ class Pattern extends Thing {
         transparent 20px, rgba(0,0,0,.2) 20px)`;
     let patternCSS = {
       backgroundColor: bgColor,
-      backgroundImage: this.oneLine(bgImg),
+      backgroundImage: oneLine(bgImg),
     };
 
     return patternCSS;
@@ -189,8 +192,22 @@ class Pattern extends Thing {
   static makePatternFromCSS(css) {
     return this.make({pattern: 'none', size: null, stretch: true}).css(css);
   }
-
 }
+
+var patternTemplates = {
+  Grid: Pattern.makeGridPatternCSS,
+  GraphPaper: Pattern.makeGraphPaperPatternCSS,
+  DiagonalStripes: Pattern.makeDiagonalStripePatternCSS,
+  DiagonalStripesViolet: Pattern.makeDiagonalStripePatternCSS,
+  VerticalStripes: Pattern.makeVerticalStripePatternCSS,
+  Stripes: Pattern.makeVerticalStripePatternCSS,
+  PatternStripes: Pattern.makeVerticalStripePatternCSS,
+  PolkaDots: Pattern.makePolkaDotPatternCSS,
+  PatternPolkaDots: Pattern.makePolkaDotPatternCSS,
+  Sofa: Pattern.makeSofaPatternCSS,
+  PlaidRed: Pattern.makePlaidRedPatternCSS,
+};
+
 Thing.addClass(Pattern);
 
 module.exports = Pattern;
