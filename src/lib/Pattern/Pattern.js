@@ -63,7 +63,7 @@ class Pattern extends Thing {
     let size = props.size || 100;
     let divSize = size / 5;
     let color = props.color || 'rgba(255,255,255,.3)';
-    let bgColor = props.backgroundColor || 'transparent';
+    let bgColor = props.backgroundColor || '#003';
     let lineWidth = props.lineWidth || 4;
     let lWidth = lineWidth / 2;
     let bgImg = `
