@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Patterns Demo</title>
+    <link href="reset.css" rel="stylesheet">
+    <style>
+    </style>
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script type="text/javascript">
+
+var Thing = window.Thing;
+var Pattern = Thing.classes.Pattern;
+
+// linear-gradient(0deg, blue 0%, blue 20%, green 20%, green 22%, yellow 21%, yellow 100%)
+
+function makeStripes(props) {
+  props = props || {};
+
+  var angle = props.angle || 0;
+  var aspectRatio = (props.w && props.h ? props.w/props.h : 1);
+  var repeat = props.repeat || 0;
+  var colors = props.colors || [
+    {color:'red', width:10},
+    {color:'blue', width:20},
+    {color:'green', width:70}
+  ];
+  var backgroundSize = '' + (100/repeat) + '% ' + ((100/repeat)*aspectRatio) + '%';
+  var lingradstr = 'linear-gradient(' + angle + 'deg, ';
+  var pos = 0;
+
+  for (var i=0; i < colors.length; i++) {
+    var c = colors[i];
+    lingradstr += '' + c.color + ' ' + pos + '%' + ', ';
+    lingradstr += '' + c.color + ' ' + (pos + c.width) + '%';
+    lingradstr += (i < colors.length-1? ", " : "");
+    pos += c.width;
+  }
+
+  lingradstr += ")";
+
+  return {
+    backgroundSize: backgroundSize,
+    backgroundImage: lingradstr
+  };
+}
+
+var css = makeStripes({
+  vertical: true,
+  repeat: 4,
+  colors: [
+    {color: 'red', width: 25},
+    {color: 'blue', width: 25},
+    {color: 'green', width: 25},
+    {color: 'yellow', width: 25}
+  ]
+});
+
+
+function scaleDocument (n) {
+  var el = document.body;
+  el.style.transformOrigin = 'left top';
+  el.style.transform = 'scale(' + n + ')';
+}
+
+function makePattern (name) {
+  return Thing.classes.DemoBox
+    .make( {w:400, h:400, backgroundColor: 'green'} )
+    .add( Thing.classes.Pattern.make({pattern: name}) )
+    .render();
+}
+
+function patternBox() {
+  var Pattern = Thing.classes.Pattern;
+  var pbox = Thing.classes.Box.make({w:800, h:800, backgroundColor:'pink'});
+  pbox.add(Pattern.make({pattern:'DiagonalStripes'}));
+  pbox.add(Pattern.make({pattern:'BlueBalls'}));
+  pbox.add(Pattern.make({pattern:'Stripes'}));
+  return pbox;
+}
+
+$(function () {
+  // background aliasing is much smoother at a larger size
+  scaleDocument(3);
+
+  makePattern('GraphPaper');
+  makePattern('PlaidRed');
+  makePattern('Sofa');
+  makePattern('PolkaDots');
+  makePattern('Stripes');
+  makePattern('DiagonalStripes');
+
+  // layer two patterns
+  var dstripes = makePattern('DiagonalStripes');
+  dstripes.add(Thing.classes.Pattern.make({pattern: 'Stripes'}));
+  dstripes.render();
+
+  // Generate a stripe pattern
+  Thing.classes.DemoBox
+    .make( {w:400, h:400, backgroundColor: 'green'} )
+    .css( makeStripes({
+          angle: 90,
+          repeat: 4,
+          colors: [
+            {color: 'transparent', width: 20},
+            {color: '#ee8', width: 50},
+            {color: 'red', width: 5},
+            {color: '#359', width: 25}
+          ]
+        }) )
+    .render();
+
+  // Make a background image
+  Thing.classes.DemoBox
+    .make( {w:400, h:400, backgroundColor: 'green'} )
+    .add( Thing.classes.BGImg.make({url:'img/wood-panel-texture-oak.jpg'}) )
+    .add( Thing.classes.Pattern.make({pattern:'DiagonalStripes'}) )
+    .render();
+
+function makeWrapperBox (props) {
+  return Thing.classes.Box.make($.extend({
+    position: 'relative',
+    margin: '20px',
+    border: '2px dotted #eee',
+    backgroundColor: 'transparent',
+    padding: '2px'
+  }, props));
+}
+
+function makeDemoBox (props) {
+  return Thing.classes.Box.make($.extend({
+    position: 'relative',
+    w: 200,
+    h: 200,
+    margin: '5px',
+    border: '2px solid #eee',
+    backgroundColor: '#ccc',
+    overflow: 'hidden',
+    display: 'inline-block'
+  }, props));
+}
+
+function makePatternDemo (props) {
+  return makeWrapperBox().add([
+    makeDemoBox().add(Pattern.make({pattern: props.pattern})),
+    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 50})),
+    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 100})),
+    makeDemoBox({w:400}).add(Pattern.make({pattern:props.pattern})),
+    makeDemoBox({h:400}).add(Pattern.make({pattern:props.pattern})),
+  ]);
+}
+
+  makePatternDemo({pattern: 'GraphPaper'}).render();
+  makePatternDemo({pattern: 'Stripes'}).render();
+  makePatternDemo({pattern: 'DiagonalStripes'}).render();
+  makePatternDemo({pattern: 'PolkaDots'}).render();
+  makePatternDemo({pattern: 'PlaidRed'}).render();
+  makePatternDemo({pattern: 'PlaidRedLarge'}).render();
+  makePatternDemo({pattern: 'Sofa'}).render();
+
+  // layer multiple patterns
+  window.pbox = patternBox();
+  pbox.render();
+});
+</script>
+
+
+  </body>
+</html>
