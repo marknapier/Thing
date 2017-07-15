@@ -24,7 +24,7 @@ function makePattern (name, size) {
 function makeMeninaSandwich(props) {
   var Rand = Thing.classes.Rand;
   var Img = Thing.classes.Img;
-  var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
+  var sofaSizes = [100, 160, 225, 280, 350, 500];
 
   var mWich = Thing.classes.Box.make({
     x: props.x,
@@ -55,11 +55,11 @@ function makeMeninaSandwich(props) {
 
   meninaPatterns.add(Meninas.makeTextPane(0, 0, Rand.randInt(100,650), 2000));
   meninaPatterns.add(makePattern('GraphPaper'));
-  meninaPatterns.add(makePattern('PlaidRedLarge'));
+  meninaPatterns.add(makePattern('PlaidRed', Rand.randInt(1,8) * 250));
   meninaPatterns.add(makePattern('Sofa', Rand.randItem(sofaSizes)));
-  meninaPatterns.add(makePattern('PatternPolkaDots', Rand.randInt(10,250)));
-  meninaPatterns.add(makePattern('PatternStripes', Rand.randInt(50,300)));
-  meninaPatterns.add(makePattern('DiagonalStripesViolet', Rand.randInt(3,20)));
+  meninaPatterns.add(makePattern('PatternPolkaDots', Rand.randInt(50,550)));
+  meninaPatterns.add(makePattern('PatternStripes', Rand.randInt(50,400)));
+  meninaPatterns.add(makePattern('DiagonalStripesViolet', Rand.randInt(30,400)));
   mWich.add(meninaPatterns);
 
   return mWich;

@@ -92,7 +92,7 @@ $(function () {
   // scaleDocument(3);
 
   makePattern('GraphPaper');
-  makePattern('PlaidRed');
+  makePattern('Grid');
   makePattern('Sofa');
   makePattern('PolkaDots');
   makePattern('Stripes');
@@ -149,21 +149,22 @@ function makeDemoBox (props) {
 }
 
 function makePatternDemo (props) {
+  let size = (props && props.size) || 100;
   return makeWrapperBox().add([
-    makeDemoBox().add(Pattern.make({pattern: props.pattern})),
-    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 50})),
-    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 200})),
-    makeDemoBox({w:400}).add(Pattern.make({pattern:props.pattern})),
-    makeDemoBox({h:400}).add(Pattern.make({pattern:props.pattern})),
+    makeDemoBox().add(Pattern.make({pattern: props.pattern, color: props.color, size: size})),
+    makeDemoBox().add(Pattern.make({pattern:props.pattern, color: props.color, size: size * 0.5})),
+    makeDemoBox().add(Pattern.make({pattern:props.pattern, color: props.color, size: size * 2})),
+    makeDemoBox({w:400}).add(Pattern.make({pattern:props.pattern, color: props.color, size: size})),
+    makeDemoBox({h:400}).add(Pattern.make({pattern:props.pattern, color: props.color, size: size})),
   ]);
 }
 
   makePatternDemo({pattern: 'GraphPaper'}).render();
-  makePatternDemo({pattern: 'Stripes'}).render();
+  makePatternDemo({pattern: 'Grid', size: 50, lineWidth: 5, color: '#008'}).render();
+  makePatternDemo({pattern: 'Stripes', size: 50}).render();
   makePatternDemo({pattern: 'DiagonalStripes'}).render();
   makePatternDemo({pattern: 'PolkaDots'}).render();
-  makePatternDemo({pattern: 'PlaidRed'}).render();
-  makePatternDemo({pattern: 'PlaidRedLarge'}).render();
+  makePatternDemo({pattern: 'PlaidRed', size: 200}).render();
   makePatternDemo({pattern: 'Sofa'}).render();
 
   // layer multiple patterns
