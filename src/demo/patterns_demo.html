@@ -20,8 +20,6 @@
 var Thing = window.Thing;
 var Pattern = Thing.classes.Pattern;
 
-// linear-gradient(0deg, blue 0%, blue 20%, green 20%, green 22%, yellow 21%, yellow 100%)
-
 function makeStripes(props) {
   props = props || {};
 
@@ -53,24 +51,6 @@ function makeStripes(props) {
   };
 }
 
-var css = makeStripes({
-  vertical: true,
-  repeat: 4,
-  colors: [
-    {color: 'red', width: 25},
-    {color: 'blue', width: 25},
-    {color: 'green', width: 25},
-    {color: 'yellow', width: 25}
-  ]
-});
-
-
-function scaleDocument (n) {
-  var el = document.body;
-  el.style.transformOrigin = 'left top';
-  el.style.transform = 'scale(' + n + ')';
-}
-
 function makePattern (name) {
   return Thing.classes.DemoBox
     .make( {w:400, h:400, backgroundColor: 'green'} )
@@ -87,12 +67,43 @@ function patternBox() {
   return pbox;
 }
 
-$(function () {
-  // background aliasing is much smoother at a larger size
-  scaleDocument(3);
+function makeWrapperBox (props) {
+  return Thing.classes.Box.make($.extend({
+    position: 'relative',
+    margin: '20px',
+    border: '2px dotted #eee',
+    backgroundColor: 'transparent',
+    padding: '2px'
+  }, props));
+}
 
+function makeDemoBox (props) {
+  return Thing.classes.Box.make($.extend({
+    position: 'relative',
+    w: 200,
+    h: 200,
+    margin: '5px',
+    border: '2px solid #eee',
+    backgroundColor: '#ccc',
+    overflow: 'hidden',
+    display: 'inline-block'
+  }, props));
+}
+
+function makePatternDemo (props) {
+  let size = (props && props.size) || 100;
+  return makeWrapperBox().add([
+    makeDemoBox().add(Pattern.make({pattern: props.pattern, color: props.color, size: size})),
+    makeDemoBox().add(Pattern.make({pattern:props.pattern, color: props.color, size: size * 0.5})),
+    makeDemoBox().add(Pattern.make({pattern:props.pattern, color: props.color, size: size * 2})),
+    makeDemoBox({w:400}).add(Pattern.make({pattern:props.pattern, color: props.color, size: size})),
+    makeDemoBox({h:400}).add(Pattern.make({pattern:props.pattern, color: props.color, size: size})),
+  ]);
+}
+
+$(function () {
   makePattern('GraphPaper');
-  makePattern('PlaidRed');
+  makePattern('Grid');
   makePattern('Sofa');
   makePattern('PolkaDots');
   makePattern('Stripes');
@@ -125,50 +136,16 @@ $(function () {
     .add( Thing.classes.Pattern.make({pattern:'DiagonalStripes'}) )
     .render();
 
-function makeWrapperBox (props) {
-  return Thing.classes.Box.make($.extend({
-    position: 'relative',
-    margin: '20px',
-    border: '2px dotted #eee',
-    backgroundColor: 'transparent',
-    padding: '2px'
-  }, props));
-}
-
-function makeDemoBox (props) {
-  return Thing.classes.Box.make($.extend({
-    position: 'relative',
-    w: 200,
-    h: 200,
-    margin: '5px',
-    border: '2px solid #eee',
-    backgroundColor: '#ccc',
-    overflow: 'hidden',
-    display: 'inline-block'
-  }, props));
-}
-
-function makePatternDemo (props) {
-  return makeWrapperBox().add([
-    makeDemoBox().add(Pattern.make({pattern: props.pattern})),
-    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 50})),
-    makeDemoBox().add(Pattern.make({pattern:props.pattern, size: 100})),
-    makeDemoBox({w:400}).add(Pattern.make({pattern:props.pattern})),
-    makeDemoBox({h:400}).add(Pattern.make({pattern:props.pattern})),
-  ]);
-}
-
   makePatternDemo({pattern: 'GraphPaper'}).render();
-  makePatternDemo({pattern: 'Stripes'}).render();
+  makePatternDemo({pattern: 'Grid', size: 50, lineWidth: 5, color: '#008'}).render();
+  makePatternDemo({pattern: 'Stripes', size: 50}).render();
   makePatternDemo({pattern: 'DiagonalStripes'}).render();
   makePatternDemo({pattern: 'PolkaDots'}).render();
-  makePatternDemo({pattern: 'PlaidRed'}).render();
-  makePatternDemo({pattern: 'PlaidRedLarge'}).render();
+  makePatternDemo({pattern: 'PlaidRed', size: 200}).render();
   makePatternDemo({pattern: 'Sofa'}).render();
 
   // layer multiple patterns
-  window.pbox = patternBox();
-  pbox.render();
+  patternBox().render();
 });
 </script>
 

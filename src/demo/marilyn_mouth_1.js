@@ -290,12 +290,6 @@ $(function(){
           bottom: '0px',
           text: "1) 2) 3) 4)"
       })),
-
-      Thing.classes.Pattern.make({pattern:'GraphPaper', zIndex:9000})
-      // background-size: 100px 100px, 100px 100px;
-      // background-position: -2px -2px, -2px -2px;
-      // background-image: linear-gradient(rgba(110, 142, 105, 0.33) 2px, transparent 2px), linear-gradient(90deg, rgba(88, 109, 83, 0.39) 2px, transparent 2px);
-
     ];
   }
 

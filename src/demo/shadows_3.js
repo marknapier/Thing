@@ -34,7 +34,7 @@ var greens = [
 // ];
 
 function makePattern (name, size) {
-  var Pattern = Thing.classes[name] ? Thing.classes[name] : Thing.classes.Pattern;
+  var Pattern = Thing.classes.Pattern;
   var P =  Pattern.make({pattern: name, size: size});
   var box = Thing.classes.Box.make( {
     x: Rand.randInt(0,1000),
@@ -55,7 +55,7 @@ function makePattern (name, size) {
 function makeMeninaSandwich(props) {
   var Rand = Thing.classes.Rand;
   var ImgSVG = Thing.classes.ImgSVG;
-  var sofaSizes = [5, 10, 12.5, 16.6, 25, 50];
+  var sofaSizes = [100, 160, 225, 280, 350, 500];
   var backgroundMasks = [
     ImgSVG.make({radius: Rand.randInt(500,1000), lineWidth: Rand.randInt(200,600)}).getURL(),
     ImgSVG.make({radius: Rand.randInt(50,1000), lineWidth: Rand.randInt(500,1000)}).getURL(),
@@ -83,12 +83,12 @@ function makeMeninaSandwich(props) {
 
   var patterns = [
     Meninas.makeTextPane(0, 0, Rand.randInt(500,2000), 3000),
-    makePattern('GraphPaper').css({backgroundColor:'none'}),
-    makePattern('PlaidRedLarge'),
+    makePattern('GraphPaper', Rand.randInt(1,8) * 100).css({backgroundColor:'none'}),
+    makePattern('PlaidRed', Rand.randInt(1,8) * 250),
     makePattern('Sofa', Rand.randItem(sofaSizes)),
-    makePattern('PatternPolkaDots', Rand.randInt(10,550)),
-    makePattern('PatternStripes', Rand.randInt(50,500)),
-    makePattern('DiagonalStripesViolet', Rand.randInt(3,50)),
+    makePattern('PolkaDots', Rand.randInt(10,550)),
+    makePattern('Stripes', Rand.randInt(50,500)),
+    makePattern('DiagonalStripesViolet', Rand.randInt(30,400)),
   ];
 
   while (patterns.length) {
@@ -114,10 +114,10 @@ function makeVerticalBar (props) {
     '#ffa61f',
   ];
   return Thing.make( $.extend({
-    x: Rand.randInt(-100,4000), 
-    y: 0, 
+    x: Rand.randInt(-100,4000),
+    y: 0,
     w: Rand.randInt(500,2000),
-    h: 3125, 
+    h: 3125,
     background: Rand.randItem(backgrounds),
     borderRight: '2px solid #008e00',
   }, props));
@@ -181,10 +181,10 @@ $(function () {
     makeVerticalBar({zIndex: Rand.randInt(10000,11000)}),
     makeVerticalBar({zIndex: Rand.randInt(10000,11000)}),
     makeVerticalBar({
-      zIndex: Rand.randInt(10000,11000), 
-      w: 50, 
-      background: '#ffa61f', 
-      borderLeft: '2px solid mediumvioletred', 
+      zIndex: Rand.randInt(10000,11000),
+      w: 50,
+      background: '#ffa61f',
+      borderLeft: '2px solid mediumvioletred',
       borderRight: '2px solid darkgreen'
     }),
     makeLump({zIndex: 10800}),
