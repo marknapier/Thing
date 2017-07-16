@@ -157,7 +157,7 @@ function makeBackground (w, h, scale) {
         .add( Thing.classes.Pattern.make({
             pattern: 'GraphPaper',
             backgroundColor: 'transparent',
-            size: scale*10,
+            size: scale*180,
             lineWidth: scale*5
         }) )
         .render();
@@ -223,7 +223,7 @@ function addRandomStuff (dim, items, path, scale) {
     var gridPattern = Thing.classes.Pattern.make({
         pattern: 'GraphPaper',
         backgroundColor: 'transparent',
-        size: scale * 13,
+        size: scale * 500,
         lineWidth: scale * 2
     });
     items.splice(Rand.randInt(1,items.length), 0, gridPattern);
