@@ -83,12 +83,12 @@ function makeMeninaSandwich(props) {
 
   var patterns = [
     Meninas.makeTextPane(0, 0, Rand.randInt(500,2000), 3000),
-    makePattern('GraphPaper', Rand.randInt(1,8) * 100).css({backgroundColor:'none'}),
+    makePattern('GraphPaper', Rand.randInt(2,10) * 100).css({backgroundColor:'none'}),
     makePattern('PlaidRed', Rand.randInt(1,8) * 250),
     makePattern('Sofa', Rand.randItem(sofaSizes)),
-    makePattern('PolkaDots', Rand.randInt(10,550)),
+    makePattern('PolkaDots', Rand.randInt(20,600)),
     makePattern('Stripes', Rand.randInt(50,500)),
-    makePattern('DiagonalStripesViolet', Rand.randInt(30,400)),
+    makePattern('DiagonalStripesViolet', Rand.randInt(60,500)),
   ];
 
   while (patterns.length) {
