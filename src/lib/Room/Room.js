@@ -2,15 +2,16 @@ var Thing = require('../Thing/Thing.js');
 var Box = require('../Box/Box.js');
 
 /**
- *  w, h, depth, showOuter
+ *  w, h, d, showOuter
+
+ 	Parent element must have perspective set to some pixel value or room will be flat.
 
 	var r = Thing.classes.Room.make({
-		x:1000, y:-500, w:1000, h:3625, d:3000, showOuter: false, overflow: 'hidden'
+		x:1000, y:-500,
+		w:1000, h:3625,
+		d:3000,
+		showOuter: false
 	});
-	r.css({zIndex:15000});
-	BG.add(r);
-	r.render();
-	$('.Room .Box').css({transform: 'rotateY(25deg)'});
  */
 class Room extends Box {
 	init (props) {
@@ -18,12 +19,11 @@ class Room extends Box {
 			w: 1500,
 			h: 1000,
 			d:  800,
-			border: '1px solid black',
-			perspective: 'inherit',
-			perspectiveOrigin: 'inherit',
+			transformStyle: 'preserve-3d',
 			showOuter: false
 		};
 		props = $.extend({}, defaultProps, props);
+		props.overflow = undefined;
 		this.w = props.w;
 		this.h = props.h;
 		this.d = props.d;
@@ -43,14 +43,14 @@ class Room extends Box {
 		var halfWidth = this.w/2;
 		var halfDepth = this.d/2;
 
-		var room = Box.make({
-			width: '100%',
-			height: '100%',
-			zIndex: 20000,
-			position: 'absolute',
-			transformStyle: 'preserve-3d',
-			transition: 'transform 1s'
-		});
+		// this box is the outer wrapper div around all the walls - with its own perspective
+		// NOTE: do not put "overflow: hidden" on this element, it will bork Z axis layering
+		var room = this;  //Box.make({
+		// 	width: '100%',
+		// 	height: '100%',
+		// 	position: 'absolute',
+		// 	transformStyle: 'preserve-3d'
+		// });
 
 		// Inner facing walls
 		// walls.push( this.makeWall('front', {
@@ -136,25 +136,20 @@ class Room extends Box {
 		}
 
 		room.add(walls);
-		this.add(room);
-		this.room = room;
+		// this.add(room);
+		this.wallsA = walls;
+		// this.room = room;
 	}
 
 	makeWall(which, cssVals) {
 		var defaultCSS = {
 			display: 'block',
 			position: 'absolute',
-			// lineHeight: this.h + 'px',
-			// fontSize: (this.h/3) +'px',
-			// fontWeight: 'bold',
-			// textAlign: 'center',
-			// color: 'white',
 			backfaceVisibility: 'hidden'
 		};
 		var wall = Thing.classes.Box.make($.extend({}, defaultCSS, cssVals));
 		wall.$element.addClass('wall');
 		wall.$element.addClass(which);
-		// wall.$element.append(which);
 		wall.which = which;
 		return wall;
 	}

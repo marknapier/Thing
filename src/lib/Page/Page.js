@@ -23,11 +23,29 @@ class Page {
 
     static saveDocToFile() {
         var randnum = parseInt(Math.random()*100000000);
-        
+
         // html only: don't save scripts
         $('script').remove();
 
         Page.download(Page.getDocumentHTML(), 'Thing_saved_file_' + randnum + '.html', 'text/html');
+    }
+
+    static initEvents() {
+        // Listen for keypress
+        document.addEventListener('keypress', function (e) {
+          var el = document.body;
+          var n = Number(e.key);
+          if (n >= 0 && n <= 9) {
+            // Number keys scale the page from .1 to .9. 0 is fullsize
+            var scale = n === 0 ? 1 : n/10;
+            el.style.transformOrigin = 'left top';
+            el.style.transform = 'scale(' + scale + ')';
+          }
+          else if (e.key === 's') {
+            // s toggles scrolling on/off
+            el.style.overflow = (el.style.overflow === 'hidden') ? 'scroll' : 'hidden';
+          }
+        });
     }
 }
 Thing.addClass(Page);
