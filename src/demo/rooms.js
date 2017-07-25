@@ -49,9 +49,56 @@ function makeRoom (props) {
   return r;
 }
 
+// wrap a room in a div to prevent overflow
+function makeWrappedRoom (props) {
+  props = $.extend({}, {
+    x: 1000,
+    y:  120,
+    w: 1000,
+    h: 2625,
+    overflow: 'hidden',
+    perspective: 'inherit',    // need to have perspective ON or room will be flat (this assumes that the parent container has a perspective:1000px setting or something similar)
+  }, props);
+
+  // outer div
+  var wrapper = Thing.classes.Box.make(props);
+
+  // room has same dimensions as wrapper
+  var r = Thing.classes.Room.make({
+    w: props.w,
+    h: props.h,
+    d: props.d || 1000,
+    showOuter: props.showOuter || false,
+  });
+
+  // style the walls
+  r.back.css({backgroundColor: '#000'});
+  r.right.css({backgroundColor: '#333'});
+  r.left.css({backgroundColor: '#333'});
+  r.top.css({backgroundColor: '#111'});
+  r.bottom.css({backgroundColor: '#222'});
+
+  // put room in the wrapper box
+  wrapper.add(r);
+  wrapper.room = r;  // expose the room for outside access
+
+  return wrapper;
+}
+
+function fillFloor () {
+  return Meninas.makeFloorBleached({
+      x: 0,
+      y: 0,
+      width: '100%',
+      height: '100%',
+      rotate: {x: 0}
+    });
+}
+
 $(function () {
+  var pageParams = Thing.classes.Page.getParams();
   var aspectRatio = 0.620;
-  var pixelWidth = 3000;
+  var pixelWidth = pageParams.canvasWidth || 6000;
   var pixelHeight = pixelWidth * aspectRatio;
 
   var lightSpot = Thing.make({
@@ -69,19 +116,12 @@ $(function () {
   });
   backWall.add(lightSpot);
 
-  var floor = Meninas.makeFloorBleached({
-    w: 7500,
-    y: 1475,
-    rotate:{x: 90}
-  });
-
   var legRoom = makeRoom({
-    x: 0,
-    y: 0,
-    w: pixelWidth,
-    h: pixelHeight
+    x: pixelWidth * 0.6,
+    y: pixelHeight * 0.2,
+    w: pixelWidth * 0.2,
+    h: pixelHeight * 0.79
   });
-
   legRoom.add(makeLump());
   legRoom.rotate({y: -25});
 
@@ -108,26 +148,12 @@ $(function () {
   anotherRoom.bottom.css({backgroundColor: 'blue'});
 
   var rug = Thing.classes.Img.make({
-    x: 3764,
-    y: 2000,
-    z: 1188,
-    rotate: {z: 90, y: 90},
-    scale: 3,
-    src:'img/persian_carpet_fine_red_1.png'
-  });
-
-  var mainRoom = makeRoom({
     x: 0,
     y: 0,
-    w: pixelWidth,
-    h: pixelHeight,
-    perspectiveOrigin: (pixelWidth * 0.5) + 'px ' + (pixelHeight * 0.75) + 'px',  // origin is center of screen
+    z: 0,
+    rotate: {z: 0, y: 0},
+    src:'img/persian_carpet_fine_red_1.png'
   });
-  mainRoom.back.css({backgroundColor: 'rgba(0,0,0,.6)'});
-  mainRoom.left.css({backgroundColor: 'rgba(255,255,0,.2)'});
-  mainRoom.right.css({backgroundColor: 'rgba(0,255,255,1)'});
-  mainRoom.top.css({backgroundColor: 'rgba(0,0,255,.2)'});
-  mainRoom.bottom.css({backgroundColor: 'rgba(0,255,0,.2)'});
 
   var innerRoom = makeRoom({
     x: pixelWidth * 0.2,
@@ -142,10 +168,25 @@ $(function () {
   innerRoom.top.css({backgroundColor: 'rgba(0,0,255,.5)'});
   innerRoom.bottom.css({backgroundColor: 'rgba(0,255,0,1)'});
   innerRoom.rotate({y:-15});
-  innerRoom.bottom.add(rug);
+  innerRoom.back.add(rug);
+  innerRoom.bottom.add(fillFloor());
 
+  var mainRoom = makeRoom({
+    x: 0,
+    y: 0,
+    w: pixelWidth,
+    h: pixelHeight,
+    perspectiveOrigin: (pixelWidth * 0.5) + 'px ' + (pixelHeight * 0.75) + 'px',  // origin is center of screen
+  });
+  mainRoom.back.css({backgroundColor: 'transparent'});
+  mainRoom.left.css({backgroundColor: 'rgba(255,255,0,.2)'});
+  mainRoom.right.css({backgroundColor: 'rgba(0,255,255,1)'});
+  mainRoom.top.css({backgroundColor: 'rgba(0,0,255,.2)'});
+  mainRoom.bottom.css({backgroundColor: 'rgba(0,255,0,.2)'});
+  mainRoom.bottom.add(fillFloor());
   mainRoom.add([
     innerRoom,
+    legRoom,
   ]);
 
   var background = Meninas.makeBackground(pixelWidth, pixelHeight)
@@ -154,23 +195,14 @@ $(function () {
       backgroundImage: 'url(img/clouds_on_light_blue.jpg)',
       backgroundSize: 'cover',
     });
-
   background.add([
     mainRoom,
-    // backWall,
-    // mainRoom,
-    // innerRoom,
-    // legRoom,
-    // corridor,
-    // anotherRoom,
-    // floor,
-    // rug,
   ]);
 
-  // background.add( mainRoom.wallsA );
-  background.render();
-
+  Thing.classes.Page.setScale(pageParams.scale || 1);
   Thing.classes.Page.initEvents();
+
+  background.render();
 
   // for debugging
   window.mainRoom = mainRoom;

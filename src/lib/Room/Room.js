@@ -145,7 +145,8 @@ class Room extends Box {
 		var defaultCSS = {
 			display: 'block',
 			position: 'absolute',
-			backfaceVisibility: 'hidden'
+			backfaceVisibility: 'hidden',
+			overflow: 'hidden'
 		};
 		var wall = Thing.classes.Box.make($.extend({}, defaultCSS, cssVals));
 		wall.$element.addClass('wall');

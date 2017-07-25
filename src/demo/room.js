@@ -31,7 +31,7 @@ function makeLump (props) {
 }
 
 // wrap a room in a div to prevent overflow
-function makeRoom (props) {
+function makeWrappedRoom (props) {
   props = $.extend({}, {
     x: 1000,
     y:  120,
@@ -70,6 +70,7 @@ $(function () {
   var aspectRatio = 0.625;
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
+  
   var background = Meninas.makeBackground(pixelWidth, pixelHeight)
     .css({
       backgroundColor:'rgb(60, 47, 70)',
@@ -98,11 +99,11 @@ $(function () {
     rotate:{x: 90}
   });
 
-  var legRoom = makeRoom();
+  var legRoom = makeWrappedRoom();
   legRoom.room.add(makeLump());
   legRoom.room.rotate({y: -25});
 
-  var corridor = makeRoom({
+  var corridor = makeWrappedRoom({
     x: 4150,
     y: -993,
     h: 3735,
