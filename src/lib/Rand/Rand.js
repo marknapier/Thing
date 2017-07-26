@@ -1,9 +1,28 @@
 var Thing = require('../Thing/Thing.js');
+var MersenneTwister = require('./mersenne-twister.js');
 
+var MTRand = null;
+var seed = null;
 var PI = 3.14159265359;
 var HALFPI = PI/2.0;
 
 class Rand {
+	static setSeed(s) {
+		seed = s;
+	}
+
+	static init() {
+		if (!MTRand) {
+			seed = (seed === null) ? (new Date()).getTime() : seed;
+			MTRand = new MersenneTwister(seed);
+		}
+	}
+
+	static random() {
+		MTRand || Rand.init();
+		return MTRand.random();
+	}
+
 	static randItem(arr) {
 		if (arr && arr.length > 0) {
 			return arr[ Rand.randInt(0, arr.length-1) ];
@@ -15,12 +34,12 @@ class Rand {
 	static randInt(min, max) {
 		min = Math.ceil(min||0);
 		max = Math.floor(max||1);
-		return Math.floor(Math.random() * (max - min + 1)) + min;
+		return Math.floor(Rand.random() * (max - min + 1)) + min;
 	}
 
 	// return float between 0 and .999999
 	static randFloat() {
-	    return Math.random();
+	    return Rand.random();
 	}
 
 	static randPercent(threshold) {
@@ -30,7 +49,7 @@ class Rand {
 	// random integer within maxDistance of target (distributed in a bell curve around target)
 	static randCloseTo(target, maxDistance) {
 		// return target + (maxDistance * randNormal());    // concentrated towards center 50% of range
-		// return target + (maxDistance * randSin2());   // spread over entire range, somewhat concentrated towards center 
+		// return target + (maxDistance * randSin2());   // spread over entire range, somewhat concentrated towards center
 		return target + (maxDistance * Rand.randPow2());   // spread over entire range, with sharp concentration around center
 	}
 
