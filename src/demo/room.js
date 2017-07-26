@@ -30,30 +30,48 @@ function makeLump (props) {
   }).add(imgs);
 }
 
-function makeRoom (props) {
-  var r = Thing.classes.Room.make($.extend({
+// wrap a room in a div to prevent overflow
+function makeWrappedRoom (props) {
+  props = $.extend({}, {
     x: 1000,
     y:  120,
     w: 1000,
     h: 2625,
-    d: 1000,
-    showOuter: false,
-    overflow: 'hidden'
-  }, props));
+    overflow: 'hidden',
+    perspective: 'inherit',    // need to have perspective ON or room will be flat (this assumes that the parent container has a perspective:1000px setting or something similar)
+  }, props);
+
+  // outer div
+  var wrapper = Thing.classes.Box.make(props);
+
+  // room has same dimensions as wrapper
+  var r = Thing.classes.Room.make({
+    w: props.w,
+    h: props.h,
+    d: props.d || 1000,
+    showOuter: props.showOuter || false,
+  });
+
+  // style the walls
   r.back.css({backgroundColor: '#000'});
   r.right.css({backgroundColor: '#333'});
   r.left.css({backgroundColor: '#333'});
   r.top.css({backgroundColor: '#111'});
   r.bottom.css({backgroundColor: '#222'});
-  return r;
+
+  // put room in the wrapper box
+  wrapper.add(r);
+  wrapper.room = r;  // expose the room for outside access
+
+  return wrapper;
 }
 
 $(function () {
   var aspectRatio = 0.625;
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
-  var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
-  var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale)
+  
+  var background = Meninas.makeBackground(pixelWidth, pixelHeight)
     .css({
       backgroundColor:'rgb(60, 47, 70)',
       backgroundImage: 'url(img/clouds_on_light_blue.jpg)',
@@ -81,11 +99,11 @@ $(function () {
     rotate:{x: 90}
   });
 
-  var room = makeRoom();
-  room.room.add(makeLump());
-  room.room.rotate({y: -25});
+  var legRoom = makeWrappedRoom();
+  legRoom.room.add(makeLump());
+  legRoom.room.rotate({y: -25});
 
-  var corridor = makeRoom({
+  var corridor = makeWrappedRoom({
     x: 4150,
     y: -993,
     h: 3735,
@@ -94,8 +112,8 @@ $(function () {
     perspective: '1000px',
     perspectiveOrigin: '-2500px 2300px',  // origin is center of screen
   });
-  corridor.right.css({backgroundImage: 'radial-gradient(at 60% 60%, rgba(184, 155, 176, 0.3) 10%, rgba(28, 17, 22, 0.46) 90%)'});
-  corridor.bottom.css({backgroundImage: 'radial-gradient(at 50% 65%, rgba(61, 54, 41, 0.3) 40%, rgba(28, 17, 22, 0.3) 140%)'});
+  corridor.room.right.css({backgroundImage: 'radial-gradient(at 60% 60%, rgba(184, 155, 176, 0.3) 10%, rgba(28, 17, 22, 0.46) 90%)'});
+  corridor.room.bottom.css({backgroundImage: 'radial-gradient(at 50% 65%, rgba(61, 54, 41, 0.3) 40%, rgba(28, 17, 22, 0.3) 140%)'});
 
   var rug = Thing.classes.Img.make({
     x: 3764,
@@ -107,13 +125,12 @@ $(function () {
   });
 
   background.add(backWall);
-  background.add(room);
+  background.add(legRoom);
   background.add(corridor);
   background.add(floor);
   background.add(rug);
   background.render();
 
   // for debugging
-  window.room = room;
   window.BG = background;
 });
