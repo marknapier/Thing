@@ -7,15 +7,9 @@ var PI = 3.14159265359;
 var HALFPI = PI/2.0;
 
 class Rand {
-	static setSeed(s) {
-		seed = s;
-	}
-
-	static init() {
-		if (!MTRand) {
-			seed = (seed === null) ? (new Date()).getTime() : seed;
-			MTRand = new MersenneTwister(seed);
-		}
+	static init(s) {
+		seed = (s !== undefined) ? s : (new Date()).getTime();
+		MTRand = new MersenneTwister(seed);
 	}
 
 	static random() {
