@@ -31,6 +31,22 @@ describe('Box', function () {
 		expect($('body').find('.Box').find('.Thing').length).toBe(0);
 		b.unRender();
 	});
+	it('can add an array of things to itself', function () {
+		let b = Thing.classes.Box.make();
+		let ta = [Thing.make(), Thing.make(), Thing.make()];
+		b.add(ta);
+		expect(b.numElements()).toBe(3);
+		expect(b.items[0]).toBe(ta[0]);
+		expect(b.items[2]).toBe(ta[2]);
+	});
+	it('can add an array of things and arrays of things to itself', function () {
+		let b = Thing.classes.Box.make();
+		let ta = [Thing.make(), [Thing.make(), Thing.make()]];
+		b.add(ta);
+		expect(b.numElements()).toBe(3);
+		expect(b.items[0]).toBe(ta[0]);
+		expect(b.items[2]).toBe(ta[1][1]);
+	});
 	it('will be the parent of the things inside it', function () {
 		let b = Thing.classes.Box.make();
 		let t = Thing.make();

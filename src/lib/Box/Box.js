@@ -8,16 +8,29 @@ class Box extends Thing {
   	this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
-  add (addItems) {
-  	if (addItems) {
-      if (!(addItems instanceof Array)) {
-        addItems = [addItems];
+  // add_OLD (addItems) {
+  // 	if (addItems) {
+  //     if (!(addItems instanceof Array)) {
+  //       addItems = [addItems];
+  //     }
+  //     for (var i=0; i < addItems.length; i++) {
+  //       this.items.push(addItems[i]);
+  //       addItems[i].parent = this;
+  //     }
+  // 	}
+  //   return this;
+  // }
+
+  add (thing) {
+    if (thing) {
+      if (thing instanceof Array) {
+        thing.forEach(this.add.bind(this));
       }
-      for (var i=0; i < addItems.length; i++) {
-        this.items.push(addItems[i]);
-        addItems[i].parent = this;
+      else {
+        this.items.push(thing);
+        thing.parent = this;
       }
-  	}
+    }
     return this;
   }
 

@@ -59,31 +59,31 @@ class Room extends Box {
 		// 	height: this.h + 'px',
 		// 	transform: 'rotateX( 180deg ) translateZ( ' + (halfDepth) + 'px )'
 		// }) );
-		walls.push( this.back = this.makeWall('back', {
+		walls.push( this.makeWall('back', {
 			backgroundColor: 'rgba(0, 0, 0, 1)',
 			width: this.w + 'px',
 			height: this.h + 'px',
 			transform: 'translateZ( ' + (-halfDepth * 0.997) + 'px )'    // push back slightly less than full amount (0.997) or we get a slight gap at corners
 		}) );
-		walls.push( this.right = this.makeWall('right', {
+		walls.push( this.makeWall('right', {
 			backgroundColor: 'rgba(255, 0, 55, 1)',
 			width: this.d + 'px',
 			height: this.h + 'px',
 			transform: 'rotateY( -90deg ) translateZ( ' + (-(halfWidth + (halfWidth-halfDepth))) + 'px )'
 		}) );
-		walls.push( this.left = this.makeWall('left', {
+		walls.push( this.makeWall('left', {
 			backgroundColor: 'rgba(255, 255, 0, 1)',
 			width: this.d + 'px',
 			height: this.h + 'px',
 			transform: 'rotateY( 90deg ) translateZ( ' + (-halfDepth) + 'px )'
 		}) );
-		walls.push( this.top = this.makeWall('top', {
+		walls.push( this.makeWall('top', {
 			backgroundColor: 'rgba(0, 55, 255, 1)',
 			width: this.w + 'px',
 			height: this.d + 'px',
 			transform: 'rotateX( -90deg ) translateZ( ' + (-(halfHeight - (halfHeight-halfDepth)) * 0.997) + 'px )'
 		}) );
-		walls.push( this.bottom = this.makeWall('bottom', {
+		walls.push( this.makeWall('bottom', {
 			backgroundColor: 'rgba(0, 255, 0, 1)',
 			width: this.w + 'px',
 			height: this.d + 'px',
@@ -133,6 +133,7 @@ class Room extends Box {
 		// copy walls array to object
 		for (var i=0; i < walls.length; i++) {
 			this.walls[ walls[i].which ] = walls[i];
+			this[walls[i].which] = walls[i];
 		}
 
 		room.add(walls);

@@ -19,10 +19,10 @@ function makeLump (props) {
   var imgs = imgNames.map( function (imgName) {
     return Thing.classes.Img.make({
       src: 'img/' + imgName,
-      x: Rand.randNormal() * (CW * 0.025),
-      y: Rand.randInt(0, CW * 0.15),
-      w: Rand.randInt(CW * 0.1, CW * 0.2),
-      h: Rand.randInt(CW * 0.1, CW * 0.3),
+      x: props.x + (Rand.randNormal() * (props.w * 0.1)),
+      y: Rand.randInt(0, props.y),
+      w: Rand.randInt(props.w * 0.8, props.w),
+      h: Rand.randInt(props.h * 0.8, props.h),
       opacity: 0.1 + (Rand.randFloat()*0.9),
       filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
     });
@@ -102,6 +102,12 @@ function fillFloor () {
     });
 }
 
+var opaquePatterns = [
+  {pattern: 'GraphPaper', size: Rand.randInt(1,8) * 100, stretch: true},
+  {pattern: 'PlaidRed', size: Rand.randInt(1,8) * 250, stretch: true},
+  {pattern: 'Sofa', size: Rand.randItem([100, 160, 225, 280, 350, 500]), stretch: true},
+];
+
 var transparentPatterns = [
   {pattern: 'Grid', size: Rand.randInt(1,8) * 20, stretch: true},
   {pattern: 'PolkaDots', size: Rand.randInt(50,550), stretch: true},
@@ -115,28 +121,79 @@ function randomPattern (patterns) {
   return P;
 }
 
+function makeLightSpot () {
+  return Thing.make({
+      width: '100%',
+      height: '100%',
+      background: 'radial-gradient(at 40% 30%, transparent 10%, rgba(0, 0, 0, 0.3) 90%)'
+    });
+}
+
+function makeOverlayRoom (props) {
+  var R = makeWrappedRoom({
+    x: props.x,
+    y: CW * -0.2,   // top is out of viewport
+    z: CH * 0.1,    // move to the front of mainRoom
+    h: CH * 1.3,    // fill to bottom of screen
+    w: props.w,
+    d: CW * 0.28,
+    perspective: (CW * 1.1) + 'px',
+    perspectiveOrigin: '-' + (CW * 0.33) + 'px ' + (CW * 0.45) + 'px',
+    background: 'url(img/victorian_rose_pattern.jpg) 0 0 / 500px 750px',
+  });
+  R.room.left.css({backgroundColor: 'rgba(255,255,0,.3)'});
+  R.room.right.css({backgroundColor: 'rgba(255,0,0,.3)'});
+  R.room.right.add(makeLightSpot());
+  R.room.top.css({backgroundColor: 'rgba(0,0,255,.3)'});
+  R.room.bottom.css({backgroundColor: 'rgba(0,255,0,.3)'});
+  R.room.back.css({backgroundColor: '#112'});
+  R.room.rotate({y: 30});
+  R.room.add(makeLump({x:200, y: 200, w:500, h: 1000}));
+  return R;
+}
+
+// w: total width to fill
+// minW, maxW: min/max width of column
+function makeWidths (props) {
+  var columns = [];
+  var totalW = 0;
+  var columnW = 0;
+  var remainingW = 0;
+  var maxW = props.maxW;
+
+  for (totalW=0; totalW < props.w; ) {
+    remainingW = props.w - totalW;
+    maxW = remainingW > props.maxW ? props.maxW : remainingW;
+    if (remainingW > props.minW) {
+      columnW = Rand.randInt(props.minW, maxW);
+    }
+    else {
+      columnW = remainingW;
+    }
+    columns.push({x:totalW, w: columnW});
+    totalW += columnW;
+  }
+
+  return columns;
+}
+
+function makeRandomColumns (props) {
+  var widths = makeWidths(props);
+  var columns = [];
+  widths.forEach(function (xw) {
+    columns.push(Thing.classes.Box.make({
+      x: xw.x,
+      y: 0,
+      w: xw.w,
+      h: props.h-10,
+      border: '5px solid red',
+      backgroundColor: Rand.randRGBstr( Rand.randInt(2,6) * 0.1)
+    }));
+  });
+  return columns;
+}
+
 $(function () {
-
-  var lightSpot = Thing.make({
-    width: '100%',
-    height: '100%',
-    background: 'radial-gradient(at 40% 30%, rgba(255, 255, 255, 0.3) 10%, rgba(94, 72, 82, 0.54) 90%)'
-  });
-
-  var legRoom = makeRoom({
-    x: CW * 0.45,
-    y: CH * 0.208,
-    z: CH * -0.2,
-    w: CW * 0.2,
-    h: CH * 0.79,
-    d: CW * 0.2
-  });
-  legRoom.add(makeLump());
-  legRoom.rotate({y: 25});
-  legRoom.bottom.add(Thing.classes.BGImg.make({
-    url:'img/persian_carpet_fine_red_1.png'
-  }));
-
   var corridor = makeWrappedRoom({
     x: CW * 0.819,
     y: 0,
@@ -149,45 +206,17 @@ $(function () {
   corridor.room.right.css({backgroundImage: 'radial-gradient(at 60% 60%, rgba(184, 155, 176, 0.3) 10%, rgba(28, 17, 22, 0.46) 90%)'});
   corridor.room.bottom.css({backgroundImage: 'radial-gradient(at 50% 65%, rgba(61, 54, 41, 0.3) 40%, rgba(28, 17, 22, 0.3) 140%)'});
 
-  var innerRoom = makeRoom({
+  var overlayRoom = makeOverlayRoom({
     x: CW * 0.2,
-    y: CH * 0.295,
-    z: CH * -0.2,
-    w: CW * 0.15,
-    h: CH * 0.7,
-    d: CW * 0.1,
-    showOuter: true,
+    w: Rand.randInt(CW * 0.10, CW * 0.20),
   });
-  innerRoom.back.css({backgroundColor: 'rgba(0,0,0,.5)'});
-  innerRoom.left.css({backgroundColor: 'rgba(255,255,0,.5)'});
-  innerRoom.right.css({backgroundColor: 'rgba(0,255,255,1)'});
-  innerRoom.top.css({backgroundColor: 'rgba(0,0,255,.5)'});
-  innerRoom.bottom.css({backgroundColor: 'rgba(0,255,0,1)'});
-  innerRoom.rotate({y:-15});
-  innerRoom.bottom.add(fillFloor());
-  innerRoom.back.add(lightSpot);
+  overlayRoom.room.rotate({y: Rand.randInt(-70, 30)});
 
-  var wireframeRoom = makeRoom({
-    x: CW * 0.03,
-    y: CH * 0.290,
-    z: CH * -0.2,
-    w: CW * 0.08,
-    h: CH * 0.7,
-    d: CW * 0.1,
-    showOuter: true
+  var overlayRoom2 = makeOverlayRoom({
+    x: CW * 0.4,
+    w: Rand.randInt(CW * 0.10, CW * 0.20),
   });
-  var borderCSS = {backgroundColor: 'transparent', border: (CW*0.0016) + 'px solid red'};
-  wireframeRoom.back.css(borderCSS).add(randomPattern(transparentPatterns));
-  wireframeRoom.left.css(borderCSS).add(randomPattern(transparentPatterns));
-  wireframeRoom.right.css(borderCSS).add(randomPattern(transparentPatterns));
-  wireframeRoom.top.css({backgroundColor: 'transparent'});
-  wireframeRoom.bottom.css({backgroundColor: 'transparent'});
-  wireframeRoom.outbottom.css({backgroundColor: 'transparent'});
-  wireframeRoom.outtop.css({backgroundColor: 'transparent'});
-  wireframeRoom.outback.css(borderCSS);
-  wireframeRoom.outleft.css(borderCSS);
-  wireframeRoom.outright.css(borderCSS).add(randomPattern(transparentPatterns));
-  wireframeRoom.outfront.css(borderCSS).add(randomPattern(transparentPatterns));
+  overlayRoom.room.rotate({y: Rand.randInt(-70, 30)});
 
   var mainRoom = makeRoom({
     x: 0,
@@ -205,9 +234,14 @@ $(function () {
   mainRoom.bottom.add(fillFloor());
   mainRoom.back.add(corridor);
   mainRoom.add([
-    innerRoom,
-    legRoom,
-    wireframeRoom,
+    overlayRoom,
+    overlayRoom2,
+    makeLump({
+        x: 2000, //CW * 0.65,
+        y: CW * 0.20,
+        w: CW * 0.2,
+        h: CW * 0.3,
+    }),
   ]);
 
   var background = Meninas.makeBackground(CW, CH)
@@ -218,6 +252,7 @@ $(function () {
     });
   background.add([
     mainRoom,
+    makeRandomColumns({w: CW, h: CH, minW: CW/10, maxW: CW/2}),
   ]);
   background.render();
 
@@ -225,6 +260,5 @@ $(function () {
   Thing.classes.Page.initEvents();
 
   // for debugging
-  window.mainRoom = mainRoom;
   window.BG = background;
 });

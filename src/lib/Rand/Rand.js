@@ -67,20 +67,20 @@ class Rand {
 		return ((Rand.randFloat() + Rand.randFloat() + Rand.randFloat() + Rand.randFloat() + Rand.randFloat() + Rand.randFloat()) - 3.0) / 3.0;
 	}
 
-    // return float between -1 and 1, distributed closer to 0
-    static randSin2() {
-        return Rand.randSin() - Rand.randSin();
-    }
+  // return float between -1 and 1, distributed closer to 0
+  static randSin2() {
+    return Rand.randSin() - Rand.randSin();
+  }
 
-    // return array of 3 ints, each 0-255
-    static randRGB() {
-        return [Rand.randInt(0,255), Rand.randInt(0,255), Rand.randInt(0,255)];
-    }
+  // return array of 3 ints, each 0-255
+  static randRGB() {
+    return [Rand.randInt(0,255), Rand.randInt(0,255), Rand.randInt(0,255)];
+  }
 
-    static randRGBstr() {
+  static randRGBstr(alpha) {
 		var rgb = Rand.randRGB();
-        return 'rgba(' +rgb[0]+ ',' +rgb[1]+ ',' +rgb[2]+ ', .9)';
-    }
+    return 'rgba(' +rgb[0]+ ',' +rgb[1]+ ',' +rgb[2]+ ', ' + (alpha || 0.9) + ')';
+  }
 }
 Thing.addClass(Rand);
 
