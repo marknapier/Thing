@@ -111,18 +111,18 @@ var transparentPatterns = [
 
 function randomPattern (patterns) {
   var P = Thing.classes.Pattern.make(Thing.classes.Rand.randItem(patterns));
-  window.console.log(P);
   return P;
 }
 
-$(function () {
-
-  var lightSpot = Thing.make({
+function makeLightSpot () {
+  return Thing.make({
     width: '100%',
     height: '100%',
     background: 'radial-gradient(at 40% 30%, rgba(255, 255, 255, 0.3) 10%, rgba(94, 72, 82, 0.54) 90%)'
   });
+}
 
+$(function () {
   var legRoom = makeRoom({
     x: CW * 0.45,
     y: CH * 0.208,
@@ -159,13 +159,16 @@ $(function () {
     showOuter: true,
   });
   innerRoom.back.css({backgroundColor: 'rgba(0,0,0,.5)'});
-  innerRoom.left.css({backgroundColor: 'rgba(255,255,0,.5)'});
+  // innerRoom.left.css({backgroundColor: 'rgba(255,255,0,.5)'});
+  innerRoom.left.css({background: 'url(img/victorian_rose_pattern.jpg) 0px 0px / 500px 750px'});
+  innerRoom.left.add(makeLightSpot());
   innerRoom.right.css({backgroundColor: 'rgba(0,255,255,1)'});
   innerRoom.top.css({backgroundColor: 'rgba(0,0,255,.5)'});
   innerRoom.bottom.css({backgroundColor: 'rgba(0,255,0,1)'});
-  innerRoom.rotate({y:-15});
   innerRoom.bottom.add(fillFloor());
-  innerRoom.back.add(lightSpot);
+  innerRoom.back.css({background: 'url(img/victorian_rose_pattern.jpg) 0px 0px / 500px 750px'});
+  innerRoom.back.add(makeLightSpot());
+  innerRoom.rotate({y:-15});
 
   var wireframeRoom = makeRoom({
     x: CW * 0.03,
