@@ -152,17 +152,19 @@ function makeOverlayRoom (props) {
   return R;
 }
 
+// x: starting pos
 // w: total width to fill
 // minW, maxW: min/max width of column
+// return array of objects like: {x: 123, w:345}
 function makeWidths (props) {
   var columns = [];
-  var totalW = 0;
+  var x = props.x || 0;
   var columnW = 0;
   var remainingW = 0;
   var maxW = props.maxW;
 
-  for (totalW=0; totalW < props.w; ) {
-    remainingW = props.w - totalW;
+  while (x < props.w) {
+    remainingW = props.w - x;
     maxW = remainingW > props.maxW ? props.maxW : remainingW;
     if (remainingW > props.minW) {
       columnW = Rand.randInt(props.minW, maxW);
@@ -170,8 +172,8 @@ function makeWidths (props) {
     else {
       columnW = remainingW;
     }
-    columns.push({x:totalW, w: columnW});
-    totalW += columnW;
+    columns.push({x: x, w: columnW});
+    x += columnW;
   }
 
   return columns;
@@ -191,6 +193,20 @@ function makeRandomColumns (props) {
     }));
   });
   return columns;
+}
+
+function makeRandomRooms (props) {
+  var rooms = [];
+  makeWidths(props).forEach(function (xw) {
+    var overlayRoom = makeOverlayRoom({
+      x: xw.x,
+      w: xw.w,
+    });
+    overlayRoom.room.rotate({y: Rand.randInt(-90, 90)});
+    overlayRoom.css({borderLeft: '5px solid red'});
+    rooms.push(overlayRoom);
+  });
+  return rooms;
 }
 
 $(function () {
@@ -252,7 +268,8 @@ $(function () {
     });
   background.add([
     mainRoom,
-    makeRandomColumns({w: CW, h: CH, minW: CW/10, maxW: CW/2}),
+    // makeRandomColumns({w: CW, h: CH, minW: CW/15, maxW: CW/2}),
+    makeRandomRooms({x: CW*0.3, w: CW*0.65, h: CH, minW: CW/15, maxW: CW/2}),
   ]);
   background.render();
 
