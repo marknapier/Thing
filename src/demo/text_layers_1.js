@@ -81,17 +81,29 @@ function main () {
     var aspectRatio = 1.25;
     var pixelWidth = 1000;  //6000;
     var pixelHeight = pixelWidth * aspectRatio;  //7500;
+    var greens = ['#339911', '#008000', '#009000', '#008600', '#00aa00', '#008010', '#108000', '#30a000', '#00a030', '#30a030'];
 
-    var txt0 = makeTextPane({w: pixelWidth, h: pixelHeight, backgroundColor: Rand.randRGBstr(), fontSize: Rand.randInt(80,300)});
 
-    var txt1 = makeTextPane({w: pixelWidth, h: pixelHeight, backgroundColor: Rand.randRGBstr()});
+    var txt0 = makeTextPane({w: pixelWidth, h: pixelHeight, backgroundColor: Rand.randItem(greens), fontSize: Rand.randInt(80,300)});
+    txt0.add([
+        Thing.classes.Pattern.make({pattern: 'GraphPaper', backgroundColor: 'transparent'}).css({opacity: 0.7}),
+        Thing.classes.Pattern.make({pattern: 'PolkaDots', size: 40}),
+    ]);
+
+    var txt1 = makeTextPane({w: pixelWidth, h: pixelHeight, backgroundColor: Rand.randItem(greens)});
+
+    var polkas = Thing.classes.Pattern.make({pattern: 'PolkaDots', size: 207, radius: 30, color: '#fff'});
 
     txt1.css({
-      WebkitMaskImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'><circle shape-rendering='geometricPrecision' cx='500' cy='500' r='1' stroke='black' stroke-width='700' fill='none'/></svg>\")",
+      WebkitMaskImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'><circle shape-rendering='geometricPrecision' cx='500' cy='500' r='300' stroke='black' stroke-width='0' fill='black'/></svg>\")",
       WebkitMaskRepeat: 'repeat',
-      WebkitMaskSize: '15%',
+      WebkitMaskSize: '20%',
       WebkitMaskPosition: '0 0'
     });
+    txt1.add([
+        Thing.classes.Pattern.make({pattern: 'GraphPaper', backgroundColor: 'transparent'}).css({opacity: 0.7}),
+        polkas,
+    ]);
 
     txt0.render();
     txt1.render();
@@ -100,7 +112,6 @@ function main () {
 }
 
 $(function () {
-    // scaleDocument(3);
     main();
 });
 
