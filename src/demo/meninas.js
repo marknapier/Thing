@@ -256,6 +256,7 @@ window.Meninas = (function () {
       y: 1605,
       w: 6100,
       h: 3600,
+      backgroundSize: 400,
       rotate: {x: 85}
     };
     var _options = $.extend(defaultOptions, options);
@@ -270,7 +271,7 @@ window.Meninas = (function () {
           width: '100%',
           height: '100%',
           backgroundImage: 'linear-gradient(90deg, #f3daac 0.4%, #6a5f4b .8%, #6a5f4b 1.6%, #ffdc8d 2.0%, #f3daac 3%)',
-          backgroundSize: '400px 400px',
+          backgroundSize: '' + _options.backgroundSize + 'px ' + _options.backgroundSize + 'px',
           opacity: 0.85
         }),
         Thing.make({   // light spot
