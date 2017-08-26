@@ -75,7 +75,7 @@ describe('Rand', function () {
 
 		let yesses = 0;
 		for (let i=0; i < 100; i++) {
-			yesses += R.randPercent(30) ? 1 : 0;
+			yesses += R.randBoolean(30) ? 1 : 0;
 		}
 		
 		// leave a margin of +-10% around the given threshold value
