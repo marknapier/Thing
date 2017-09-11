@@ -47,16 +47,16 @@ function makeLeg (props = {}) {
   ];
   var options = $.extend({
     x: 100,
-    y: 900,
-    w: 500,
-    h: 500,
+    y: 1500,
+    w: 1000,
+    h: 3000,
   }, props);
   var img = Thing.classes.Img.make({
     src: 'img/' + Rand.randItem(imgNames),
-    x: props.x + (Rand.randNormal() * (props.w * 0.1)),
-    y: Rand.randInt(0, props.y),
-    w: Rand.randInt(props.w * 0.8, props.w),
-    h: Rand.randInt(props.h * 0.8, props.h),
+    x: options.x + (Rand.randNormal() * (options.w * 0.1)),
+    y: Rand.randInt(0, options.y),
+    w: Rand.randInt(options.w * 0.8, options.w),
+    h: Rand.randInt(options.h * 0.8, options.h),
     // opacity: 0.1 + (Rand.randFloat()*0.9),
     // filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
   });
@@ -187,6 +187,13 @@ function makeOverlayRoom (props) {
   // R.room.add(makeLump({x:200, y: 200, w:500, h: 1000}));
 
   R.room.back.add(makeLeg());
+  // R.room.back.add(Thing.classes.Img.make({
+  //     src: 'img/leg_eve_left_1.png',
+  //     x: 0,
+  //     y: 200,
+  //     w: 300,
+  //     h: 700,
+  //   }));
 
   if (Rand.randInt(0,10) > 8) {
     R.room.back.add(fillSky());

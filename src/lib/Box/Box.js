@@ -1,11 +1,12 @@
 var Thing = require('../Thing/Thing.js');
 
 class Box extends Thing {
-  init (props) {
+  init (props = {}) {
   	this.initialize(props);
   	this.type = 'Box';
   	this.items = [];
   	this.$element = Thing.makeElement(this.html(), this.props, this.type);
+    this.addMask(props.mask);
   }
 
   // add_OLD (addItems) {

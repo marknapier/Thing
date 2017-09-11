@@ -198,6 +198,7 @@ class Thing {
     delete styles.w;
     delete styles.h;
     delete styles.r;
+    delete styles.mask;
     return styles;
   }
 
