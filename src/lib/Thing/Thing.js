@@ -69,6 +69,7 @@ class Thing {
   }
 
   // return the element's CSS transform matrix as array of 6 values
+  // works for 2D matrix, should update to work with 'matrix3d'
   getCSSTransform () {
     var mStr = this.$element.css('transform').match(/-?[\d\.]+/g);
     var mVal = [];
@@ -76,6 +77,15 @@ class Thing {
       mVal[i] = parseFloat(mStr[i]);
     }
     return mVal;
+  }
+
+  // return Z axis rotation from 6x6 matrix
+  // todo: 3d matrix http://nghiaho.com/?page_id=846
+  // https://css-tricks.com/get-value-of-css-rotation-through-javascript/
+  getAngle () {
+    var m = this.getCSSTransform();
+    var a = Math.round(Math.atan2(m[1], m[0]) * (180/Math.PI));
+    return a;
   }
 
   // Increment the current rotation by the given degrees.
