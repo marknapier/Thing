@@ -68,10 +68,11 @@ class Thing {
     return [xy.left, xy.top, z];
   }
 
-  // return the element's CSS transform matrix as array of 6 values
-  // works for 2D matrix, should update to work with 'matrix3d'
+  // Return the element's CSS transform matrix as array of 6 or 16 values. 
+  // 6 values for a 2D matrix (no rotation or only rotated around Z axis),
+  // 16 values for a 3D matrix.
   getCSSTransform () {
-    var mStr = this.$element.css('transform').match(/-?[\d\.]+/g);
+    var mStr = this.$element.css('transform').match(/(-?[\d\.]+)[,)]/g);
     var mVal = [];
     for (var i=0; i < mStr.length; i++) {
       mVal[i] = parseFloat(mStr[i]);
@@ -82,10 +83,17 @@ class Thing {
   // return Z axis rotation from 6x6 matrix
   // todo: 3d matrix http://nghiaho.com/?page_id=846
   // https://css-tricks.com/get-value-of-css-rotation-through-javascript/
-  getAngle () {
-    var m = this.getCSSTransform();
-    var a = Math.round(Math.atan2(m[1], m[0]) * (180/Math.PI));
-    return a;
+  getRotation () {
+    var r = this.rotation || {x:0, y:0, z:0};
+    return {
+      x: r.x || 0, 
+      y: r.y || 0, 
+      z: r.z || 0
+    };
+  }
+
+  getTranslation () {
+    return {x: this.x, y: this.y, z: this.z};
   }
 
   // Increment the current rotation by the given degrees.
@@ -127,16 +135,18 @@ class Thing {
     return this;
   }
 
-  translate (x, y) {
-    this.x += x;
-    this.y += y;
+  translate (x, y, z) {
+    this.x += x || 0;
+    this.y += y || 0;
+    this.z += z || 0;
     this.transform();
     return this;
   }
 
-  translateTo (x, y) {
-    this.x = x;
-    this.y = y;
+  translateTo (x, y, z) {
+    this.x = x || 0;
+    this.y = y || 0;
+    this.z = z || 0;
     this.transform();
     return this;
   }
