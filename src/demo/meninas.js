@@ -234,6 +234,29 @@ window.Meninas = (function () {
     return m;
   }
 
+  // return a Sylvester.js matrix from an array of 16 values
+  function makeMatrix3D (mA) {
+    var $M = window.$M;  // sylvester library
+    var m = null;
+    if (mA && mA.length === 16) {
+      m = $M([
+        [mA[0], mA[4], mA[8], mA[12]],
+        [mA[1], mA[5], mA[9], mA[13]],
+        [mA[2], mA[6], mA[10], mA[14]],
+        [mA[3], mA[7], mA[11], mA[15]],
+      ]);
+    }
+    else if (mA && mA.length === 6) {
+      m = $M([
+        [mA[0], mA[2], 0, mA[4]],
+        [mA[1], mA[3], 0, mA[5]],
+        [0,       0,   1,     0],
+        [0,       0,   0,     1],
+      ]);
+    }
+    return m;
+  }
+
   // return the point transformed by the given matrix
   // CSS Elements by default have transform-origin at center. Pass
   // the position of the origin in originOffset (defaults to 0,0).
@@ -241,7 +264,7 @@ window.Meninas = (function () {
     var Vector = window.Vector;  // sylvester library
     originOffset = originOffset || [0,0];
     // shift point to center around origin
-    var v = Vector.create([point[0]-originOffset[0], point[1]-originOffset[1], 1]);
+    var v = Vector.create([point[0]-originOffset[0], point[1]-originOffset[1], 1, 1]);
     // transform the point
     var tm = M.multiply(v);
     // shift the transformed point back
@@ -297,6 +320,7 @@ window.Meninas = (function () {
     makeTextArrow: makeTextArrow,
     makeBackground: makeBackground,
     makeMatrix2D: makeMatrix2D,
+    makeMatrix3D: makeMatrix3D,
     transformPoint: transformPoint,
     makeFloorBleached: makeFloorBleached
   };

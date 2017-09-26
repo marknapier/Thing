@@ -13,11 +13,12 @@ var plantNamesSmall = [
   'low_philo_mixed_t.png',
 ];
 
-function makeFigure (props = {}) {
+function makeFigure (props = {z: 150}) {
   var borderWidth = CW * 0.0015;
   var torso = Thing.classes.Img.make($.extend({
     x: CW * 0.07,
     y: CW * 0.2366,
+    z: props.z,
     rotate: {z: 30},
     src: 'img/Titian_Venus_of_Urbino_torso_t.png',
     border: borderWidth + 'px dashed #0f0',
@@ -49,27 +50,13 @@ function makeFigure (props = {}) {
   return torso;  // 530 1300
 }
 
-
+var thigh = null;
+var calf = null;
+var foot = null;
 
 function makeFigure3 (props = {x: 0, y: 0, z: 0}) {
   var borderWidth = 10; //CW * 0.0015;
 
-  // var torso = makeAttachable({
-  //     thing: Thing.make({
-  //     x: props.x,
-  //     y: props.y,
-  //     z: props.z,
-  //     w: 600, 
-  //     h: 1000,
-  //     border: borderWidth + 'px dashed #0f0',
-  //     backgroundColor: 'red',
-  //   }),
-  //   borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
-  //   origin: {x: 300/3, y: 100/2},
-  //   attachPoints: {
-  //     hip: {x: 600 * 0.6666, y: 1000 * 0.9},
-  //   },
-  // });
   var torso = makeAttachable({
       thing: Thing.classes.Img.make($.extend({
       x: props.x,
@@ -108,6 +95,9 @@ function makeFigure3 (props = {x: 0, y: 0, z: 0}) {
       knee: {x: 175, y: 740}
     },
   });
+  thigh = thighRight;
+
+
 
   var thighLeft = makeAttachable({
     thing: Thing.classes.Img.make({
@@ -135,7 +125,9 @@ function makeFigure3 (props = {x: 0, y: 0, z: 0}) {
     },
   });
 
-  var foot = makeAttachable({
+  calf = calfRight;
+
+  var footRight = makeAttachable({
     thing: Thing.classes.Img.make({
       src: 'img/Titian_Venus_of_Urbino_foot_right_t.png',
       border: borderWidth + 'px dashed #f39',
@@ -146,11 +138,13 @@ function makeFigure3 (props = {x: 0, y: 0, z: 0}) {
     attachPoints: {},
   });
 
+  foot = footRight;
+
   torso.attach(head, 'neck');
   torso.attach(thighRight, 'hipRight');
   torso.attach(thighLeft, 'hipLeft');
   thighRight.attach(calfRight, 'knee');
-  calfRight.attach(foot, 'ankle');
+  calfRight.attach(footRight, 'ankle');
 
   return torso;
 }
@@ -252,11 +246,12 @@ function makePlants () {
   return plants;
 }
 
-function makeCouch (props = {}) {
+function makeCouch (props = {z: 100}) {
   var i = Thing.classes.Img.make($.extend({
       src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
       x: CW * 0.1,
       y: CW * 0.266,
+      z: props.z,
       w: CW * 0.466,
       filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
     }, props));
@@ -302,6 +297,20 @@ function makeSurface (props = {w:2500, h:2500}) {
   return container;
 }
 
+function makePointers(figure) {
+  function matrix(element) {
+    return Meninas.makeMatrix3D( element.getCSSTransform() );
+  }
+
+  var point = [20, 100];
+  var tp = point;
+  tp = Meninas.transformPoint(tp, matrix(foot), [foot.origin.x, foot.origin.y]);
+  tp = Meninas.transformPoint(tp, matrix(calf), [calf.origin.x, calf.origin.y]);
+  tp = Meninas.transformPoint(tp, matrix(thigh), [thigh.origin.x, thigh.origin.y]);
+  tp = Meninas.transformPoint(tp, matrix(figure), [figure.origin.x, figure.origin.y]);
+  Thing.classes.Label.make({text: 'toe', x: tp[0], y: tp[1], fontSize: '60px', backgroundColor: 'yellow'}).render();
+}
+
 $(function () {
   // surface
   // box
@@ -334,6 +343,7 @@ $(function () {
   });
 
   // All the things go here
+  var venusStanding = makeFigure3({x: CW * 0.7, y: CH * 0.1, z: 15});
   var stage = Thing.classes.Box.make({
     w: CW,
     h: CH,
@@ -344,8 +354,8 @@ $(function () {
     edge,
     makePlants(),
     makeCouch({z: 100}),
-    makeFigure({z: 150}),
-    makeFigure3({x: CW * 0.7, y: CH * 0.1, z: 15}),
+    makeFigure({z: 100}),
+    venusStanding,
   ]);
 
   // Background pattern fills the entire page
@@ -360,6 +370,8 @@ $(function () {
     stage,
   ]);
   background.render();
+
+  makePointers(venusStanding);
 
   // Respond to page params and key events
   Thing.classes.Page.setScale(pageParams.scale || 1);
