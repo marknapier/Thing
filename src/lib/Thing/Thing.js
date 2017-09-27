@@ -73,6 +73,10 @@ class Thing {
   // 16 values for a 3D matrix.
   getCSSTransform () {
     var mStr = this.$element.css('transform').match(/(-?[\d\.]+)[,)]/g);
+    if (!mStr) {
+      return null;
+    }
+
     var mVal = [];
     for (var i=0; i < mStr.length; i++) {
       mVal[i] = parseFloat(mStr[i]);

@@ -298,18 +298,35 @@ function makeSurface (props = {w:2500, h:2500}) {
 }
 
 function makePointers(figure) {
-  function matrix(element) {
-    return Meninas.makeMatrix3D( element.getCSSTransform() );
+
+  // return point transformed by the given thing's matrix
+  // point will be unchanged if the thing has not been translated/rotated/scaled
+  function transformPoint(point, thing) {
+    var matrix = Meninas.makeMatrix3D( thing.getCSSTransform() );
+    if (matrix) {
+      var origin;
+      if (thing.origin) {  // it's an Attachable, use it's origin
+        origin = [thing.origin.x, thing.origin.y];
+      }
+      else {     // it's a regular thing, assume origin is in center
+        var dim = thing.getDimensions();
+        origin = [dim.w/2, dim.h/2];
+      }
+      return Meninas.transformPoint(point, matrix, origin);
+    }
+    return point;
   }
 
-  var point = [20, 100];
-  var tp = point;
-  tp = Meninas.transformPoint(tp, matrix(foot), [foot.origin.x, foot.origin.y]);
-  tp = Meninas.transformPoint(tp, matrix(calf), [calf.origin.x, calf.origin.y]);
-  tp = Meninas.transformPoint(tp, matrix(thigh), [thigh.origin.x, thigh.origin.y]);
-  tp = Meninas.transformPoint(tp, matrix(figure), [figure.origin.x, figure.origin.y]);
+  var tp = [20, 100];
+  tp = transformPoint(tp, foot);
+  tp = transformPoint(tp, calf);
+  tp = transformPoint(tp, thigh);
+  tp = transformPoint(tp, figure);
+  tp = transformPoint(tp, stg);
   Thing.classes.Label.make({text: 'toe', x: tp[0], y: tp[1], fontSize: '60px', backgroundColor: 'yellow'}).render();
 }
+
+var stg;
 
 $(function () {
   // surface
@@ -357,6 +374,10 @@ $(function () {
     makeFigure({z: 100}),
     venusStanding,
   ]);
+
+  stg = stage;
+
+
 
   // Background pattern fills the entire page
   var background = Meninas.makeBackground(CW, CH)

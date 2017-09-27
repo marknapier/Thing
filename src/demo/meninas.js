@@ -268,8 +268,8 @@ window.Meninas = (function () {
     // transform the point
     var tm = M.multiply(v);
     // shift the transformed point back
-    var tx = tm.elements[0]+originOffset[0];
-    var ty = tm.elements[1]+originOffset[1];
+    var tx = tm.elements[0] + originOffset[0];
+    var ty = tm.elements[1] + originOffset[1];
     return [tx, ty];
   }
 
