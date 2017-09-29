@@ -88,6 +88,7 @@ function makeFigure3 (props = {x: 0, y: 0, z: 0}) {
       src: 'img/Titian_Venus_of_Urbino_thigh_right_t.png',
       border: borderWidth + 'px dashed #0f0',
       rotate: {z: Rand.randInt(-10, 10)},
+      zIndex: 10,  // pull it forward over right thigh
     }),
     borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
     origin: {x: 115, y: 120},
@@ -106,9 +107,9 @@ function makeFigure3 (props = {x: 0, y: 0, z: 0}) {
       rotate: {z: Rand.randInt(-10, 10)},
     }),
     borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
-    origin: {x: 115, y: 120},
+    origin: {x: 190, y: 120},
     attachPoints: {
-      knee: {x: 175, y: 740}
+      knee: {x: 150, y: 740}
     },
   });
 
@@ -185,6 +186,7 @@ function makeAttachable (props = {}) {
     var point = attachPoints[pointName];
     thing.$element.append(newPiece.$element);
     newPiece.translate(point.x - newPiece.origin.x, point.y - newPiece.origin.y);
+    newPiece.parent = thing;
   };
 
   // expose the origin point
@@ -297,33 +299,32 @@ function makeSurface (props = {w:2500, h:2500}) {
   return container;
 }
 
-function makePointers(figure) {
+function makePointer(targetThing, text) {
+  var tgtPoint = [50, 100];
+  var distance = CW * 0.1;
+  var delta = CW * 0.05;
+  var randY = Rand.randInt(-delta, delta);
+  var worldPoint = Meninas.getWorldCoordsOf(tgtPoint, targetThing);
 
-  // return point transformed by the given thing's matrix
-  // point will be unchanged if the thing has not been translated/rotated/scaled
-  function transformPoint(point, thing) {
-    var matrix = Meninas.makeMatrix3D( thing.getCSSTransform() );
-    if (matrix) {
-      var origin;
-      if (thing.origin) {  // it's an Attachable, use it's origin
-        origin = [thing.origin.x, thing.origin.y];
-      }
-      else {     // it's a regular thing, assume origin is in center
-        var dim = thing.getDimensions();
-        origin = [dim.w/2, dim.h/2];
-      }
-      return Meninas.transformPoint(point, matrix, origin);
-    }
-    return point;
-  }
+  Thing.classes.Line.make({
+    x1: worldPoint[0] - distance, 
+    y1: worldPoint[1] + randY,
+    x2: worldPoint[0], 
+    y2: worldPoint[1],
+    width: CW / 1000, 
+    color: '#0f0'
+  }).render();
 
-  var tp = [20, 100];
-  tp = transformPoint(tp, foot);
-  tp = transformPoint(tp, calf);
-  tp = transformPoint(tp, thigh);
-  tp = transformPoint(tp, figure);
-  tp = transformPoint(tp, stg);
-  Thing.classes.Label.make({text: 'toe', x: tp[0], y: tp[1], fontSize: '60px', backgroundColor: 'yellow'}).render();
+  Thing.classes.Label.make({
+    text: text, 
+    x: (worldPoint[0] - distance) - 50, 
+    y: (worldPoint[1] + randY) - 50, 
+    fontSize: '60px', 
+    backgroundColor: 'yellow',
+    padding: '50px 60px',
+    borderRadius: '900px',
+    border: '3px solid #360',
+  }).render();
 }
 
 var stg;
@@ -392,7 +393,9 @@ $(function () {
   ]);
   background.render();
 
-  makePointers(venusStanding);
+  makePointer(foot, 'C');
+  makePointer(calf, 'B');
+  makePointer(thigh, 'A');
 
   // Respond to page params and key events
   Thing.classes.Page.setScale(pageParams.scale || 1);

@@ -273,6 +273,34 @@ window.Meninas = (function () {
     return [tx, ty];
   }
 
+  // return point transformed by the given thing's matrix
+  // point will be unchanged if the thing has not been translated/rotated/scaled
+  function getPositionOf (point, thing) {
+    var matrix = makeMatrix3D( thing.getCSSTransform() );
+    if (matrix) {
+      var origin;
+      if (thing.origin) {  // it's an Attachable, use it's origin
+        origin = [thing.origin.x, thing.origin.y];
+      }
+      else {     // it's a regular thing, assume origin is in center
+        var dim = thing.getDimensions();
+        origin = [dim.w/2, dim.h/2];
+      }
+      return transformPoint(point, matrix, origin);
+    }
+    return point;
+  }
+
+  // return point transformed by the given thing's matrix
+  // and all parent matrixes, resulting in the screen position of 
+  // the given point in the given thing.
+  function getWorldCoordsOf(tgtPoint, target) {
+    for (var thing=target; thing; thing=thing.parent) {
+      tgtPoint = getPositionOf(tgtPoint, thing);
+    }
+    return tgtPoint;
+  }
+
   function makeFloorBleached(options) {
     var defaultOptions = {
       x: -1200,
@@ -322,6 +350,8 @@ window.Meninas = (function () {
     makeMatrix2D: makeMatrix2D,
     makeMatrix3D: makeMatrix3D,
     transformPoint: transformPoint,
+    getPositionOf: getPositionOf,
+    getWorldCoordsOf: getWorldCoordsOf,
     makeFloorBleached: makeFloorBleached
   };
 }());
