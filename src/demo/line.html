@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Rand Demo</title>
+    <title>Line Demo</title>
     <link href="reset.css" rel="stylesheet">
     <style>
       #demo {
@@ -77,14 +77,18 @@ window.FB = FB;
 // make a random line
 var Line = Thing.classes.Line;
 var line = Line.make({
-  x1: (Math.random()*100),
-  y1: (Math.random()*200),
+  left: '0px',  // hack needed when placing line after relative positioned elements
+  top: '0px',   // have to reset position to 0,0 or translate will operate relative to page position, not 0,0
+  x: (Math.random()*100),
+  y: (Math.random()*200),
   x2: (200 + Math.random()*500),
   y2: (Math.random()*500),
   lineWidth: parseInt(1 + (Math.random()*3), 10),
   opacity: .1 + (Math.random()*.9),
   color: 'red'
 });
+
+FB.add(line);
 line.render();
 
 </script>
