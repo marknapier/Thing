@@ -4,7 +4,7 @@ class Line extends Thing {
   init (props) {
     // expecting props: { x1:0, y1:0, x2:50, y2:50 }
     props.backgroundColor = props && (props.backgroundColor || props.color || 'black');
-    super.initialize(props);
+    super.setDefaultProps(props);
     this.type = 'Line';
     this.length = 10;
     this.width = 1;

@@ -9,7 +9,7 @@ class PatternPolkaDots extends Thing {
     };
     props.radius = props.radius || props.size/5;
     this.props = props = $.extend({}, defaultProps, props);
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'PatternPolkaDots';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     // polka dots background

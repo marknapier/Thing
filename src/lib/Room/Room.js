@@ -30,7 +30,6 @@ class Room extends Box {
 		this.walls = {};
 
 		super.init(props);
-		// this.initialize(props);
 
 		this.type = 'Room';
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class

@@ -10,7 +10,7 @@ class Label extends Thing {
 			color: '#000'
 		};
 		props = $.extend({}, defaultProps, props);
-		this.initialize(props);
+		this.setDefaultProps(props);
 		this.type = 'Label';
 		this.text = props.text;
 		this.isHTML = props.html;

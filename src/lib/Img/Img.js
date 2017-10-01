@@ -24,7 +24,7 @@ class Img extends Thing {
     Img.loading(this);
     loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
 
-    super.initialize(props);
+    super.setDefaultProps(props);
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 

@@ -13,7 +13,7 @@ class Pattern extends Thing {
       stretch: true
     };
     this.props = props = $.extend({}, defaultProps, props);
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'Pattern';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     this.$element.addClass(props.pattern);

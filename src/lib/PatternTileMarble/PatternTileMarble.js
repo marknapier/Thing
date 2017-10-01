@@ -6,7 +6,7 @@ class PatternTileMarble extends Thing {
       size: 500
     };
     this.props = props = $.extend({}, defaultProps, props);
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'PatternTileMarble';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }

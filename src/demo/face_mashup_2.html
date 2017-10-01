@@ -117,7 +117,7 @@ var Box = Thing.classes.Box;
 
 class ImageBunchBox extends Box {
   init (props) {
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'Box';
     this.items = [];
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
@@ -163,8 +163,8 @@ function makeBoundingBox(box, color) {
   var boxbounds = box.getBoundingBox();  // bounds of the box element
   var rect = Thing.make({
     x: elbounds.x-boxbounds.x, // position the rectangle relative to the box
-    y: elbounds.y-boxbounds.y, 
-    w: elbounds.w, 
+    y: elbounds.y-boxbounds.y,
+    w: elbounds.w,
     h: elbounds.h,
     zIndex: 0,
     border: '2px solid ' + color

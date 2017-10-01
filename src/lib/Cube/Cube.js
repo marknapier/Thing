@@ -35,7 +35,7 @@ class Cube extends Thing {
 		this.w = props.w;
 		this.h = props.h;
 		this.d = props.d;
-		this.initialize(props);
+		this.setDefaultProps(props);
 		this.type = 'Cube';
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
 		this.setupCube(this.$element);

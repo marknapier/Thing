@@ -8,7 +8,7 @@ class PatternSofa extends Thing {
     };
     props = props || {};
     this.props = props = $.extend({}, defaultProps, props);
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'PatternSofa';
     this.patternSizes = [5, 10, 12.5, 16.6, 25, 50]; // percent background sizes that don't distort pattern
     this.$element = Thing.makeElement(this.html(), this.props, this.type);

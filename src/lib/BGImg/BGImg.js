@@ -12,7 +12,7 @@ class BGImg extends Thing {
       size: 'cover'    // contain|cover|100% 100%
     };
     props = this.props = $.extend({}, defaultProps, props);
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'BGImg';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     this.$element.css({

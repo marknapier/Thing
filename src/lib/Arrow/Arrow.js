@@ -3,7 +3,7 @@ var CSS = require('./Arrow.css');
 
 class Arrow extends Thing {
 	init (props) {
-		this.initialize(props);
+		this.setDefaultProps(props);
 		this.type = 'Arrow';
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
 		this.setColor(this.props.color);  // have to make arrow before calling this

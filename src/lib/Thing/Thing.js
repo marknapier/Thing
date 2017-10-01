@@ -4,12 +4,12 @@ class Thing {
   constructor() {}
 
   init (props) {
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'Thing';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
-  initialize (props) {
+  setDefaultProps (props) {
     // CSS props go into this.props
     props = props || {};
     props.position = props.position || 'absolute';   // default to absolute positioning
@@ -68,7 +68,7 @@ class Thing {
     return [xy.left, xy.top, z];
   }
 
-  // Return the element's CSS transform matrix as array of 6 or 16 values. 
+  // Return the element's CSS transform matrix as array of 6 or 16 values.
   // 6 values for a 2D matrix (no rotation or only rotated around Z axis),
   // 16 values for a 3D matrix.
   getCSSTransform () {
@@ -90,8 +90,8 @@ class Thing {
   getRotation () {
     var r = this.rotation || {x:0, y:0, z:0};
     return {
-      x: r.x || 0, 
-      y: r.y || 0, 
+      x: r.x || 0,
+      y: r.y || 0,
       z: r.z || 0
     };
   }

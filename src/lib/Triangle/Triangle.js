@@ -7,7 +7,7 @@ class Triangle extends Thing {
 			color: '#BADA55'
 		};
 		props = $.extend(props, defaultProps);
-		this.initialize(props);
+		this.setDefaultProps(props);
 		this.type = 'Triangle';
 		this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
 		this.makeTriangle(this.props.size, this.props.color);  // have to make element before calling this

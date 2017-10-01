@@ -23,7 +23,7 @@ class ImgSVG extends Thing {
       radius: 10
     };
     this.props = props = $.extend({}, defaultProps, props);
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'ImgSVG';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     this.$element.addClass(props.pattern);

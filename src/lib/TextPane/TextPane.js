@@ -12,7 +12,7 @@ class TextPane extends Thing {
             h: 100
         };
         props = $.extend({}, defaultProps, props);
-        this.initialize(props);
+        this.setDefaultProps(props);
         this.type = 'TextPane';
         this.text = props.text;
         this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class

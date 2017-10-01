@@ -18,64 +18,6 @@ var imgNamesEyesRight = [
     'kim_eye_right_12.png'
 ];
 
-// var imgNamesEyesLeft = [
-//     'elvis_eye_left_round.png',
-//     'elvis_eye_left_square.png',
-//     'marilyn_eye_left_fuzzy.png',
-//     'marilyn_eye_left_round.png',
-//     'marilyn_eye_left_square.png',
-//     'mona_eye_left_circle.png',
-//     'mona_eye_left_fuzzy.png',
-//     'washington_eye_left_fuzzy.png',
-//     'washington_eye_left_round.png',
-//     'washington_eye_left_square.png',
-//     'yoda_eye_left_fuzzy.png',
-//     'yoda_left_eye.png'
-// ];
-
-// class ImgGrid extends Thing {
-//     init (props) {
-//         this.initialize(props);
-//         this.path = props.path;
-//         this.imgNames = props.names;
-//         this.columns = props.columns || 10;
-//         this.box = props.box;
-//     }
-
-//     render () {
-//         this.pickImages(this.path, this.imgNames, this.box, this.columns);
-//     }
-
-//     pickImages (path, names, box, columns) {
-//         var Rand = Thing.classes.Rand;
-//         var dim = box.getDimensions();
-//         var size = dim.w/columns;
-//         var howMany = columns * columns;
-
-//         for (var i=0; i < howMany; i++) {
-//             var facepart = Thing.classes.Img.make({
-//                 src: path + Rand.randItem(names),
-//                 x: (i % columns) * size,
-//                 y: Math.floor(i/columns) * size,
-//                 w: size,
-//                 h: size
-//             });
-//             box.add(facepart);
-//         }
-
-//         var L = Thing.classes.Label.make({
-//             x: 50,
-//             y: 50,
-//             text:''+howMany,
-//             color: 'red',
-//             fontSize: 120
-//         });
-//         box.add(L);
-
-//         box.render();
-//     }
-// }
-
 class RedTextLabel extends Thing.classes.Label {
     init (props) {
         var defaultProps = {
@@ -86,11 +28,6 @@ class RedTextLabel extends Thing.classes.Label {
         };
         props = $.extend({}, defaultProps, props);
         super.init(props);
-        // this.initialize(props);
-        // this.type = 'Label';
-        // this.text = props.text;
-        // this.$element = Thing.makeElement(this.html(), this.props, this.type);  // basic Thing div with ID and class
-        // this.$element.append(this.text);
     }
 }
 

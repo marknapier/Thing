@@ -8,7 +8,7 @@ class PatternStripes extends Thing {
       size: 500
     };
     this.props = props = $.extend({}, defaultProps, props);
-    this.initialize(props);
+    this.setDefaultProps(props);
     this.type = 'PatternStripes';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     // stripes background
