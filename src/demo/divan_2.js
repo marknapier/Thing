@@ -37,7 +37,7 @@ function makeFigure (props = {z: 150}) {
     rotate: {z: -30},
     src: 'img/Titian_Venus_of_Urbino_legs_t.png',
     border: borderWidth + 'px dashed #3f9',
-    transformOrigin: '5% 25%',   
+    transformOrigin: '5% 25%',
   });
   var headdot = Thing.make({w: 20, h: 20, x: 406 * 0.9, y: 433 * 0.9, backgroundColor: 'blue'});
   var legsdot = Thing.make({w: 20, h: 20, x: 1736 * 0.05, y: 540 * 0.25, backgroundColor: 'blue'});
@@ -202,23 +202,23 @@ function makePlants () {
   function randX () {
     return Rand.randInt(CW*0.2, CW*0.7);
   }
-  
+
   function randXsmall () {
     return Rand.randInt(CW*0.01, CW*0.4);
   }
-  
+
   function randZ () {
     return Rand.randInt(2, 9);
   }
-  
+
   function randW () {
     return Rand.randInt(CW*0.2, CW*0.35);
   }
-  
+
   function randWsmall () {
     return Rand.randInt(CW*0.1, CW*0.25);
   }
-  
+
   function randNameSmall () {
     return 'img/' + Rand.randItem(plantNamesSmall);
   }
@@ -262,13 +262,13 @@ function makeCouch (props = {z: 100}) {
 
 function makeSurface (props = {w:2500, h:2500}) {
   var container = Thing.classes.Box.make({
-    w: props.w, 
-    h: props.h, 
+    w: props.w,
+    h: props.h,
     backgroundColor: 'rgb(255, 228, 126)',
   });
 
   var wallpaper =  Thing.classes.PatternStripes.make({
-    color: 'rgba(196, 191, 138, 0.52)', 
+    color: 'rgba(196, 191, 138, 0.52)',
     size: props.w * 0.033
   });
 
@@ -307,19 +307,19 @@ function makePointer(targetThing, text) {
   var worldPoint = Meninas.getWorldCoordsOf(tgtPoint, targetThing);
 
   Thing.classes.Line.make({
-    x1: worldPoint[0] - distance, 
+    x1: worldPoint[0] - distance,
     y1: worldPoint[1] + randY,
-    x2: worldPoint[0], 
+    x2: worldPoint[0],
     y2: worldPoint[1],
-    width: CW / 1000, 
+    lineWidth: CW / 1000,
     color: '#0f0'
   }).render();
 
   Thing.classes.Label.make({
-    text: text, 
-    x: (worldPoint[0] - distance) - 50, 
-    y: (worldPoint[1] + randY) - 50, 
-    fontSize: '60px', 
+    text: text,
+    x: (worldPoint[0] - distance) - 50,
+    y: (worldPoint[1] + randY) - 50,
+    fontSize: '60px',
     backgroundColor: 'yellow',
     padding: '50px 60px',
     borderRadius: '900px',
@@ -351,9 +351,9 @@ $(function () {
 
   // Room edge right side
   var edge = Thing.classes.Line.make({
-    x1: CW * 0.829, 
+    x1: CW * 0.829,
     y1: 0,
-    x2: CW * 0.829, 
+    x2: CW * 0.829,
     y2: CW * 0.5,
     width: CW * 0.0033,
     z: -1,

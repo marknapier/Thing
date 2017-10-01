@@ -43,7 +43,7 @@ $(function () {
   var edge = Thing.classes.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
-    width: 20,
+    lineWidth: 20,
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });
 
@@ -125,7 +125,7 @@ $(function () {
     w: 1000,
     h: 1500,
     rotate: {y:-30},
-    transformStyle: 'preserve-3d', 
+    transformStyle: 'preserve-3d',
     zIndex: 90000
   });
   var anotherLeg = Img.make({

@@ -147,7 +147,7 @@ window.Meninas = (function () {
       x1:bubbleX, y1:bubbleY,
       x2:targetX, y2:targetY,
       color: color,
-      width:10,
+      lineWidth:10,
       arrow:true,
       shorten: shorten,
       zIndex: z,
@@ -180,7 +180,7 @@ window.Meninas = (function () {
       x1:bubbleX, y1:bubbleY,
       x2:targetX, y2:targetY,
       color: color,
-      width: w,
+      lineWidth: w,
       arrow: true,
       shorten: shorten,
       zIndex: z,
@@ -220,7 +220,7 @@ window.Meninas = (function () {
   //----------------------------------------------------
   // Matrix functions (rely on Sylvester.js)
 
-  // return a Sylvester.js matrix from an array of 6 values
+  // return a Sylvester.js 3x3 matrix from an array of 6 values
   function makeMatrix2D (mA) {
     var $M = window.$M;  // sylvester library
     var m = null;
@@ -234,7 +234,7 @@ window.Meninas = (function () {
     return m;
   }
 
-  // return a Sylvester.js matrix from an array of 16 values
+  // return a Sylvester.js 4x4 matrix from an array of 6 or 16 values
   function makeMatrix3D (mA) {
     var $M = window.$M;  // sylvester library
     var m = null;
@@ -292,7 +292,7 @@ window.Meninas = (function () {
   }
 
   // return point transformed by the given thing's matrix
-  // and all parent matrixes, resulting in the screen position of 
+  // and all parent matrixes, resulting in the screen position of
   // the given point in the given thing.
   function getWorldCoordsOf(tgtPoint, target) {
     for (var thing=target; thing; thing=thing.parent) {

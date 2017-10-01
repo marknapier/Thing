@@ -77,7 +77,7 @@ $(function(){
         y1: t.y,
         x2: (t.x < 580 ? -100 : 1100),   // left side vs. right
         y2: (t.y + y),
-        width: 6,
+        lineWidth: 6,
         color: '#6F0',
         zIndex: 1000
       });
@@ -164,12 +164,12 @@ $(function(){
   function makeDividerLines(dim) {
     let lineWidth = 6;
     let lines = [
-      Thing.classes.Line.make({  // vertical center 
+      Thing.classes.Line.make({  // vertical center
         x1: (dim.w/2),
         y1: (0),
         x2: (dim.w/2),
         y2: (dim.h),
-        width: lineWidth,
+        lineWidth: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // horizontal center
@@ -177,7 +177,7 @@ $(function(){
         y1: (dim.h/2),
         x2: (dim.w),
         y2: (dim.h/2),
-        width: lineWidth,
+        lineWidth: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // horizontal top quarter
@@ -185,7 +185,7 @@ $(function(){
         y1: (dim.h * 0.25),
         x2: (dim.w),
         y2: (dim.h * 0.25),
-        width: lineWidth,
+        lineWidth: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // horizontal bottom quarter
@@ -193,7 +193,7 @@ $(function(){
         y1: (dim.h * 0.75),
         x2: (dim.w),
         y2: (dim.h * 0.75),
-        width: lineWidth,
+        lineWidth: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // vertical eye centerline 1/3
@@ -201,7 +201,7 @@ $(function(){
         y1: (dim.h * 0.35),
         x2: (dim.w * 0.33),
         y2: (dim.h * 0.65),
-        width: lineWidth,
+        lineWidth: lineWidth,
         color: '#6C0'
       }),
       Thing.classes.Line.make({  // vertical eye centerline 2/3
@@ -209,7 +209,7 @@ $(function(){
         y1: (dim.h * 0.35),
         x2: (dim.w * 0.66),
         y2: (dim.h * 0.65),
-        width: lineWidth,
+        lineWidth: lineWidth,
         color: '#6C0'
       })
     ];
@@ -230,7 +230,7 @@ $(function(){
       margin: '20px'
     }, props));
     b.add(Thing.classes.Pattern.make({
-      pattern:'none', 
+      pattern:'none',
       backgroundSize: `${gridW}px ${gridW}px, ${gridW}px ${gridW}px`,
       backgroundPosition: `-${halfLineW}px -${halfLineW}px, -${halfLineW}px -${halfLineW}px`,
       backgroundImage: `linear-gradient(rgba(120, 120, 120, 0.25) ${lineW}px, transparent ${lineW}px), linear-gradient(90deg, rgba(120, 120, 120, 0.25) ${lineW}px, transparent ${lineW}px)`,

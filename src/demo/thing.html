@@ -170,7 +170,7 @@ $(function(){
         y1: (Math.random()*200),
         x2: (100 + Math.random()*100),
         y2: (Math.random()*200),
-        width: parseInt(1 + (Math.random()*3), 10),
+        lineWidth: parseInt(1 + (Math.random()*3), 10),
         opacity: .1 + (Math.random()*.9)
       });
       funboxItems.push(a);
@@ -190,12 +190,12 @@ $(function(){
       padding: '10px'
     });
     var b = Thing.classes.Box.make({
-      w:800, 
-      h:300, 
+      w:800,
+      h:300,
       border:'2px solid black'
     });
     var p = Thing.classes.Pattern.make({
-      pattern:'none', 
+      pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
       backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
@@ -209,7 +209,7 @@ $(function(){
   function makePatternMask() {
     var b = Thing.classes.Box.make({w:200, h:580, backgroundColor:'#0c7436'});
     var p = Thing.classes.Pattern.make({
-      pattern:'none', 
+      pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
       backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
@@ -225,20 +225,20 @@ $(function(){
 
   function makeImageMask() {
     var b = Thing.classes.Box.make({
-      w: 230, 
-      h: 575, 
-      backgroundColor: '#0c7436', 
+      w: 230,
+      h: 575,
+      backgroundColor: '#0c7436',
       left: '400px'
     });
     b.add(Thing.classes.Pattern.make({
-      pattern:'none', 
+      pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
       backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
     }));
     b.add(Thing.classes.Img.make({
-      src: 'img/rubens_adonis_leg_left.png', 
-      w: 200, 
+      src: 'img/rubens_adonis_leg_left.png',
+      w: 200,
     }));
     b.addMask('url(img/rubens_adonis_leg_left.png)');
     return b;
@@ -246,20 +246,20 @@ $(function(){
 
   function makeImageShadow() {
     var b = Thing.classes.Box.make({
-      w: 200, 
-      h: 580, 
+      w: 200,
+      h: 580,
       left: '800px'
     });
     b.add(Thing.classes.Pattern.make({
-      pattern:'none', 
+      pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
       backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
       stretch: true
     }));
     b.add(Thing.classes.Img.make({
-      src: 'img/rubens_adonis_leg_left.png', 
-      w: 200, 
+      src: 'img/rubens_adonis_leg_left.png',
+      w: 200,
       filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
     }));
     return b;

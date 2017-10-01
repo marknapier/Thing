@@ -54,7 +54,7 @@ class FunBox extends Box {
           y1: (Math.random()*200),
           x2: (100 + Math.random()*100),
           y2: (Math.random()*200),
-          width: parseInt(1 + (Math.random()*3), 10),
+          lineWidth: parseInt(1 + (Math.random()*3), 10),
           opacity: .1 + (Math.random()*.9)
         });
         db.add(a);
@@ -81,7 +81,7 @@ var line = Line.make({
   y1: (Math.random()*200),
   x2: (200 + Math.random()*500),
   y2: (Math.random()*500),
-  width: parseInt(1 + (Math.random()*3), 10),
+  lineWidth: parseInt(1 + (Math.random()*3), 10),
   opacity: .1 + (Math.random()*.9),
   color: 'red'
 });

@@ -142,7 +142,7 @@ function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
     x1:bubbleX, y1:bubbleY,
     x2:targetX, y2:targetY,
     color:'#BADA55',
-    width:5,
+    lineWidth:5,
     arrow:true,
     boxShadow: '0px 0px 9px -1px rgba(10,20,0,0.75)'
   });
@@ -214,7 +214,7 @@ $(function () {
   var edge = Thing.classes.Line.make({
     x1:1345, y1:0,
     x2:1345, y2:1000,
-    width: 8,
+    lineWidth: 8,
     zIndex: 10010,
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });

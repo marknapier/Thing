@@ -41,7 +41,7 @@ $(function () {
   var edge = Thing.classes.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
-    width: 20,
+    lineWidth: 20,
     zIndex: 10010,
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });
@@ -90,7 +90,7 @@ $(function () {
   function makeImgPointers () {
     var dim = menina.getDimensions();
     var point = [500, 100];
-    var M = Meninas.makeMatrix2D( menina.getCSSTransform() );
+    var M = Meninas.makeMatrix3D( menina.getCSSTransform() );
     var tp = Meninas.transformPoint(point, M, [dim.w/2, dim.h/2]);
     background.add( Meninas.makeTextArrow(
       Rand.randInt(tp[0]-100, tp[0]+100), Rand.randInt(tp[1]-150, tp[1]-350),

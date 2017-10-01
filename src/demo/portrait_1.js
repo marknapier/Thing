@@ -111,7 +111,7 @@ function makeArrayOfLines(dim, scale) {
             y1: Rand.randInt(0, dim.h),
             x2: Rand.randCloseTo(dim.w, 400),
             y2: Rand.randInt(0, dim.h),
-            width: Rand.randInt(scale, scale*4),
+            lineWidth: Rand.randInt(scale, scale*4),
             color: '#3F3',
             opacity: 0.1 + Rand.randFloat()
         });

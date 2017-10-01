@@ -53,19 +53,19 @@ function makePlants () {
   function randX () {
     return Rand.randInt(CW*0.2, CW*0.7);
   }
-  
+
   function randXsmall () {
     return Rand.randInt(CW*0.01, CW*0.4);
   }
-  
+
   function randW () {
     return Rand.randInt(CW*0.2, CW*0.35);
   }
-  
+
   function randWsmall () {
     return Rand.randInt(CW*0.1, CW*0.25);
   }
-  
+
   function randNameSmall () {
     return 'img/' + Rand.randItem(plantNamesSmall);
   }
@@ -108,13 +108,13 @@ function makeCouch (props = {}) {
 
 function makeSurface (props = {w:2500, h:2500}) {
   var container = Thing.classes.Box.make({
-    w: props.w, 
-    h: props.h, 
+    w: props.w,
+    h: props.h,
     backgroundColor: 'rgb(255, 228, 126)',
   });
 
   var wallpaper =  Thing.classes.PatternStripes.make({
-    color: 'rgba(196, 191, 138, 0.52)', 
+    color: 'rgba(196, 191, 138, 0.52)',
     size: props.w * 0.033
   });
 
@@ -167,11 +167,11 @@ $(function () {
 
   // Room edge right side
   var edge = Thing.classes.Line.make({
-    x1: CW * 0.829, 
+    x1: CW * 0.829,
     y1: 0,
-    x2: CW * 0.829, 
+    x2: CW * 0.829,
     y2: CW * 0.5,
-    width: CW * 0.0033,
+    lineWidth: CW * 0.0033,
     z: -1,
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });
