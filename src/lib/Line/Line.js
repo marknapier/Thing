@@ -2,28 +2,27 @@ var Thing = require('../Thing/Thing.js');
 
 class Line extends Thing {
   init (props) {
-    /* // proposed props
-      {
-        x: 0,
-        y: 0,
-        x2: 100,
-        y2: 100,
-        lineWidth: 2,  // call it 'lineWidth' to avoid collision with CSS 'width' property
-      }
-    */
+    // expecting props: { x:0, y:0, x2:50, y2:50, lineWidth:5 }
+    // call it 'lineWidth' to avoid collision with CSS 'width' property
+
+    // fix old property names
     props.x = props.x || props.x1 || 0;
     props.y = props.y || props.y1 || 0;
     delete props.x1;
     delete props.y1;
 
-    // expecting props: { x1:0, y1:0, x2:50, y2:50 }
+    // need to set origin to far left of line
+    props.transformOrigin = '0 50%';
+
     props.backgroundColor = props && (props.backgroundColor || props.color || 'black');
+
     super.setDefaultProps(props);
+
     this.type = 'Line';
-    this.length = 10;
-    this.lineWidth = 1;
+    this.length = 0;
     this.angle = 0;
-    this.$element = Thing.makeElement(this.html(), this.props, this.type);
+    this.lineWidth = 1;
+
     this.createLine(props.x, props.y, props.x2, props.y2, props.lineWidth, props.arrow, props.shorten);
   }
 
@@ -41,17 +40,6 @@ class Line extends Thing {
     this.rotate = this.props.rotate = {z: this.angle};
 
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
-
-    // this.css({
-    //     // 'left': '' + x1 + 'px',
-    //     // 'top': '' + (y1-(this.lineWidth/2)) + 'px',
-    //     // 'width': '' + this.length + 'px',
-    //     // 'height': '' + this.lineWidth + 'px',
-    //     // rotate around start point of line
-    //     'transform-origin': '0 50%'
-    //   });
-    // // this.rotateTo(this.angle);
-    // this.transform();
 
     if (arrow) {
       this.addArrowHead(this.length, this.lineWidth, this.lineWidth*2, this.props.backgroundColor);
