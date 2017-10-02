@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Line Demo</title>
+    <link href="reset.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  let Rand = Thing.classes.Rand;
+
+  function makeDemoBox (props) {
+    return Thing.classes.Box.make($.extend({
+        display: 'inline-block',
+        position: 'relative',
+        margin: '20px',
+        width: '300px',
+        height: '300px',
+        overflow: 'hidden',
+        border: '1px dotted #ccc',
+        backgroundColor: '#fff'
+      }, props));
+  }
+
+  function makeLabelBoxes() {
+    return [
+      makeDemoBox().add([
+        Thing.classes.Label.make({
+          text: "Box with two diagonals 1 pixel wide blue lines"
+        }),
+        Thing.classes.Line.make({  // top
+          x: 50, y: 50,
+          x2: 250, y2: 50,
+          color: 'blue',
+          lineWidth: 1,
+        }),
+        Thing.classes.Line.make({  // right
+          x: 250, y: 50,
+          x2: 250, y2: 250,
+          color: 'blue',
+          lineWidth: 1,
+        }),
+        Thing.classes.Line.make({  // bottom
+          x: 250, y: 250,
+          x2: 50, y2: 250,
+          color: 'blue',
+          lineWidth: 1,
+        }),
+        Thing.classes.Line.make({  // left
+          x: 50, y: 250,
+          x2: 50, y2: 50,
+          color: 'blue',
+          lineWidth: 1,
+        }),
+        Thing.classes.Line.make({  // diagonal
+          x: 50, y: 50,
+          x2: 250, y2: 250,
+          color: 'blue',
+          lineWidth: 1,
+        }),
+        Thing.classes.Line.make({  // diagonal
+          x: 250, y: 50,
+          x2: 50, y2: 250,
+          color: 'blue',
+          lineWidth: 1,
+        }),
+      ]),
+      makeDemoBox().add([
+        Thing.classes.Label.make({
+          text: "Magenta 30 pixel wide horizontal line centered between green points"
+        }),
+        Thing.make({
+          x: 48, y: 150,
+          w: 2, h: 2,
+          backgroundColor: 'green',
+        }),
+        Thing.make({
+          x: 250, y: 150,
+          w: 2, h: 2,
+          backgroundColor: 'green',
+        }),
+        Thing.classes.Line.make({
+          x: 50, y: 150,
+          x2: 250, y2: 150,
+          color: 'magenta',
+          lineWidth: 30,
+        }),
+      ]),
+      makeDemoBox().add([
+        Thing.classes.Label.make({
+          text: "Magenta 30 pixel wide diagonal line centered between green points"
+        }),
+        Thing.make({
+          x: 48, y: 50,
+          w: 2, h: 2,
+          backgroundColor: 'green',
+        }),
+        Thing.make({
+          x: 250, y: 250,
+          w: 2, h: 2,
+          backgroundColor: 'green',
+        }),
+        Thing.classes.Line.make({
+          x: 50, y: 50,
+          x2: 250, y2: 250,
+          color: 'magenta',
+          lineWidth: 30,
+        }),
+      ]),
+    ];
+  }
+
+  // Render Label demos
+  makeDemoBox({
+      width: '800px',
+      height: 'auto',
+      border: 'none'
+  })
+  .add(makeLabelBoxes())
+  .render();
+});
+</script>
+
+  </body>
+</html>

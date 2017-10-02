@@ -2,27 +2,28 @@ var Thing = require('../Thing/Thing.js');
 
 class Line extends Thing {
   init (props) {
-    /*
-      {
-        x: 0,
-        y: 0,
-        x2: 100,
-        y2: 100,
-        lineWidth: 2,  // call it 'lineWidth' to avoid collision with CSS 'width' property
-      }
-    */
-    // props.lineWidth = props.width || undefined;
-    // delete props.width;
+    // expecting props: { x:0, y:0, x2:50, y2:50, lineWidth:5 }
+    // call it 'lineWidth' to avoid collision with CSS 'width' property
 
-    // expecting props: { x1:0, y1:0, x2:50, y2:50 }
+    // fix old property names
+    props.x = props.x || props.x1 || 0;
+    props.y = props.y || props.y1 || 0;
+    delete props.x1;
+    delete props.y1;
+
+    // need to set origin to far left of line
+    props.transformOrigin = '0 50%';
+
     props.backgroundColor = props && (props.backgroundColor || props.color || 'black');
+
     super.setDefaultProps(props);
+
     this.type = 'Line';
-    this.length = 10;
-    this.lineWidth = 1;
+    this.length = 0;
     this.angle = 0;
-    this.$element = Thing.makeElement(this.html(), this.props, this.type);
-    this.createLine(props.x1, props.y1, props.x2, props.y2, props.lineWidth, props.arrow, props.shorten);
+    this.lineWidth = 1;
+
+    this.createLine(props.x, props.y, props.x2, props.y2, props.lineWidth, props.arrow, props.shorten);
   }
 
   createLine (x1,y1, x2,y2, lineWidth, arrow, shorten) {
@@ -30,15 +31,16 @@ class Line extends Thing {
     this.length = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) - (arrow? this.lineWidth*2 : 0);  // shorten the length to make room for arrowhead
     this.angle  = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
     this.length -= shorten || 0;  // shorten the line a bit (makes room for arrowhead)
-    this.css({
-        'left': '' + x1 + 'px',
-        'top': '' + (y1-(this.lineWidth/2)) + 'px',
-        'width': '' + this.length + 'px',
-        'height': '' + this.lineWidth + 'px',
-        // rotate around start point of line
-        'transform-origin': '0 50%'
-      });
-    this.rotateTo(this.angle);
+
+    // grrrrrr... some funcs read from props.x, some read this.x
+    this.x = this.props.x = x1;
+    this.y = this.props.y = (y1-(this.lineWidth/2));
+    this.w = this.props.w = this.length;
+    this.h = this.props.h = this.lineWidth;
+    this.rotate = this.props.rotate = {z: this.angle};
+
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
+
     if (arrow) {
       this.addArrowHead(this.length, this.lineWidth, this.lineWidth*2, this.props.backgroundColor);
     }
