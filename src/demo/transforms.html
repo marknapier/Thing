@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Transforms Demo</title>
+    <link href="reset.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  let Rand = Thing.classes.Rand;
+
+  function makeDemoBox (props) {
+    return Thing.classes.Box.make($.extend({
+        display: 'inline-block',
+        position: 'relative',
+        margin: '20px',
+        width: '300px',
+        height: '300px',
+        overflow: 'hidden',
+        border: '1px dotted #ccc',
+        backgroundColor: '#fafafa',
+      }, props));
+  }
+
+  function makeLetter (props) {
+    return Thing.classes.Label.make($.extend({}, {
+      text: "W",
+      fontSize: '200px',
+      fontWeight: 'bold',
+      border: '2px solid blue',
+      color: '#999',
+      backgroundColor: '#fff',
+    }, props));
+  }
+
+  function makeLabel (props) {
+    return Thing.classes.Label.make($.extend({}, {
+      padding: '5px',
+      zIndex: 500,
+    }, props));
+  }
+
+  function makeHeader (props) {
+    return Thing.classes.Label.make($.extend({}, {
+      padding: '25px 0px 0px 10px',
+      fontSize: '42px',
+      fontWeight: 'bold',
+      position: 'relative',
+    }, props));
+  }
+
+  function makeLabelBoxes() {
+    return [
+      // Translation
+      makeHeader({text: "Translation"}),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W'"}),
+        makeLetter(),
+      ]),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' translated to 50,50"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+        }),
+      ]),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' translated to 50,50 and rotated z 45°"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          rotate: {z: 45},
+        }),
+      ]),
+
+      // Rotation
+      makeHeader({text: "Rotation"}),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' translated to 50,50 and rotated x 45°"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          rotate: {x: 45},
+        }),
+      ]),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' translated to 50,50 and rotated y 45°"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          rotate: {y: 45},
+        }),
+      ]),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' translated to 50,50 and rotated x 45° y 45° z 45°"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          rotate: {x: 45, y: 45, z: 45},
+        }),
+      ]),
+
+      // Perspective
+      makeHeader({text: "Rotation + Perspective"}),
+      makeDemoBox({perspective: '500px'}).add([
+        makeLabel({text: "Lettter 'W' translated to 50,50 and rotated x 45°"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          rotate: {x: 45},
+        }),
+      ]),
+      makeDemoBox({perspective: '500px'}).add([
+        makeLabel({text: "Lettter 'W' translated to 50,50 and rotated y 45°"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          rotate: {y: 45},
+        }),
+      ]),
+      makeDemoBox({perspective: '500px'}).add([
+        makeLabel({text: "Lettter 'W' translated to 50,50 and rotated x 45° y 45° z 45°"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          rotate: {x: 45, y: 45, z: 45},
+        }),
+      ]),
+
+      // Perspective
+      makeHeader({text: "Translation + Perspective"}),
+      makeDemoBox({perspective: '500px'}).add([
+        makeLabel({text: "Lettter 'W' translated to 50,50,0"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          z: 0,
+        }),
+      ]),
+      makeDemoBox({perspective: '500px'}).add([
+        makeLabel({text: "Lettter 'W' translated to 50,50,100"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          z: 100,
+        }),
+      ]),
+      makeDemoBox({perspective: '500px'}).add([
+        makeLabel({text: "Lettter 'W' translated to 50,50,-100"}),
+        makeLetter({
+          x: 50,
+          y: 50,
+          z: -100,
+        }),
+      ]),
+
+      // Scale
+      makeHeader({text: "Scale"}),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' scaled 1.5"}),
+        makeLetter({
+          scale: 1.5,
+        }),
+      ]),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' scaled .5"}),
+        makeLetter({
+          scale: .5,
+        }),
+      ]),
+      makeDemoBox().add([
+        makeLabel({text: "Lettter 'W' scaled 1.5 origin at 0,0"}),
+        makeLetter({
+          scale: 1.5,
+          transformOrigin: '0 0',
+        }),
+      ]),
+
+    ];
+  }
+
+  // Render Label demos
+  makeDemoBox({
+      width: '1100px',
+      height: 'auto',
+      border: 'none',
+      backgroundColor: '#fff',
+  })
+  .add(makeLabelBoxes())
+  .render();
+});
+</script>
+
+  </body>
+</html>

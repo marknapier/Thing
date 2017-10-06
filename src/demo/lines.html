@@ -34,7 +34,8 @@ $(function(){
     return [
       makeDemoBox().add([
         Thing.classes.Label.make({
-          text: "Box with two diagonals 1 pixel wide blue lines"
+          text: "Box with two diagonals 1 pixel wide blue lines",
+          padding: '5px',
         }),
         Thing.classes.Line.make({  // top
           x: 50, y: 50,
@@ -75,7 +76,8 @@ $(function(){
       ]),
       makeDemoBox().add([
         Thing.classes.Label.make({
-          text: "Magenta 30 pixel wide horizontal line centered between green points"
+          text: "Magenta 30 pixel wide horizontal line centered between green points",
+          padding: '5px',
         }),
         Thing.make({
           x: 48, y: 150,
@@ -96,7 +98,8 @@ $(function(){
       ]),
       makeDemoBox().add([
         Thing.classes.Label.make({
-          text: "Magenta 30 pixel wide diagonal line centered between green points"
+          text: "Magenta 30 pixel wide diagonal line centered between green points",
+          padding: '5px',
         }),
         Thing.make({
           x: 48, y: 50,

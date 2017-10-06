@@ -1,7 +1,9 @@
 var elementCounter = 0;
 
 class Thing {
-  constructor() {}
+  constructor(props) {
+    this.init(props);
+  }
 
   init (props) {
     this.setDefaultProps(props);
@@ -188,10 +190,9 @@ class Thing {
     return this;
   }
 
-  static make () {
+  static make (props) {
     var cls = this;
-    var instance = new cls();
-    instance.init.apply(instance, arguments);
+    var instance = new cls(props);
     return instance;
   }
 
