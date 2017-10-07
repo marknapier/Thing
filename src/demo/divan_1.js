@@ -167,12 +167,12 @@ $(function () {
 
   // Room edge right side
   var edge = Thing.classes.Line.make({
-    x1: CW * 0.829,
-    y1: 0,
+    x: CW * 0.829,
+    y: 0,
+    z: -1,
     x2: CW * 0.829,
     y2: CW * 0.5,
     lineWidth: CW * 0.0033,
-    z: -1,
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });
 

@@ -10,22 +10,17 @@ class Img extends Thing {
 
     props = props || {};
     props.src = props.src || placeholder;
-    props.position = props.position || 'absolute';
 
     this.type = 'Img';
     this.aspectRatio = 1;
     this.loaded = false;
     this.src = props.src;
-    this.x = props.x;
-    this.y = props.y;
-    this.w = props.w;
-    this.h = props.h;
+
+    this.setDefaultProps(props);
+    this.$element = Thing.makeElement(this.html(), this.props, this.type);
 
     Img.loading(this);
     loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
-
-    super.setDefaultProps(props);
-    this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
   onLoad (img) {

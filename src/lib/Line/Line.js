@@ -13,15 +13,10 @@ class Line extends Thing {
 
     // need to set origin to far left of line
     props.transformOrigin = '0 50%';
-
     props.backgroundColor = props && (props.backgroundColor || props.color || 'black');
-
     super.setDefaultProps(props);
 
     this.type = 'Line';
-    this.length = 0;
-    this.angle = 0;
-    this.lineWidth = 1;
 
     this.createLine(props.x, props.y, props.x2, props.y2, props.lineWidth, props.arrow, props.shorten);
   }
@@ -37,7 +32,7 @@ class Line extends Thing {
     this.y = this.props.y = (y1-(this.lineWidth/2));
     this.w = this.props.w = this.length;
     this.h = this.props.h = this.lineWidth;
-    this.rotate = this.props.rotate = {z: this.angle};
+    this.rotation = this.props.rotate = {z: this.angle};
 
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
 

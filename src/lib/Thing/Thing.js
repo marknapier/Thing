@@ -11,19 +11,30 @@ class Thing {
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
   }
 
+  // Set essential default properties on 'this' (x,y,z,w,h)
+  // Additional properties in the props object are assumed to be CSS
   setDefaultProps (props) {
-    // CSS props go into this.props
     props = props || {};
-    props.position = props.position || 'absolute';   // default to absolute positioning
+
+    // default to absolute positioning
+    props.position = props.position || 'absolute';
+
+    // keep the props object on instance
     this.props = props;
 
-    // keep these shorthand properties on 'this'
     this.renderOnCenter = props.renderOnCenter || false;
     this.rotation = props.rotate || null;
     this.scaleFactor = props.scale || 1;
+
+    // position is the given x,y,z or 0,0,0 (this becomes CSS translate3d())
     this.x = props.x || 0;
     this.y = props.y || 0;
     this.z = props.z || 0;
+
+    // dimensions are the given w,h or undefined (this becomes CSS width/height)
+    this.w = props.w;
+    this.h = props.h;
+
     this.$element = null;
     this.parent = null;
   }
