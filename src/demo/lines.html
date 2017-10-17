@@ -118,6 +118,29 @@ $(function(){
           lineWidth: 30,
         }),
       ]),
+      makeDemoBox().add([
+        Thing.classes.Label.make({
+          text: "Magenta 30 pixel wide diagonal line with arrowhead",
+          padding: '5px',
+        }),
+        Thing.make({
+          x: 48, y: 50,
+          w: 2, h: 2,
+          backgroundColor: 'green',
+        }),
+        Thing.make({
+          x: 250, y: 250,
+          w: 2, h: 2,
+          backgroundColor: 'green',
+        }),
+        Thing.classes.Line.make({
+          x: 50, y: 50,
+          x2: 250, y2: 250,
+          color: 'magenta',
+          lineWidth: 30,
+          arrow: true,
+        }),
+      ]),
     ];
   }
 
