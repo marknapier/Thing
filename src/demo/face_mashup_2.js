@@ -125,7 +125,8 @@ function makeImagesForBox (names, box) {
       x: midW + (Rand.randNormal() * jiggle),
       y: midH + (Rand.randNormal() * jiggle),
       w: dim.w + (Rand.randNormal() * jiggle),
-      opacity: 0.5 + Rand.randFloat(),
+      opacity: 0.5 + (Rand.randFloat() * 0.7),
+      filter: 'blur(' +(Rand.randPow() * 50.0).toFixed(1)+ 'px)',
       renderOnCenter:true,
     });
     images.push(facepart);
@@ -133,7 +134,7 @@ function makeImagesForBox (names, box) {
   return images;
 }
 
-function makeBoundingBox(box, color) {
+function makeBoundingBox(box, color, width) {
   var elbounds = box.getElementBounds(); // bounds of all elements, relative to document
   var boxbounds = box.getBoundingBox();  // bounds of the box element
   var rect = Thing.make({
@@ -142,7 +143,7 @@ function makeBoundingBox(box, color) {
     w: elbounds.w,
     h: elbounds.h,
     zIndex: 0,
-    border: '5px solid ' + color
+    border: width + 'px solid ' + color
   });
   return rect;
 }
@@ -161,11 +162,13 @@ function makeStrip(props = {}) {
 }
 
 function makeSlices (props) {
-  var blah = [0,1,2,3,4,5,6,7];
+  // var blah = [0,1,2,3,4,5,6,7];
+  var blah = makeWidths({x:0, w:CW, minW:CW*0.01, maxW:CW*0.2});
   var strips = blah
-  .map( function (num) {
+  .map( function (xw) {
     return {
-      num: num,
+      x: xw.x,
+      w: xw.w,
       content: Thing.classes.Img.make({
         src:'img/faceparts/' + Thing.classes.Rand.randItem(imgNamesMouths),
         w: CW,
@@ -176,14 +179,45 @@ function makeSlices (props) {
   .map( function (props) {
     return makeStrip({
       content: props.content,
-      x: props.num * (CW * 0.125),
+      x: props.x, // * (CW * 0.125),
       y: 0,
-      w: CW * 0.125,  // width of strip: 1/8 of window
+      w: props.w,  // CW * 0.125,  // width of strip: 1/8 of window
       h: CH * 0.35,
-      offset: props.num * (CW * 0.125),
+      offset: props.x,  //props.num * (CW * 0.125),
     });
   });
   return strips;
+}
+
+// x: starting pos
+// w: total width to fill
+// minW, maxW: min/max width of column
+// return array of objects like: {x: 123, w:345}
+function makeWidths (props) {
+  var columns = [];
+  var x = props.x || 0;
+  var columnW = 0;
+  var remainingW = 0;
+  var maxW = props.maxW;
+
+  while (x < props.w) {
+    remainingW = props.w - x;
+    maxW = remainingW > props.maxW ? props.maxW : remainingW;
+    if (remainingW > props.minW) {
+      columnW = Rand.randInt(props.minW, maxW);
+    }
+    else {
+      columnW = remainingW;
+    }
+    columns.push({x: x, w: columnW});
+    x += columnW;
+  }
+
+  return columns;
+}
+
+function borderWidth () {
+  return (CW * 0.0016) * (Rand.randBoolean(45) ? 4 : 1);
 }
 
 $(function(){
@@ -218,16 +252,16 @@ $(function(){
   bounds.add(makeSlices());
   // bounds.add(bg3);
 
-  var eyeY = CH * 0.5;
-  var eyeLX = CW * 0.70;
-  var eyeRX = CW * 0.29;
-  var noseY = CH * 0.59;
-  var noseW = CW * 0.20;
-  var noseH = CH * 0.25;
+  var eyeY = CH * 0.47;
+  var eyeRX = CW * 0.26;
+  var eyeLX = CW * 0.74;
+  var eyeW = CW * 0.40;
+  var noseY = CH * 0.55;
+  var noseW = CW * 0.25;
+  var noseH = CH * 0.3;
   var mouthY = CH * 0.75;
-  var mouthW = CW * 0.35;
-  var mouthH = CH * 0.15;
-  var eyeW = CW * 0.30;
+  var mouthW = CW * 0.5;
+  var mouthH = CH * 0.2;
   var centerX = CW * 0.5;
   var eyeR = Box.make({x:eyeRX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'green', renderOnCenter:true});
   var eyeL = Box.make({x:eyeLX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'red', renderOnCenter:true});
@@ -244,16 +278,16 @@ $(function(){
   // wait for images to load, then make bounding boxes, set scale, etc.
   Thing.classes.Img.onAllLoaded = function () {
     mouth.add(mouths).render();
-    mouth.add(makeBoundingBox(mouth, '#0F0')).render();
+    mouth.add(makeBoundingBox(mouth, '#0F0', borderWidth())).render();
 
     nose.add(noses).render();  // have to render before getting bounding box or box will be 0x0
-    nose.add(makeBoundingBox(nose, '#F00')).render();
+    nose.add(makeBoundingBox(nose, '#F00', borderWidth())).render();
 
     eyeR.add(eyesR).render();
-    eyeR.add(makeBoundingBox(eyeR, '#F0F')).render();
+    eyeR.add(makeBoundingBox(eyeR, '#F0F', borderWidth())).render();
 
     eyeL.add(eyesL).render();
-    eyeL.add(makeBoundingBox(eyeL, '#FF0')).render();
+    eyeL.add(makeBoundingBox(eyeL, '#FF0', borderWidth())).render();
 
     // var s = makeStrip({
     //   content: bg3,

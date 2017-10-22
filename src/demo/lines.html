@@ -30,7 +30,7 @@ $(function(){
       }, props));
   }
 
-  function makeLabelBoxes() {
+  function makeDemoBoxes() {
     return [
       makeDemoBox().add([
         Thing.classes.Label.make({
@@ -144,13 +144,13 @@ $(function(){
     ];
   }
 
-  // Render Label demos
+  // Render demos
   makeDemoBox({
       width: '800px',
       height: 'auto',
       border: 'none'
   })
-  .add(makeLabelBoxes())
+  .add(makeDemoBoxes())
   .render();
 });
 </script>
