@@ -5,10 +5,11 @@ class Thing {
     this.init(props);
   }
 
-  init (props) {
+  init (props = {}) {
     this.setDefaultProps(props);
     this.type = 'Thing';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
+    this.addMask(props.mask);  // make this part of convertToCSS()
   }
 
   // Set essential default properties on 'this' (x,y,z,w,h)
@@ -176,7 +177,9 @@ class Thing {
   }
 
   css (props) {
+    // add new css properties to this.props object
     this.props = $.extend(this.props, props);
+    // set css properties on the html element
     this.$element.css(props);
     return this;
   }
@@ -197,6 +200,30 @@ class Thing {
         width: stretch ? parentW : parentElementSize,
         height: stretch ? parentH : parentElementSize
       });
+    }
+    return this;
+  }
+
+  // Mask the contents of this div.
+  // Defaults to a single mask image covering entire element, no repeat.
+  //
+  // Examples:
+  // addMask('url(img/my_mask_image.png)')
+  // addMask('radial-gradient(white 25%, transparent 26%)')
+  // addMask({image: 'url(img/my_mask_image.png'), repeat: 'repeat', size: '10% 10%'})
+  //
+  addMask (maskProps) {
+    if (maskProps) {
+      if (typeof maskProps === 'string') {
+        maskProps = {image: maskProps};
+      }
+      var maskCSSprops = {
+        WebkitMaskImage: maskProps.image,
+        WebkitMaskRepeat: maskProps.repeat || 'no-repeat',
+        WebkitMaskSize: maskProps.size || '100% 100%',
+        WebkitMaskPosition: maskProps.position || '50% 50%',
+      };
+      this.css(maskCSSprops);
     }
     return this;
   }

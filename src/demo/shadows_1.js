@@ -43,9 +43,7 @@ function makeMeninaSandwich(props) {
     width: '100%',
     height: '100%',
     backgroundColor: Rand.randItem(Meninas.greens),
-    WebkitMaskImage: Rand.randItem(backgroundMasks),   // 846 X 1150     .735
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskSize: '100%',
+    mask: Rand.randItem(backgroundMasks),   // 846 X 1150     .735
     opacity: 0.85
   });
 

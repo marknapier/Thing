@@ -72,10 +72,47 @@ describe('A Thing', function () {
 
 		t.unRender();
 	});
+	it('converts "shorthand" mask properties to CSS mask-image property', function () {
+		let t = Thing.make({mask: {
+			image: 'url(my_mask_image.png)',
+			repeat: 'repeat',
+			size: '50px 50px', 
+			position: '25px 25px'
+		}});
+		t.render();
+
+		let $element = $('body').find('.Thing');
+		expect($element.css('webkit-mask-image').includes('my_mask_image.png')).toBe(true);
+		expect($element.css('webkit-mask-repeat')).toBe('repeat');
+		expect($element.css('webkit-mask-size')).toBe('50px 50px');
+		expect($element.css('webkit-mask-position')).toBe('25px 25px');
+
+		t.unRender();
+	});
+	it('can be re-rendered (preserves the original CSS properties plus any new ones that were added)', function () {
+		let t = Thing.make({x:100, y:200, z:300, backgroundColor:'rgb(0, 0, 255)'});
+		t.render();
+		t.css({fontSize:'78px', color: 'rgb(255, 0, 0)'});
+		t.render();
+
+		let $element = $('body').find('.Thing');
+		expect($element.css('transform').includes('100, 200, 300')).toBe(true);
+		expect($element.css('background-color')).toBe('rgb(0, 0, 255)');
+		expect($element.css('font-size')).toBe('78px');
+		expect($element.css('color')).toBe('rgb(255, 0, 0)');
+
+		t.unRender();
+	});
 	it('knows its dimensions', function () {
 		let t = Thing.make({w:300, h:400});
 		t.render();
 		expect(t.getDimensions()).toEqual({w:300, h:400});
+		t.unRender();
+	});
+	it('knows its position', function () {
+		let t = Thing.make({x:500, y:600, z:700});
+		t.render();
+		expect(t.getTranslation()).toEqual({x:500, y:600, z:700});
 		t.unRender();
 	});
 });

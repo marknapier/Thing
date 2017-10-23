@@ -444,21 +444,21 @@ $(function(){
           backgroundColor: '#06d',
           w: 300,
           h: 600,
+          mask: {
+            image: 'radial-gradient(rgb(251, 90, 30) 0%, rgb(51, 255, 169) 50%, transparent 51%)',
+            repeat: 'repeat',
+            size: '75px 75px',
+            position: '0% 0%',
+          },
           layers: [
             { image: 'url(img/leg_durer_right_1.png)',
-              blendMode: 'exclusion',  // luminosity
+              blendMode: 'luminosity',  // exclusion
               size: '50px 120px',
               position: '50px 50px',
               repeat: 'repeat'
             },
           ]
         })
-        .css({
-          WebkitMaskImage: 'radial-gradient(rgb(251, 90, 30) 0%, rgb(51, 255, 169) 50%, transparent 51%)',
-          WebkitMaskRepeat: 'repeat',
-          WebkitMaskSize: '75px 75px',
-          WebkitMaskPosition: '0% 0%'
-        }),
       ]),
 
     ];

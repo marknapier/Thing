@@ -129,9 +129,12 @@ function makeSurface (props = {w:2500, h:2500}) {
     w: props.w,
     h: props.h,
     backgroundColor: 'rgba(255, 136, 0, 0.06)',
-    WebkitMaskImage: 'url(img/vintagewallpaper4_crop_cutout_1.png)',
-    WebkitMaskSize: '50% 80%',
-    WebkitMaskRepeat: 'repeat',
+    mask: {
+      image: 'url(img/vintagewallpaper4_crop_cutout_1.png)',
+      size: '50% 80%',
+      repeat: 'repeat',
+      position: '0 0',
+    },
   });
 
   var lightSpot = Thing.make({

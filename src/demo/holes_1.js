@@ -91,9 +91,7 @@ $(function () {
     w: 3800,
     h: 3600,
     backgroundColor: 'gray',
-    WebkitMaskImage: 'url(img/wall_with_door_mask.png)',
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskSize: '100%',
+    mask: 'url(img/wall_with_door_mask.png)',
     backgroundImage:
       'linear-gradient(90deg, transparent 51%, #ffffc8 51%, #ffffc8 59%, transparent 59%),' +
       'linear-gradient(90deg, transparent 43%, #f33054 43%, #f33054 67%, transparent 67%),' +

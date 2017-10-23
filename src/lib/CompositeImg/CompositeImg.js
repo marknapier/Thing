@@ -38,6 +38,7 @@ class CompositeImg extends Thing {
 
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
     this.applyLayers();  // will add layer CSS props to pops object so makeElement() will pick them up
+    this.addMask(props.mask);  // make this part of convertToCSS()
   }
 
   addLayer (props = {}) {

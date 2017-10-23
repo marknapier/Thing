@@ -67,10 +67,7 @@ function makeMeninaSandwich(props) {
     width: '100%',
     height: '100%',
     backgroundColor: Rand.randItem(greens),
-    // WebkitMaskImage: backgroundMasks[2],
-    WebkitMaskImage: Rand.randItem(backgroundMasks),
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskSize: '100%',
+    mask: Rand.randItem(backgroundMasks),
     opacity: (0.9 + (Rand.randFloat()*0.1))   // range from slight transparency to fully opaque
   }).rotate(Rand.randInt(0,7)*45);
 
