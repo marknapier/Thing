@@ -15,12 +15,16 @@ class BGImg extends Thing {
     this.setDefaultProps(props);
     this.type = 'BGImg';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
-    this.$element.css({
-      background: 'url("' + props.url + '")',
+    this.$element.css(BGImg.makeBGImgCSS(props));
+  }
+
+  static makeBGImgCSS (props) {
+    return {
+      backgroundImage: 'url("' + props.url + '")',
       backgroundRepeat: props.repeat ? 'repeat' : 'no-repeat',
       backgroundPosition: props.center ? 'center' : '0 0',
       backgroundSize: props.size
-    });
+    };
   }
 }
 Thing.addClass(BGImg);

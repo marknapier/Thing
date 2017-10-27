@@ -108,6 +108,14 @@ var imgNamesNoses = [
   // "yoda_nose_fuzzy.png"
 ];
 
+var imgNamesHair = [
+  "elvis_hair.png",
+  "marilyn_hair.png",
+  "mona_hair.png",
+  "washington_hair.png",
+  "chaplin_hat.png"
+];
+
 //-----------------------
 
 function makeImagesForBox (names, box) {
@@ -161,9 +169,10 @@ function makeStrip(props = {}) {
   return box;
 }
 
-function makeSlices (props) {
-  // var blah = [0,1,2,3,4,5,6,7];
-  var blah = makeWidths({x:0, w:CW, minW:CW*0.01, maxW:CW*0.2});
+function makeSlices (props = {}) {
+  var outerW = props.w;
+  var outerH = props.h;
+  var blah = makeWidths({x:0, w:props.w, minW:props.w*0.01, maxW:props.w*0.2});
   var strips = blah
   .map( function (xw) {
     return {
@@ -171,19 +180,19 @@ function makeSlices (props) {
       w: xw.w,
       content: Thing.classes.Img.make({
         src:'img/faceparts/' + Thing.classes.Rand.randItem(imgNamesMouths),
-        w: CW,
-        h: CH * 0.35,
+        w: props.w,
+        h: props.h * 0.35,
       })
     };
   })
-  .map( function (props) {
+  .map( function (props = {}) {
     return makeStrip({
       content: props.content,
-      x: props.x, // * (CW * 0.125),
+      x: props.x, // * (props.w * 0.125),
       y: 0,
-      w: props.w,  // CW * 0.125,  // width of strip: 1/8 of window
-      h: CH * 0.35,
-      offset: props.x,  //props.num * (CW * 0.125),
+      w: outerW,  // props.w * 0.125,  // width of strip: 1/8 of window
+      h: outerH * 0.35,
+      offset: props.x,  //props.num * (props.w * 0.125),
     });
   });
   return strips;
@@ -221,7 +230,8 @@ function borderWidth () {
 }
 
 $(function(){
-  var bounds = Box.make({x:0, y:0, w: CW, h: CH, backgroundColor:'black'});
+  var colors = ['#3f2', 'red', 'pink', 'cyan', '#ff3', '#0f4', '#332', '#004', 'orange'];
+  var bounds = Box.make({x:0, y:0, w: CW, h: CH, backgroundColor:Rand.randItem(colors)});
 
   var bg1 = Box.make({x:0, y:CH*0.35, w: CW, h: CH*0.20, backgroundColor:'pink'});
   bg1.add(  Thing.classes.BGImg.make({
@@ -231,26 +241,43 @@ $(function(){
       repeat: true
   }) );
 
-  var bg2 = Box.make({x:0, y:CH*0.35 + CH*0.20, w: CW, h: CH*0.45, backgroundColor:'#0f0'});
-  bg2.add(  Thing.classes.BGImg.make({
-      url: 'img/faceparts/' + Rand.randItem(imgNamesMouths),
-      size: '20% 15%',
-      center: false,
-      repeat: true
-  }) );
+  var diagonalstripes = Thing.classes.Pattern.makeDiagonalStripePatternCSS({
+    color: Rand.randItem(colors), 
+    size: Rand.randInt(200,2000)
+  });
 
-  var bg3 = Box.make({x:CW*0.10, y:CH*0.35 + CH*0.20, w: CW-(CW*0.20), h: CH*0.40});
-  bg3.add(  Thing.classes.BGImg.make({
-      url: 'img/faceparts/' + Rand.randItem(imgNamesMouths),
-      size: '100% 100%',
-      center: true,
-      repeat: true
-  }) );
+  var bg2 = Thing.classes.CompositeImg.make({
+    x:0,
+    y:CH*0.35 + CH*0.20,
+    w: CW,
+    h: CH*0.45,
+    backgroundColor:'#0f0',
+    layers: [
+      {
+        image: 'url(img/faceparts/' + Rand.randItem(imgNamesMouths) + ')',
+        size: '20% 15%',
+        repeat: 'repeat',
+        blendMode: 'normal'
+      },
+      {
+        image: 'url(img/faceparts/' + Rand.randItem(imgNamesMouths) + ')', //diagonalstripes.backgroundImage,
+        size: '80% 60%',  //diagonalstripes.backgroundSize,
+        position: 'center',
+        // repeat: 'repeat',
+        blendMode: 'hard-light'
+      }
+    ],
+  });
 
   bounds.add(bg1);
   bounds.add(bg2);
-  bounds.add(makeSlices());
-  // bounds.add(bg3);
+
+  bounds.add(
+      Thing.classes.Box.make({x: 0, y: 0, w: CW, h: CH * 0.38})
+      .add(Thing.classes.Pattern.make({pattern:'PolkaDots', color: Rand.randItem(colors), size: Rand.randInt(100,1000)}))
+  );
+  // bounds.add(makeSlices({w: CW, h: CH}));
+
 
   var eyeY = CH * 0.47;
   var eyeRX = CW * 0.26;
@@ -267,16 +294,24 @@ $(function(){
   var eyeL = Box.make({x:eyeLX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'red', renderOnCenter:true});
   var nose = Box.make({x:centerX, y:noseY, w:noseW, h:noseH, backgroundColor:'magenta', renderOnCenter:true});
   var mouth = Box.make({x:centerX, y:mouthY, w:mouthW, h:mouthH, backgroundColor:'yellow', renderOnCenter:true});
+  var hair = Box.make({x:CW * 0.0, y:CH * 0.05, w:CW * 1.1, h:CH * 0.75, backgroundColor:'blue', renderOnCenter:false});
 
   var mouths = makeImagesForBox(imgNamesMouths, mouth);
   var noses = makeImagesForBox(imgNamesNoses, nose);
   var eyesL = makeImagesForBox(imgNamesEyesLeft, eyeL);
   var eyesR = makeImagesForBox(imgNamesEyesRight, eyeR);
+  var hairs = makeImagesForBox(imgNamesHair, hair);
 
   bounds.render();
 
+  // Respond to page params and key events
+  Thing.classes.Page.setScale(pageParams.scale || 1);
+  Thing.classes.Page.initEvents();
+
   // wait for images to load, then make bounding boxes, set scale, etc.
   Thing.classes.Img.onAllLoaded = function () {
+    hair.add(hairs[0]).addMask('url(' + hairs[0].src + ')').render();
+
     mouth.add(mouths).render();
     mouth.add(makeBoundingBox(mouth, '#0F0', borderWidth())).render();
 
@@ -288,19 +323,6 @@ $(function(){
 
     eyeL.add(eyesL).render();
     eyeL.add(makeBoundingBox(eyeL, '#FF0', borderWidth())).render();
-
-    // var s = makeStrip({
-    //   content: bg3,
-    //   x: 500,
-    //   y: 0,
-    //   w: 100,
-    //   h: 1000,
-    // });
-    // s.render();
-
-    // Respond to page params and key events
-    Thing.classes.Page.setScale(pageParams.scale || 1);
-    Thing.classes.Page.initEvents();
-
   };
+
 });

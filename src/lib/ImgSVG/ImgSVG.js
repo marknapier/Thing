@@ -42,6 +42,13 @@ class ImgSVG extends Thing {
     return svgTag;
   }
 
+  makePolkaDotsSVG (radius, size) {
+    let left = size * 0.25;
+    let right = size * 0.75;
+    let svgTag = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><circle shape-rendering='geometricPrecision' cx='${left}' cy='${left}' r='${radius}' fill='black'/><circle shape-rendering='geometricPrecision' cx='${right}' cy='${right}' r='${radius}' fill='black'/></svg>`;
+    return svgTag;
+  }
+
   getURL () {
     let svgTag = this.makeCircleSVG(this.props.radius, this.props.lineWidth);
     return `url("data:image/svg+xml;utf8,${svgTag}")`;
