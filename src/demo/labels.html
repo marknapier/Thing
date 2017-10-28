@@ -83,7 +83,21 @@ $(function(){
         text: "BANG!",
         color: 'magenta',
         rotate: {z: -10}
-      }))
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '20px',
+        fontWeight: "400",
+        text: "Word Wrap When There Are Spaces: blahdy blah blah ANSUhEUgAAAGgAA AB6CAYAAABTAhYxAAAACXBIWXMAAB uvAAAbrwFeGpEcAAAKT2lDQ1BQa G90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS 4iAlEtvUhUIIFJCi4AUkSYqI QkQSoghodkVUcERRUUEG 8igiAOOj oCMFVEsDIoK2AfkIaKOg",
+      })),
+      makeDemoBox().add(
+        Thing.classes.Label.make({
+        fontSize: '20px',
+        fontWeight: "400",
+        width: '100%',
+        overflowWrap: 'break-word',
+        text: "ForceWrappingWhenThereAreNoSpaces:iVBORw0KGgoAAAANSUhEUgAAAGgAAAB6CAYAAABTAhYxAAAACXBIWXMAABuvAAAbrwFeGpEcAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OI",
+      })),
     ];
   }
 
