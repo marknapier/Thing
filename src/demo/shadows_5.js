@@ -7,36 +7,6 @@ var aspectRatio = 0.620;
 var CW = pageParams.canvasWidth || 6000;  // canvas width
 var CH = CW * aspectRatio;
 
-
-function makeLump (props) {
-  var imgNames = [
-    'birth_of_venus_leg_left.png',
-    'leg_eve_left_1.png',
-    'leg_durer_right_1.png',
-    'rubens_adonis_leg_right.png',
-    'rubens_venus_leg_left.png',
-  ];
-  var imgs = imgNames.map( function (imgName) {
-    return Thing.classes.Img.make({
-      src: 'img/' + imgName,
-      x: props.x + (Rand.randNormal() * (props.w * 0.1)),
-      y: Rand.randInt(0, props.y),
-      w: Rand.randInt(props.w * 0.8, props.w),
-      h: Rand.randInt(props.h * 0.8, props.h),
-      opacity: 0.1 + (Rand.randFloat()*0.9),
-      filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
-    });
-  });
-
-  return Thing.classes.Box.make({
-    x: 0,
-    y: 500,
-    w:1000,
-    h:1000,
-    zIndex: props && props.zIndex
-  }).add(imgs);
-}
-
 function makeLeg (props = {}) {
   var imgNames = [
     'birth_of_venus_leg_left.png',
@@ -61,25 +31,6 @@ function makeLeg (props = {}) {
     // filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
   });
   return img;
-}
-
-function makeRoom (props) {
-  var r = Thing.classes.Room.make($.extend({
-    x: 1000,
-    y:  120,
-    w: 1000,
-    h: 2625,
-    d: 1000,
-    showOuter: false,
-    overflow: 'hidden'
-  }, props));
-
-  r.back.css({backgroundColor: '#000'});
-  r.right.css({backgroundColor: '#333'});
-  r.left.css({backgroundColor: '#333'});
-  r.top.css({backgroundColor: '#111'});
-  r.bottom.css({backgroundColor: '#222'});
-  return r;
 }
 
 // wrap a room in a div to prevent overflow
@@ -134,25 +85,6 @@ function fillSky () {
       url: 'img/clouds_on_light_blue.jpg',
       size: 'cover',
   });
-}
-
-var opaquePatterns = [
-  {pattern: 'GraphPaper', size: Rand.randInt(1,8) * 100, stretch: true},
-  {pattern: 'PlaidRed', size: Rand.randInt(1,8) * 250, stretch: true},
-  {pattern: 'Sofa', size: Rand.randItem([100, 160, 225, 280, 350, 500]), stretch: true},
-];
-
-var transparentPatterns = [
-  {pattern: 'Grid', size: Rand.randInt(1,8) * 20, stretch: true},
-  {pattern: 'PolkaDots', size: Rand.randInt(50,550), stretch: true},
-  {pattern: 'Stripes', size: Rand.randInt(20,100), stretch: true},
-  {pattern: 'DiagonalStripesViolet', size: Rand.randInt(30,400), stretch: true},
-];
-
-function randomPattern (patterns) {
-  var P = Thing.classes.Pattern.make(Thing.classes.Rand.randItem(patterns));
-  window.console.log(P);
-  return P;
 }
 
 function makeLightSpot (props = {}) {
@@ -228,22 +160,6 @@ function makeWidths (props) {
   return columns;
 }
 
-function makeRandomColumns (props) {
-  var widths = makeWidths(props);
-  var columns = [];
-  widths.forEach(function (xw) {
-    columns.push(Thing.classes.Box.make({
-      x: xw.x,
-      y: 0,
-      w: xw.w,
-      h: props.h-10,
-      border: '5px solid red',
-      backgroundColor: Rand.randRGBstr( Rand.randInt(2,6) * 0.1)
-    }));
-  });
-  return columns;
-}
-
 function makeRandomRooms (props) {
   var rooms = [];
   makeWidths(props).forEach(function (xw) {
@@ -279,7 +195,6 @@ $(function () {
     });
   background.add([
     // mainRoom,
-    // makeRandomColumns({w: CW, h: CH, minW: CW/15, maxW: CW/2}),
     makeRandomRooms({x: 0, w: CW, h: CH, minW: CW/15, maxW: CW/2}),
   ]);
   background.render();

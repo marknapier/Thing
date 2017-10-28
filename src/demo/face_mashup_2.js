@@ -35,44 +35,6 @@ var aspectRatio = 1.5;
 var idealWidth = 3000;
 var CW = pageParams.canvasWidth || idealWidth;
 var CH = CW * aspectRatio;
-var SCALE = CW / idealWidth;
-
-var imgNames = [
-  'elvis_eye_left_round.png',
-  'elvis_eye_left_square.png',
-  'elvis_eye_right_round.png',
-  'elvis_eye_right_square.png',
-  'elvis_mouth_round.png',
-  'elvis_mouth_square.png',
-  'marilyn_eye_left_fuzzy.png',
-  'marilyn_eye_left_round.png',
-  'marilyn_eye_left_square.png',
-  'marilyn_eye_right_fuzzy.png',
-  'marilyn_eye_right_round.png',
-  'marilyn_eye_right_square.png',
-  'marilyn_mouth.png',
-  'marilyn_mouth_round.png',
-  'marilyn_mouth_square.png',
-  'mona_eye_left_circle.png',
-  'mona_eye_left_fuzzy.png',
-  'mona_eye_right_circle.png',
-  'mona_eye_right_fuzzy.png',
-  'mona_eye_right_square.png',
-  'washington_eye_left_fuzzy.png',
-  'washington_eye_left_round.png',
-  'washington_eye_left_square.png',
-  'washington_eye_right_fuzzy.png',
-  'washington_eye_right_round.png',
-  'washington_eye_right_square.png',
-  'washington_mouth_fuzzy.png',
-  'washington_mouth_round.png',
-  'washington_mouth_square.png',
-  // 'yoda_eye_left_fuzzy.png',
-  // 'yoda_eye_right.png',
-  // 'yoda_eye_right_fuzzy.png',
-  // 'yoda_left_eye.png',
-  // 'yoda_mouth_circle.png'
-];
 
 var imgNamesEyesRight = [
   'elvis_eye_right_round.png',
@@ -147,7 +109,6 @@ function makeImagesForBox (names, box) {
   var dim = box.getDimensions();
   var midW = dim.w/2;
   var midH = dim.h/2;
-  var scale = dim.w / 100;
   var jiggle = dim.w * (0.1 + (Rand.randFloat() * 0.3));
   var images = [];
 
@@ -180,74 +141,74 @@ function makeBoundingBox(box, color, width) {
   return rect;
 }
 
-function makeStrip(props = {}) {
-  var box = Thing.classes.Box.make({
-    x: props.x,
-    y: props.y,
-    w: props.w,
-    h: props.h,
-    overflow: 'hidden',
-  });
-  box.add(props.content);
-  props.content.translateTo(-props.offset, 0, 0);
-  return box;
-}
+// function makeStrip(props = {}) {
+//   var box = Thing.classes.Box.make({
+//     x: props.x,
+//     y: props.y,
+//     w: props.w,
+//     h: props.h,
+//     overflow: 'hidden',
+//   });
+//   box.add(props.content);
+//   props.content.translateTo(-props.offset, 0, 0);
+//   return box;
+// }
 
-function makeSlices (props = {}) {
-  var outerW = props.w;
-  var outerH = props.h;
-  var blah = makeWidths({x:0, w:props.w, minW:props.w*0.01, maxW:props.w*0.2});
-  var strips = blah
-  .map( function (xw) {
-    return {
-      x: xw.x,
-      w: xw.w,
-      content: Thing.classes.Img.make({
-        src:'img/faceparts/' + Thing.classes.Rand.randItem(imgNamesMouths),
-        w: props.w,
-        h: props.h * 0.35,
-      })
-    };
-  })
-  .map( function (props = {}) {
-    return makeStrip({
-      content: props.content,
-      x: props.x, // * (props.w * 0.125),
-      y: 0,
-      w: outerW,  // props.w * 0.125,  // width of strip: 1/8 of window
-      h: outerH * 0.35,
-      offset: props.x,  //props.num * (props.w * 0.125),
-    });
-  });
-  return strips;
-}
+// function makeSlices (props = {}) {
+//   var outerW = props.w;
+//   var outerH = props.h;
+//   var blah = makeWidths({x:0, w:props.w, minW:props.w*0.01, maxW:props.w*0.2});
+//   var strips = blah
+//   .map( function (xw) {
+//     return {
+//       x: xw.x,
+//       w: xw.w,
+//       content: Thing.classes.Img.make({
+//         src:'img/faceparts/' + Thing.classes.Rand.randItem(imgNamesMouths),
+//         w: props.w,
+//         h: props.h * 0.35,
+//       })
+//     };
+//   })
+//   .map( function (props = {}) {
+//     return makeStrip({
+//       content: props.content,
+//       x: props.x, // * (props.w * 0.125),
+//       y: 0,
+//       w: outerW,  // props.w * 0.125,  // width of strip: 1/8 of window
+//       h: outerH * 0.35,
+//       offset: props.x,  //props.num * (props.w * 0.125),
+//     });
+//   });
+//   return strips;
+// }
 
 // x: starting pos
 // w: total width to fill
 // minW, maxW: min/max width of column
 // return array of objects like: {x: 123, w:345}
-function makeWidths (props) {
-  var columns = [];
-  var x = props.x || 0;
-  var columnW = 0;
-  var remainingW = 0;
-  var maxW = props.maxW;
+// function makeWidths (props) {
+//   var columns = [];
+//   var x = props.x || 0;
+//   var columnW = 0;
+//   var remainingW = 0;
+//   var maxW = props.maxW;
 
-  while (x < props.w) {
-    remainingW = props.w - x;
-    maxW = remainingW > props.maxW ? props.maxW : remainingW;
-    if (remainingW > props.minW) {
-      columnW = Rand.randInt(props.minW, maxW);
-    }
-    else {
-      columnW = remainingW;
-    }
-    columns.push({x: x, w: columnW});
-    x += columnW;
-  }
+//   while (x < props.w) {
+//     remainingW = props.w - x;
+//     maxW = remainingW > props.maxW ? props.maxW : remainingW;
+//     if (remainingW > props.minW) {
+//       columnW = Rand.randInt(props.minW, maxW);
+//     }
+//     else {
+//       columnW = remainingW;
+//     }
+//     columns.push({x: x, w: columnW});
+//     x += columnW;
+//   }
 
-  return columns;
-}
+//   return columns;
+// }
 
 function borderWidth () {
   return (CW * 0.0016) * (Rand.randBoolean(45) ? 4 : 1);
@@ -257,10 +218,10 @@ $(function(){
   var colors = ['#3f2', '#f45', 'pink', 'cyan', '#ff3', '#0f4', '#332', '#004', 'orange', '#062'];
   var bounds = Box.make({x:0, y:0, w: CW, h: CH, backgroundColor:Rand.randItem(colors)});
 
-  var diagonalstripes = Thing.classes.Pattern.makeDiagonalStripePatternCSS({
-    color: Rand.randItem(colors), 
-    size: Rand.randInt(200,2000)
-  });
+  // var diagonalstripes = Thing.classes.Pattern.makeDiagonalStripePatternCSS({
+  //   color: Rand.randItem(colors),
+  //   size: Rand.randInt(200,2000)
+  // });
 
   // middle background
   var bg1 = Box.make({x:0, y:CH*0.3, w: CW, h: CH*0.25, backgroundColor:'pink'});
@@ -301,9 +262,9 @@ $(function(){
   // overall background
   bounds.add(
       Thing.classes.Box.make({
-        x: 0, 
-        y: 0, 
-        w: CW, 
+        x: 0,
+        y: 0,
+        w: CW,
         h: CH * 0.38,
         backgroundColor: Rand.randItem(colors),
         mask: {
@@ -313,8 +274,8 @@ $(function(){
         },
       })
       .add(Thing.classes.Pattern.make({
-        pattern:'PolkaDots', 
-        color: Rand.randItem(colors), 
+        pattern:'PolkaDots',
+        color: Rand.randItem(colors),
         size: Rand.randInt(100,1000),
       }))
   );
@@ -362,9 +323,9 @@ $(function(){
       // .add(hairs[0])
       .addMask('url(' + hairs[0].src + ')')
       .css({
-        backgroundImage: 'url(' + hairs[1].src + ')', 
+        backgroundImage: 'url(' + hairs[1].src + ')',
         backgroundSize: '100px 100px',
-        width: hairs[0].w + 'px',   
+        width: hairs[0].w + 'px',
         height: hairs[0].h + 'px',
       })
       .render();

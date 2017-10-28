@@ -26,57 +26,6 @@ $(function(){
     }, props));
   }
 
-  function makeFlyingMouth (props) {
-    let halfWidth = props.w / 2;
-    let b = Thing.classes.Box.make({
-      x: props.x, 
-      y: props.y, 
-      backgroundColor: 'magenta'
-    });
-    b.add(Thing.classes.Img.make({   // left
-      src: 'img/rubens_swan_wing_venus_hair_1.png',
-      x: -halfWidth,
-      y: -halfWidth,
-      w: props.w,
-      rotate: {y:180}
-    }));
-    b.add(Thing.classes.Img.make({   // right
-      src: 'img/rubens_swan_wing_venus_hair_1.png',
-      x: (halfWidth+200),
-      y: -halfWidth,
-      w: props.w
-    }));
-    b.add(Thing.classes.Img.make({
-      src: 'img/marilyn_mouth_square.png',
-      w: props.w
-    }));
-    return b;
-  }
-
-  function makeFlyingMouths () {
-    let mouths = [];
-    let rows = 2;
-    let cols = 4;
-    let colwidth = 5000 / cols;
-    let rowheight = 3600 / rows;
-    for (let r=0; r < rows; r++) { 
-      for (let c=0; c < cols; c++) { 
-        mouths.push( makeFlyingMouth({
-          w: Thing.classes.Rand.randInt(200, 1100), 
-          x: Thing.classes.Rand.randCloseTo((c*colwidth)+(colwidth/2), 200), 
-          y: Thing.classes.Rand.randCloseTo((r*rowheight)+(rowheight/2), 200), 
-        })); 
-      }
-    }    
-  }
-
-  function makeFullRectangle () {
-    var r = Thing.classes.Box.make({w: 5000, h: 3125, backgroundColor: '#ff6'}).add(
-      Thing.make({w: 3125, h: 3125, backgroundColor: '#6f6'})
-    );
-    return r;
-  }
-
   function makeColumns() {
     return [
 

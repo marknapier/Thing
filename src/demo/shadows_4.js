@@ -102,25 +102,6 @@ function fillFloor () {
     });
 }
 
-var opaquePatterns = [
-  {pattern: 'GraphPaper', size: Rand.randInt(1,8) * 100, stretch: true},
-  {pattern: 'PlaidRed', size: Rand.randInt(1,8) * 250, stretch: true},
-  {pattern: 'Sofa', size: Rand.randItem([100, 160, 225, 280, 350, 500]), stretch: true},
-];
-
-var transparentPatterns = [
-  {pattern: 'Grid', size: Rand.randInt(1,8) * 20, stretch: true},
-  {pattern: 'PolkaDots', size: Rand.randInt(50,550), stretch: true},
-  {pattern: 'Stripes', size: Rand.randInt(20,100), stretch: true},
-  {pattern: 'DiagonalStripesViolet', size: Rand.randInt(30,400), stretch: true},
-];
-
-function randomPattern (patterns) {
-  var P = Thing.classes.Pattern.make(Thing.classes.Rand.randItem(patterns));
-  window.console.log(P);
-  return P;
-}
-
 function makeLightSpot () {
   return Thing.make({
       width: '100%',
@@ -176,22 +157,6 @@ function makeWidths (props) {
     x += columnW;
   }
 
-  return columns;
-}
-
-function makeRandomColumns (props) {
-  var widths = makeWidths(props);
-  var columns = [];
-  widths.forEach(function (xw) {
-    columns.push(Thing.classes.Box.make({
-      x: xw.x,
-      y: 0,
-      w: xw.w,
-      h: props.h-10,
-      border: '5px solid red',
-      backgroundColor: Rand.randRGBstr( Rand.randInt(2,6) * 0.1)
-    }));
-  });
   return columns;
 }
 
@@ -268,7 +233,6 @@ $(function () {
     });
   background.add([
     mainRoom,
-    // makeRandomColumns({w: CW, h: CH, minW: CW/15, maxW: CW/2}),
     makeRandomRooms({x: CW*0.3, w: CW*0.65, h: CH, minW: CW/15, maxW: CW/2}),
   ]);
   background.render();
