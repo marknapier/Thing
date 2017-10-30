@@ -210,13 +210,13 @@ function makeBoundingBox(box, color, width) {
 //   return columns;
 // }
 
-function borderWidth () {
-  return (CW * 0.0016) * (Rand.randBoolean(45) ? 4 : 1);
+function borderWidth (canvasWidth) {
+  return (canvasWidth * 0.0016) * (Rand.randBoolean(45) ? 4 : 1);
 }
 
-$(function(){
+function makeFamousFace (props = {w:1000, h:1500}) {
   var colors = ['#3f2', '#f45', 'pink', 'cyan', '#ff3', '#0f4', '#332', '#004', 'orange', '#062'];
-  var bounds = Box.make({x:0, y:0, w: CW, h: CH, backgroundColor:Rand.randItem(colors)});
+  var bounds = Box.make({x:0, y:0, w: props.w, h: props.h, backgroundColor:Rand.randItem(colors)});
 
   // var diagonalstripes = Thing.classes.Pattern.makeDiagonalStripePatternCSS({
   //   color: Rand.randItem(colors),
@@ -224,8 +224,8 @@ $(function(){
   // });
 
   // middle background
-  var bg1 = Box.make({x:0, y:CH*0.3, w: CW, h: CH*0.25, backgroundColor:'pink'});
-  bg1.add(  Thing.classes.BGImg.make({
+  var middleEyes = Box.make({x:0, y:props.h*0.3, w: props.w, h: props.h*0.25, backgroundColor:'pink'});
+  middleEyes.add(  Thing.classes.BGImg.make({
       url: 'img/faceparts/' + Rand.randItem(imgNamesEyesLeft),
       size: '10% 22%',
       center: true,
@@ -233,11 +233,11 @@ $(function(){
   }) );
 
   // bottom half background
-  var bg2 = Thing.classes.CompositeImg.make({
+  var bottomMouths = Thing.classes.CompositeImg.make({
     x:0,
-    y:CH*0.35 + CH*0.20,
-    w: CW,
-    h: CH*0.45,
+    y:props.h*0.35 + props.h*0.20,
+    w: props.w,
+    h: props.h*0.45,
     backgroundColor:'#0f0',
     layers: [
       {
@@ -256,16 +256,16 @@ $(function(){
     ],
   });
 
-  bounds.add(bg1);
-  bounds.add(bg2);
+  bounds.add(middleEyes);
+  bounds.add(bottomMouths);
 
   // overall background
   bounds.add(
       Thing.classes.Box.make({
         x: 0,
         y: 0,
-        w: CW,
-        h: CH * 0.38,
+        w: props.w,
+        h: props.h * 0.38,
         backgroundColor: Rand.randItem(colors),
         mask: {
           image: ImgSVG.makeURL(ImgSVG.makePolkaDotsSVG(20, 120)),
@@ -279,25 +279,24 @@ $(function(){
         size: Rand.randInt(100,1000),
       }))
   );
-  // bounds.add(makeSlices({w: CW, h: CH}));
+  // bounds.add(makeSlices({w: props.w, h: props.h}));
 
-
-  var eyeY = CH * 0.47;
-  var eyeRX = CW * 0.26;
-  var eyeLX = CW * 0.74;
-  var eyeW = CW * 0.40;
-  var noseY = CH * 0.55;
-  var noseW = CW * 0.25;
-  var noseH = CH * 0.3;
-  var mouthY = CH * 0.75;
-  var mouthW = CW * 0.5;
-  var mouthH = CH * 0.2;
-  var centerX = CW * 0.5;
+  var eyeY = props.h * 0.47;
+  var eyeRX = props.w * 0.26;
+  var eyeLX = props.w * 0.74;
+  var eyeW = props.w * 0.40;
+  var noseY = props.h * 0.55;
+  var noseW = props.w * 0.25;
+  var noseH = props.h * 0.3;
+  var mouthY = props.h * 0.75;
+  var mouthW = props.w * 0.5;
+  var mouthH = props.h * 0.2;
+  var centerX = props.w * 0.5;
   var eyeR = Box.make({x:eyeRX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'green', renderOnCenter:true});
   var eyeL = Box.make({x:eyeLX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'red', renderOnCenter:true});
   var nose = Box.make({x:centerX, y:noseY, w:noseW, h:noseH, backgroundColor:'magenta', renderOnCenter:true});
   var mouth = Box.make({x:centerX, y:mouthY, w:mouthW, h:mouthH, backgroundColor:'yellow', renderOnCenter:true});
-  var hair = Box.make({x:CW * -0.02, y:CH * 0.02, w:CW * 1.1, h:CH * 0.75, backgroundColor:'blue', renderOnCenter:false});
+  var hair = Box.make({x:props.w * -0.02, y:props.h * 0.02, w:props.w * 1.1, h:props.h * 0.75, backgroundColor:'blue', renderOnCenter:false});
 
   var mouths = makeImagesForBox(imgNamesMouths, mouth);
   var noses = makeImagesForBox(imgNamesNoses, nose);
@@ -307,17 +306,13 @@ $(function(){
 
   bounds.render();
 
-  // Respond to page params and key events
-  Thing.classes.Page.setScale(pageParams.scale || 1);
-  Thing.classes.Page.initEvents();
-
   // have to render before getting bounding box or box will be 0x0
   mouth.add(mouths).render();
   nose.add(noses).render();
   eyeR.add(eyesR).render();
   eyeL.add(eyesL).render();
 
-  // wait for images to load, then make bounding boxes
+  // wait for images to load, so image widths are correct, then make bounding boxes
   Thing.classes.Img.onAllLoaded = function () {
     hair
       // .add(hairs[0])
@@ -330,10 +325,17 @@ $(function(){
       })
       .render();
 
-    mouth.add(makeBoundingBox(mouth, '#0F0', borderWidth())).render();
-    nose.add(makeBoundingBox(nose, '#F00', borderWidth())).render();
-    eyeR.add(makeBoundingBox(eyeR, '#F0F', borderWidth())).render();
-    eyeL.add(makeBoundingBox(eyeL, '#FF0', borderWidth())).render();
+    mouth.add(makeBoundingBox(mouth, '#0F0', borderWidth(props.w))).render();
+    nose.add(makeBoundingBox(nose, '#F00', borderWidth(props.w))).render();
+    eyeR.add(makeBoundingBox(eyeR, '#F0F', borderWidth(props.w))).render();
+    eyeL.add(makeBoundingBox(eyeL, '#FF0', borderWidth(props.w))).render();
   };
+}
 
+$(function(){
+  // Respond to page params and key events
+  Thing.classes.Page.setScale(pageParams.scale || 1);
+  Thing.classes.Page.initEvents();
+
+  makeFamousFace({w: CW, h: CH});
 });
