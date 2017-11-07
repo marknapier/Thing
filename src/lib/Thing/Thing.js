@@ -262,6 +262,7 @@ class Thing {
     delete styles.h;
     delete styles.r;
     delete styles.mask;
+    delete styles.renderOnCenter;
     return styles;
   }
 
