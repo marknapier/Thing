@@ -49,8 +49,6 @@ var imgNamesEyesRight = [
   'washington_eye_right_fuzzy.png',
   'washington_eye_right_round.png',
   'washington_eye_right_square.png',
-  // 'yoda_eye_right.png',
-  // 'yoda_eye_right_fuzzy.png'
 ];
 
 var imgNamesEyesLeft = [
@@ -64,8 +62,6 @@ var imgNamesEyesLeft = [
   'washington_eye_left_fuzzy.png',
   'washington_eye_left_round.png',
   'washington_eye_left_square.png',
-  // 'yoda_eye_left_fuzzy.png',
-  // 'yoda_left_eye.png'
 ];
 
 var imgNamesMouths = [
@@ -74,10 +70,11 @@ var imgNamesMouths = [
   'marilyn_mouth.png',
   'marilyn_mouth_round.png',
   'marilyn_mouth_square.png',
+  'mona_mouth_fuzzy.png',
+  'mona_mouth_square.png',
   'washington_mouth_fuzzy.png',
   'washington_mouth_round.png',
   'washington_mouth_square.png',
-  // 'yoda_mouth_circle.png'
 ];
 
 var imgNamesNoses = [
@@ -87,12 +84,10 @@ var imgNamesNoses = [
   "marilyn_nose_fuzzy.png",
   "mona_nose_fuzzy.png",
   "mona_nose_square.png",
-  "nixon_nose.png",
-  "nixon_nose_fuzzy.png",
+  // "nixon_nose.png",
+  // "nixon_nose_fuzzy.png",
   "washington_nose.png",
   "washington_nose_fuzzy.png",
-  // "yoda_nose.png",
-  // "yoda_nose_fuzzy.png"
 ];
 
 var imgNamesHair = [
@@ -100,7 +95,7 @@ var imgNamesHair = [
   "marilyn_hair.png",
   "mona_hair.png",
   "washington_hair.png",
-  "chaplin_hat.png"
+  "chaplin_hat.png",
 ];
 
 //-----------------------
@@ -217,11 +212,12 @@ function borderWidth (canvasWidth) {
 function makeFamousFace (props = {w:1000, h:1500}) {
   var colors = ['#3f2', '#f45', 'pink', 'cyan', '#ff3', '#0f4', '#332', '#004', 'orange', '#062'];
   // var coolColors = ['#32f', '#04c', '#508', '#39e', '#0f4', '#a0a', '#004', '#0d2'];
-  var blueColors = ['#32f', '#04f', '#50e', '#39e', '#09f', '#22f', '#004', '#00f'];
+  var blueColors = ['#30f', '#04f', '#50e', '#36e', '#09f', '#22f', '#00c', '#00f'];
   var overallBGColor = Rand.randItem(colors);
   var highlightFGColor = tinycolor(overallBGColor).brighten(10).lighten(10).toString();
   var highlightFGColor2 = tinycolor(overallBGColor).brighten(10).saturate(25).toString();
-  var smallJiggleSize = props.w * 0.028;
+  var smallJiggleSize = props.w * 0.035;
+  var bigJiggleSize = props.w * 0.15;
   var bounds = Box.make({
     x: props.x, 
     y: props.y, 
@@ -305,8 +301,8 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   var mouthW = props.w * 0.5;
   var mouthH = props.h * 0.2;
   var centerX = props.w * 0.5;
-  var eyeR = Box.make({x:eyeRX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'green', renderOnCenter:true});
-  var eyeL = Box.make({x:eyeLX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'red', renderOnCenter:true});
+  var eyeR = Box.make({x:eyeRX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'#00b900', renderOnCenter:true});
+  var eyeL = Box.make({x:eyeLX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'#ff1a1a', renderOnCenter:true});
   var nose = Box.make({x:centerX, y:noseY, w:noseW, h:noseH, backgroundColor:'magenta', renderOnCenter:true});
   var mouth = Box.make({x:centerX, y:mouthY, w:mouthW, h:mouthH, backgroundColor:highlightFGColor, renderOnCenter:true});
   var hair = Box.make({x:props.w * -0.02, y:props.h * 0.02, w:props.w * 1.1, h:props.h * 0.75, backgroundColor:Rand.randItem(blueColors), renderOnCenter:false});
@@ -314,7 +310,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   // load face part images
   var mouths = makeImagesForBox(imgNamesMouths, mouth.getDimensions(), {renderOnCenter: true});
   var noses = makeImagesForBox(imgNamesNoses, nose.getDimensions(), {renderOnCenter: true});
-  var eyesL = makeImagesForBox(imgNamesEyesLeft, eyeL.getDimensions(), {renderOnCenter: true});
+  var eyesL = makeImagesForBox(imgNamesEyesLeft, eyeL.getDimensions(), {jiggle: bigJiggleSize, renderOnCenter: true});
   var eyesR = makeImagesForBox(imgNamesEyesRight, eyeR.getDimensions(), {renderOnCenter: true});
   var hairs = makeImagesForBox(imgNamesHair, hair.getDimensions(), {jiggle: smallJiggleSize, renderOnCenter: false});
 
