@@ -91,6 +91,7 @@ var imgNamesNoses = [
 ];
 
 var imgNamesHair = [
+  "elvis_hair_high.png",
   "elvis_hair.png",
   "marilyn_hair.png",
   "mona_hair.png",
@@ -219,10 +220,10 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   var smallJiggleSize = props.w * 0.035;
   var bigJiggleSize = props.w * 0.15;
   var bounds = Box.make({
-    x: props.x, 
-    y: props.y, 
-    w: props.w, 
-    h: props.h, 
+    x: props.x,
+    y: props.y,
+    w: props.w,
+    h: props.h,
     backgroundColor: overallBGColor,
   });
 
@@ -346,10 +347,10 @@ function makeFamousFace (props = {w:1000, h:1500}) {
 
 function makePatternBG (props = {}) {
   var canvas = Box.make({
-    x: props.x, 
-    y: props.y, 
-    w: props.w, 
-    h: props.h, 
+    x: props.x,
+    y: props.y,
+    w: props.w,
+    h: props.h,
   });
 
   var diagonalstripesCSS = Thing.classes.Pattern.makeDiagonalStripePatternCSS({
@@ -364,10 +365,10 @@ function makePatternBG (props = {}) {
 
 $(function(){
   var canvas = makePatternBG({
-    x: CW * 0.9, 
-    y: 0, 
-    w: CW * 0.1, 
-    h: CH, 
+    x: CW * 0.9,
+    y: 0,
+    w: CW * 0.1,
+    h: CH,
     colors: ['#150b2f', '#00002b', '#06003e', '#30405e', '#100018', '#16001e'],
   });
 
