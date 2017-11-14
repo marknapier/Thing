@@ -2,8 +2,8 @@ var Thing = window.Thing;
 var Meninas = window.Meninas;
 
 function makeBunchOfLegs (width) {
-  var Rand = Thing.classes.Rand;
-  var Img = Thing.classes.Img;
+  var Rand = Thing.Rand;
+  var Img = Thing.Img;
   var arrayOLegs = [
     // Img.make({
     //   src: 'img/leg_durer_adam_right_and_foot_1.png',
@@ -101,8 +101,8 @@ function makeBunchOfLegs (width) {
 }
 
 // function makeOtherBunchOfLegs (width) {
-//   var Rand = Thing.classes.Rand;
-//   var Img = Thing.classes.Img;
+//   var Rand = Thing.Rand;
+//   var Img = Thing.Img;
 //   var arrayOLegs = [
 //     Img.make({
 //       src: 'img/leg_durer_adam_right_and_foot_1.png',
@@ -176,8 +176,8 @@ function makeMarker (props) {
 }
 
 $(function () {
-  var Img = Thing.classes.Img;
-  var Rand = Thing.classes.Rand;
+  var Img = Thing.Img;
+  var Rand = Thing.Rand;
 
   // setup the stage
   var aspectRatio = 0.72;
@@ -204,18 +204,18 @@ $(function () {
     h: 2800,
     background: 'radial-gradient(at 40% 30%, rgba(255, 145, 112, 0.278431) 10%, transparent 50%, rgba(25, 0, 72, 0.290196) 90%)'
   });
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     w: 4150,
     h: 2800,
     overflow: 'hidden'
   });
   backWall.add(lightSpot);
 
-  // var wallpaper = Thing.classes.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
-  var wallpaper = Thing.classes.Pattern.make({pattern: 'nothing', background: 'url(img/victorian_red_velvet_wallpaper.jpg)'});
+  // var wallpaper = Thing.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
+  var wallpaper = Thing.Pattern.make({pattern: 'nothing', background: 'url(img/victorian_red_velvet_wallpaper.jpg)'});
 
   // Room edge right side
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
     width: 20,
@@ -226,7 +226,7 @@ $(function () {
   var floor = Meninas.makeFloorBleached();
 
   // put all the legs into one box
-  var legContainer = Thing.classes.Box.make({
+  var legContainer = Thing.Box.make({
     x: 100,
     y: 100,
     w: legContainerWidth,
@@ -239,7 +239,7 @@ $(function () {
   .add(makeMarker({x:0, y:3100-100, z:-500}))
   .add(makeMarker({x:legContainerWidth-100, y:3100-100, z: -500}))
   .add(makeMarker({x:legContainerWidth-100, y:3100-100, z: 500}))
-  .add(Thing.classes.Box.make({  // floor
+  .add(Thing.Box.make({  // floor
       x: 0,
       y: 3100 - (2000/2),
       w: legContainerWidth,
@@ -248,7 +248,7 @@ $(function () {
       border: '12px dashed #0f3',
       backgroundColor: 'rgba(150,0,0,0.4)'
     }))
-  .add(Thing.classes.Box.make({   // back wall
+  .add(Thing.Box.make({   // back wall
       x: 0,
       y: 0,
       z: -1000,
@@ -257,7 +257,7 @@ $(function () {
       border: '12px dashed #0f3',
       backgroundColor: 'rgba(0,150,0,0.4)'
     }))
-  .add(Thing.classes.Box.make({   // right wall
+  .add(Thing.Box.make({   // right wall
       x: legContainerWidth - (2000/2),
       y: 0,
       z: 0,
@@ -270,7 +270,7 @@ $(function () {
   ;
 
   // another bunch of legs
-  // var bunchOfLegs = Thing.classes.Box.make({
+  // var bunchOfLegs = Thing.Box.make({
   //   x: Rand.randInt(100,4500),
   //   y: 700,
   //   z: -1300,
@@ -282,7 +282,7 @@ $(function () {
   // .add(makeOtherBunchOfLegs(700));
 
   // random dark circle on floor
-  var darkspot = Thing.classes.Circle.make({
+  var darkspot = Thing.Circle.make({
     r: 500,
     x: Rand.randInt(1000,4500),
     y: Rand.randInt(800,2000),

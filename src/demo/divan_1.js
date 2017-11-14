@@ -1,8 +1,8 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
-var pageParams = Thing.classes.Page.getParams();
+var pageParams = Thing.Page.getParams();
 var aspectRatio = 0.620;
 var CW = pageParams.canvasWidth || 6000;  // canvas width
 var CH = CW * aspectRatio;
@@ -15,14 +15,14 @@ var plantNamesSmall = [
 
 function makeFigure (props = {}) {
   var borderWidth = CW * 0.0015;
-  var torso = Thing.classes.Img.make($.extend({
+  var torso = Thing.Img.make($.extend({
     x: CW * 0.07,
     y: CW * 0.2366,
     rotate: {z: 30},
     src: 'img/Titian_Venus_of_Urbino_torso_t.png',
     border: borderWidth + 'px dashed #0f0',
   }, props));
-  var head = Thing.classes.Img.make({
+  var head = Thing.Img.make({
     x: 300,
     y: -300,
     rotate: {z: 15},
@@ -30,7 +30,7 @@ function makeFigure (props = {}) {
     border: borderWidth + 'px dashed #cf0',
     transformOrigin: '90% 90%',
   });
-  var legs = Thing.classes.Img.make({
+  var legs = Thing.Img.make({
     x: 1050,
     y: 350,
     rotate: {z: -30},
@@ -74,29 +74,29 @@ function makePlants () {
   var bottomSmall = CW * -0.015;
 
   var plants = [
-    Thing.classes.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), w: randW() + 200, bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/BananaPalm_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/banana_tree_2_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/rubber_tree_potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), w: randW() + 200, bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/BananaPalm_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/banana_tree_2_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/rubber_tree_potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
     //
-    Thing.classes.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), w: randW() + 200, bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/BananaPalm_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/banana_tree_2_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
-    Thing.classes.Img.make({src:'img/rubber_tree_potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), w: randW() + 200, bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/BananaPalm_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/banana_tree_2_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
+    Thing.Img.make({src:'img/rubber_tree_potted_t.png', x: randX(), w: randW(), bottom: bottom+'px'}),
     //
-    Thing.classes.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
-    Thing.classes.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
-    Thing.classes.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
-    Thing.classes.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
-    Thing.classes.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
+    Thing.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
+    Thing.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
+    Thing.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
+    Thing.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
+    Thing.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
   ];
   return plants;
 }
 
 function makeCouch (props = {}) {
-  var i = Thing.classes.Img.make($.extend({
+  var i = Thing.Img.make($.extend({
       src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
       x: CW * 0.1,
       y: CW * 0.266,
@@ -107,18 +107,18 @@ function makeCouch (props = {}) {
 }
 
 function makeSurface (props = {w:2500, h:2500}) {
-  var container = Thing.classes.Box.make({
+  var container = Thing.Box.make({
     w: props.w,
     h: props.h,
     backgroundColor: 'rgb(255, 228, 126)',
   });
 
-  var wallpaper =  Thing.classes.PatternStripes.make({
+  var wallpaper =  Thing.PatternStripes.make({
     color: 'rgba(196, 191, 138, 0.52)',
     size: props.w * 0.033
   });
 
-  // var textureImg = Thing.classes.BGImg.make({
+  // var textureImg = Thing.BGImg.make({
   //   url: 'img/vintagewallpaper4_crop_cutout_1.png',
   //   size: '30% 50%',
   //   repeat: true,
@@ -158,7 +158,7 @@ $(function () {
   // fill parent container
 
   // Floor
-  var floorImg = Thing.classes.Img
+  var floorImg = Thing.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak_pers_left.png',
       right: '0px',
@@ -169,7 +169,7 @@ $(function () {
     });
 
   // Room edge right side
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x: CW * 0.829,
     y: 0,
     z: -1,
@@ -180,7 +180,7 @@ $(function () {
   });
 
   // All the things go here
-  var stage = Thing.classes.Box.make({
+  var stage = Thing.Box.make({
     w: CW,
     h: CH,
     transformStyle: 'preserve-3d',
@@ -207,8 +207,8 @@ $(function () {
   background.render();
 
   // Respond to page params and key events
-  Thing.classes.Page.setScale(pageParams.scale || 1);
-  Thing.classes.Page.initEvents();
+  Thing.Page.setScale(pageParams.scale || 1);
+  Thing.Page.initEvents();
 
   // for debugging
   window.BG = background;

@@ -21,9 +21,9 @@
 <script src='thing.js'></script>
 
 <script type="text/javascript">
-var Box = Thing.classes.Box;
-var DemoBox = Thing.classes.DemoBox;
-var Line = Thing.classes.Line;
+var Box = Thing.Box;
+var DemoBox = Thing.DemoBox;
+var Line = Thing.Line;
 
 window.funboxItems = [];
 
@@ -75,7 +75,7 @@ FB.render();
 window.FB = FB;
 
 // make a random line
-var Line = Thing.classes.Line;
+var Line = Thing.Line;
 var line = Line.make({
   left: '0px',  // hack needed when placing line after relative positioned elements
   top: '0px',   // have to reset position to 0,0 or translate will operate relative to page position, not 0,0

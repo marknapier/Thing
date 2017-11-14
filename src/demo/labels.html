@@ -16,10 +16,10 @@
 
 <script>
 $(function(){
-  let Rand = Thing.classes.Rand;
+  let Rand = Thing.Rand;
 
   function makeDemoBox (props) {
-    return Thing.classes.Box.make($.extend({
+    return Thing.Box.make($.extend({
         display: 'inline-block',
         position: 'relative',
         margin: '20px',
@@ -34,50 +34,50 @@ $(function(){
   function makeLabelBoxes() {
     return [
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '18px',
         fontWeight: "100",
         text: "Small thin 100 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '18px',
         fontWeight: "400",
         text: "Small regular 400 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '18px',
         fontWeight: "700",
         text: "Small bold 700 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '18px',
         fontWeight: "900",
         text: "Small heavy 900 weight blah blah blah 0123456789 $#@!%^&* (){}<>..."
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '48px',
         fontWeight: "400",
         text: "Large regular 400 weight blah blah blah blah 0123456789 $#@!%^&* (){}<>..."
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '20px',
         fontWeight: "400",
         text: "Ignore html: <p>I will rise</p><p>After a thousand years</p><p>And set my teeth in the silver of the moon</p>"
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '20px',
         fontWeight: "400",
         text: "Respect html:<p>I will rise</p><p>After a thousand years</p><p>And set my teeth in the silver of the moon</p>",
         html: true
       })),
       makeDemoBox({backgroundColor:'black', height:'180px'}).add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '200px',
         fontWeight: "900",
         text: "BANG!",
@@ -85,13 +85,13 @@ $(function(){
         rotate: {z: -10}
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '20px',
         fontWeight: "400",
         text: "Word Wrap When There Are Spaces: blahdy blah blah ANSUhEUgAAAGgAA AB6CAYAAABTAhYxAAAACXBIWXMAAB uvAAAbrwFeGpEcAAAKT2lDQ1BQa G90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS 4iAlEtvUhUIIFJCi4AUkSYqI QkQSoghodkVUcERRUUEG 8igiAOOj oCMFVEsDIoK2AfkIaKOg",
       })),
       makeDemoBox().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
         fontSize: '20px',
         fontWeight: "400",
         width: '100%',

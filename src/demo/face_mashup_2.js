@@ -9,9 +9,9 @@ var str = "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA
 var str = "data:image/png;base64,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";
 
 function dochars (str) {
-  var Rand = Thing.classes.Rand;
+  var Rand = Thing.Rand;
   var props = {x:100, y:100, w: 200, h:500};
-  var container = Thing.classes.Label.make(props);
+  var container = Thing.Label.make(props);
 
   for (var i=0; i < str.length; i++ ) {
     var x = Math.abs(Rand.randNormal() * props.w).toFixed(1);
@@ -27,11 +27,11 @@ function dochars (str) {
 
 var tinycolor = window.tinycolor;
 var Thing = window.Thing;
-var Rand = Thing.classes.Rand;
-var Box = Thing.classes.Box;
-var ImgSVG = Thing.classes.ImgSVG;
+var Rand = Thing.Rand;
+var Box = Thing.Box;
+var ImgSVG = Thing.ImgSVG;
 
-var pageParams = Thing.classes.Page.getParams();
+var pageParams = Thing.Page.getParams();
 var aspectRatio = 1.36;
 var idealWidth = 3600;
 var CW = pageParams.canvasWidth || idealWidth;
@@ -109,7 +109,7 @@ function makeImagesForBox (names, dim, props) {
   var images = [];
 
   for (var i=0; i < howMany; i++) {
-    var facepart = Thing.classes.Img.make({
+    var facepart = Thing.Img.make({
       src: 'img/faceparts/' + Rand.randItem(names),
       x: (props.renderOnCenter ? midW : 0) + (Rand.randNormal() * jiggle),   // shift the x,y position slightly
       y: (props.renderOnCenter ? midH : 0) + (Rand.randNormal() * jiggle),
@@ -138,7 +138,7 @@ function makeBoundingBox(box, color, width) {
 }
 
 // function makeStrip(props = {}) {
-//   var box = Thing.classes.Box.make({
+//   var box = Thing.Box.make({
 //     x: props.x,
 //     y: props.y,
 //     w: props.w,
@@ -159,8 +159,8 @@ function makeBoundingBox(box, color, width) {
 //     return {
 //       x: xw.x,
 //       w: xw.w,
-//       content: Thing.classes.Img.make({
-//         src:'img/faceparts/' + Thing.classes.Rand.randItem(imgNamesMouths),
+//       content: Thing.Img.make({
+//         src:'img/faceparts/' + Thing.Rand.randItem(imgNamesMouths),
 //         w: props.w,
 //         h: props.h * 0.35,
 //       })
@@ -227,14 +227,14 @@ function makeFamousFace (props = {w:1000, h:1500}) {
     backgroundColor: overallBGColor,
   });
 
-  // var diagonalstripes = Thing.classes.Pattern.makeDiagonalStripePatternCSS({
+  // var diagonalstripes = Thing.Pattern.makeDiagonalStripePatternCSS({
   //   color: Rand.randItem(colors),
   //   size: Rand.randInt(200,2000)
   // });
 
   // middle background
   var middleEyes = Box.make({x:0, y:props.h*0.3, w: props.w, h: props.h*0.25, backgroundColor:'pink'});
-  middleEyes.add(  Thing.classes.BGImg.make({
+  middleEyes.add(  Thing.BGImg.make({
       url: 'img/faceparts/' + Rand.randItem(imgNamesEyesLeft),
       size: '10% 22%',
       center: true,
@@ -242,7 +242,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   }) );
 
   // bottom half background
-  var bottomMouths = Thing.classes.CompositeImg.make({
+  var bottomMouths = Thing.CompositeImg.make({
     x:0,
     y:props.h*0.35 + props.h*0.20,
     w: props.w,
@@ -270,7 +270,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
 
   // overall background
   bounds.add(
-      Thing.classes.Box.make({
+      Thing.Box.make({
         x: 0,
         y: 0,
         w: props.w,
@@ -282,7 +282,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
           size: '120px 120px',
         },
       })
-      .add(Thing.classes.Pattern.make({
+      .add(Thing.Pattern.make({
         pattern:'PolkaDots',
         color: Rand.randItem(colors),
         size: Rand.randInt(100,1000),
@@ -325,7 +325,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   bounds.render();
 
   // wait for images to load, so image widths are correct, then make bounding boxes
-  Thing.classes.Img.onAllLoaded = function () {
+  Thing.Img.onAllLoaded = function () {
     hair
       .add(hairs[0])
       .addMask('url(' + hairs[0].src + ')')
@@ -353,7 +353,7 @@ function makePatternBG (props = {}) {
     h: props.h,
   });
 
-  var diagonalstripesCSS = Thing.classes.Pattern.makeDiagonalStripePatternCSS({
+  var diagonalstripesCSS = Thing.Pattern.makeDiagonalStripePatternCSS({
     color: Rand.randItem(props.colors),
     backgroundColor: Rand.randItem(props.colors),
     size: Rand.randInt(10,200),
@@ -378,7 +378,7 @@ $(function(){
   canvas.render();
 
   // Respond to page params and key events
-  Thing.classes.Page.setScale(pageParams.scale || 1);
-  Thing.classes.Page.initEvents();
+  Thing.Page.setScale(pageParams.scale || 1);
+  Thing.Page.initEvents();
 
 });

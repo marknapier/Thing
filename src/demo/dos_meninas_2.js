@@ -6,11 +6,11 @@
 //
 var Thing = window.Thing;
 var Meninas = window.Meninas;
-var Rand = Thing.classes.Rand;
-var Pattern = Thing.classes.Pattern;
+var Rand = Thing.Rand;
+var Pattern = Thing.Pattern;
 
 function makeRandomBox(props) {
-  return Thing.classes.Box.make($.extend({
+  return Thing.Box.make($.extend({
     x: Rand.randInt(0,3000),
     y: 0,
     w: Rand.randInt(400,1600),
@@ -38,7 +38,7 @@ $(function () {
   var pos = menina.getPosition();
 
   // Room edge right side
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
     lineWidth: 20,
@@ -46,7 +46,7 @@ $(function () {
     background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
   });
 
-  var floorImg = Thing.classes.Img
+  var floorImg = Thing.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak_pers_left.png',
       right: '0px',
@@ -99,7 +99,7 @@ $(function () {
     background.render();
   }
 
-  Thing.classes.Img.onAllLoaded = makeImgPointers;
+  Thing.Img.onAllLoaded = makeImgPointers;
 
   window.menina = menina;
   window.BG = background;

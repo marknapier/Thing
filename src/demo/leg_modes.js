@@ -1,6 +1,6 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
 // multiply, darken, luminosity;
 
@@ -86,7 +86,7 @@ $(function () {
     background: 'radial-gradient(at 40% 30%, rgba(255, 255, 255, 0.3) 10%, rgba(94, 72, 82, 0.54) 90%)'
   });
 
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     backgroundColor: '#011',
     // background: 'linear-gradient(90deg, rgba(255, 244, 156, 0.3) 4px, transparent 4px)',
     backgroundSize: '8px',
@@ -102,7 +102,7 @@ $(function () {
     rotate:{x: 90}
   });
 
-  var rug = Thing.classes.Img.make({
+  var rug = Thing.Img.make({
     x: 3764,
     y: 2000,
     z: 1188,

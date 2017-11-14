@@ -2,8 +2,8 @@ var Thing = window.Thing;
 var Meninas = window.Meninas;
 
 function makeBunchOfLegs (width) {
-  var Rand = Thing.classes.Rand;
-  var Img = Thing.classes.Img;
+  var Rand = Thing.Rand;
+  var Img = Thing.Img;
   var arrayOLegs = [
     Img.make({
       src: 'img/leg_durer_adam_right_and_foot_1.png',
@@ -101,8 +101,8 @@ function makeBunchOfLegs (width) {
 }
 
 $(function () {
-  var Img = Thing.classes.Img;
-  var Rand = Thing.classes.Rand;
+  var Img = Thing.Img;
+  var Rand = Thing.Rand;
 
   // setup the stage
   var aspectRatio = 0.72;
@@ -110,7 +110,7 @@ $(function () {
   var pixelHeight = pixelWidth * aspectRatio;
   var mainScale = pixelWidth * 0.001;  // assume design is 1000 pixels wide, this will be 1
   var background = Meninas.makeBackground(pixelWidth, pixelHeight, mainScale).css({backgroundColor:'rgb(124, 10, 0)'});
-  var legContainerWidth = Thing.classes.Rand.randInt(2000,3000);
+  var legContainerWidth = Thing.Rand.randInt(2000,3000);
 
   var rightWall = Img.make({
       src: 'img/vintagewallpaper4_crop.png',
@@ -129,18 +129,18 @@ $(function () {
     h: 2800,
     background: 'radial-gradient(at 40% 30%, rgba(255, 145, 112, 0.278431) 10%, transparent 50%, rgba(25, 0, 72, 0.290196) 90%)'
   });
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     w: 4150,
     h: 2800,
     overflow: 'hidden'
   });
   backWall.add(lightSpot);
 
-  // var wallpaper = Thing.classes.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
-  var wallpaper = Thing.classes.Pattern.make({pattern: 'nothing', background: 'url(img/victorian_red_velvet_wallpaper.jpg)'});
+  // var wallpaper = Thing.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
+  var wallpaper = Thing.Pattern.make({pattern: 'nothing', background: 'url(img/victorian_red_velvet_wallpaper.jpg)'});
 
   // Room edge right side
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
     lineWidth: 20,
@@ -151,7 +151,7 @@ $(function () {
   var floor = Meninas.makeFloorBleached();
 
   // put all the legs into one box
-  var legContainer = Thing.classes.Box.make({
+  var legContainer = Thing.Box.make({
     x: 50,
     y: 50,
     w: legContainerWidth,
@@ -161,7 +161,7 @@ $(function () {
   .add(makeBunchOfLegs(legContainerWidth));
 
   // another bunch of legs
-  var bunchOfLegs = Thing.classes.Box.make({
+  var bunchOfLegs = Thing.Box.make({
     x: 3300,
     y: 300,
     w: legContainerWidth * 0.75,
@@ -173,7 +173,7 @@ $(function () {
   .add(makeBunchOfLegs(legContainerWidth/2));
 
   // random dark circle on floor
-  var darkspot = Thing.classes.Circle.make({
+  var darkspot = Thing.Circle.make({
     r: 500,
     x: Rand.randInt(1000,4500),
     y: Rand.randInt(800,2000),

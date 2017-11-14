@@ -236,7 +236,7 @@ class Thing {
 
   static addClass (cls) {
     Thing.classes = Thing.classes || {};
-    Thing.classes[cls.name] = cls;
+    Thing[cls.name] = Thing.classes[cls.name] = cls;
   }
 
   //---------------------------------------------------------

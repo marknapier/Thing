@@ -2,7 +2,7 @@ var Thing = window.Thing;
 var Meninas = window.Meninas;
 
 $(function () {
-  var Img = Thing.classes.Img;
+  var Img = Thing.Img;
 
   // setup the stage
   var aspectRatio = 0.72;
@@ -29,17 +29,17 @@ $(function () {
     background: 'radial-gradient(at 40% 30%, rgba(255, 145, 112, 0.278431) 10%, transparent 50%, rgba(25, 0, 72, 0.290196) 90%)'
   });
 
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     w: 4150,
     h: 2800,
     overflow: 'hidden'
   });
 
-  // var wallpaper = Thing.classes.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
-  var wallpaper = Thing.classes.Pattern.make({pattern: 'nothing', background: 'url(img/victorian_red_velvet_wallpaper.jpg)'});
+  // var wallpaper = Thing.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
+  var wallpaper = Thing.Pattern.make({pattern: 'nothing', background: 'url(img/victorian_red_velvet_wallpaper.jpg)'});
 
   // Room edge right side
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
     width: 20,
@@ -48,7 +48,7 @@ $(function () {
   });
 
   // makeFloor
-  var floorImg = Thing.classes.Img
+  var floorImg = Thing.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak_pers_left.png',
       right: '0px',
@@ -78,7 +78,7 @@ $(function () {
   });
 
   // Leg in doorway
-  var doorwayAndLeg = Thing.classes.Box.make({   // this contains wall and leg
+  var doorwayAndLeg = Thing.Box.make({   // this contains wall and leg
     x: -700, 
     y: -200, 
     w: 5000, 
@@ -87,7 +87,7 @@ $(function () {
     transformStyle: 'preserve-3d', 
     zIndex: 90000
   });
-  var wallWithDoorway = Thing.classes.Box.make({    // this masks a 'doorway' in the wall pattern
+  var wallWithDoorway = Thing.Box.make({    // this masks a 'doorway' in the wall pattern
     w: 3800,
     h: 3600,
     backgroundColor: 'gray',

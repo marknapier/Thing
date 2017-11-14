@@ -112,11 +112,11 @@ var imgNamesNoses = [
 ];
 
 //-----------------------
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
 function imgBunch (names, box) {
   for (var i=0; i < names.length; i++) {
-    var facepart = Thing.classes.Img.make({
+    var facepart = Thing.Img.make({
       src: 'img/faceparts/' + names[i],
       x: Rand.randNormal() * 100,
       y: Rand.randNormal() * 100,
@@ -136,7 +136,7 @@ function pickImages (names, box) {
   var scale = dim.w / 100;
 
   for (var i=0; i < howMany; i++) {
-    var facepart = Thing.classes.Img.make({
+    var facepart = Thing.Img.make({
       src: 'img/faceparts/' + Rand.randItem(names),
       x: midW + (Rand.randNormal() * midW),
       y: midH + (Rand.randNormal() * midH),
@@ -149,10 +149,10 @@ function pickImages (names, box) {
 }
 
 $(function(){
-  var eyeR = Thing.classes.Box.make({x:200, y:50, w:100, h:100, backgroundColor:'green'});
-  var eyeL = Thing.classes.Box.make({x:400, y:50, w:100, h:100, backgroundColor:'red'});
-  var nose = Thing.classes.Box.make({x:300, y:200, w:100, h:100, backgroundColor:'magenta'});
-  var mouth = Thing.classes.Box.make({x:250, y:460, w:200, h:100, backgroundColor:'yellow'});
+  var eyeR = Thing.Box.make({x:200, y:50, w:100, h:100, backgroundColor:'green'});
+  var eyeL = Thing.Box.make({x:400, y:50, w:100, h:100, backgroundColor:'red'});
+  var nose = Thing.Box.make({x:300, y:200, w:100, h:100, backgroundColor:'magenta'});
+  var mouth = Thing.Box.make({x:250, y:460, w:200, h:100, backgroundColor:'yellow'});
 
   pickImages(imgNamesMouths, mouth);
   pickImages(imgNamesNoses, nose);

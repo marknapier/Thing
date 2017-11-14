@@ -15,10 +15,10 @@
 
 <script>
 $(function(){
-  let Rand = Thing.classes.Rand;
+  let Rand = Thing.Rand;
 
   function makeDemoBox (props) {
-    return Thing.classes.Box.make($.extend({
+    return Thing.Box.make($.extend({
         display: 'inline-block',
         position: 'relative',
         margin: '20px',
@@ -33,41 +33,41 @@ $(function(){
   function makeDemoBoxes() {
     return [
       makeDemoBox().add([
-        Thing.classes.Label.make({
+        Thing.Label.make({
           text: "Box with two diagonals 1 pixel wide blue lines",
           padding: '5px',
         }),
-        Thing.classes.Line.make({  // top
+        Thing.Line.make({  // top
           x: 50, y: 50,
           x2: 250, y2: 50,
           color: 'blue',
           lineWidth: 1,
         }),
-        Thing.classes.Line.make({  // right
+        Thing.Line.make({  // right
           x: 250, y: 50,
           x2: 250, y2: 250,
           color: 'blue',
           lineWidth: 1,
         }),
-        Thing.classes.Line.make({  // bottom
+        Thing.Line.make({  // bottom
           x: 250, y: 250,
           x2: 50, y2: 250,
           color: 'blue',
           lineWidth: 1,
         }),
-        Thing.classes.Line.make({  // left
+        Thing.Line.make({  // left
           x: 50, y: 250,
           x2: 50, y2: 50,
           color: 'blue',
           lineWidth: 1,
         }),
-        Thing.classes.Line.make({  // diagonal
+        Thing.Line.make({  // diagonal
           x: 50, y: 50,
           x2: 250, y2: 250,
           color: 'blue',
           lineWidth: 1,
         }),
-        Thing.classes.Line.make({  // diagonal
+        Thing.Line.make({  // diagonal
           x: 250, y: 50,
           x2: 50, y2: 250,
           color: 'blue',
@@ -75,7 +75,7 @@ $(function(){
         }),
       ]),
       makeDemoBox().add([
-        Thing.classes.Label.make({
+        Thing.Label.make({
           text: "Magenta 30 pixel wide horizontal line centered between green points",
           padding: '5px',
         }),
@@ -89,7 +89,7 @@ $(function(){
           w: 2, h: 2,
           backgroundColor: 'green',
         }),
-        Thing.classes.Line.make({
+        Thing.Line.make({
           x: 50, y: 150,
           x2: 250, y2: 150,
           color: 'magenta',
@@ -97,7 +97,7 @@ $(function(){
         }),
       ]),
       makeDemoBox().add([
-        Thing.classes.Label.make({
+        Thing.Label.make({
           text: "Magenta 30 pixel wide diagonal line centered between green points",
           padding: '5px',
         }),
@@ -111,7 +111,7 @@ $(function(){
           w: 2, h: 2,
           backgroundColor: 'green',
         }),
-        Thing.classes.Line.make({
+        Thing.Line.make({
           x: 50, y: 50,
           x2: 250, y2: 250,
           color: 'magenta',
@@ -119,7 +119,7 @@ $(function(){
         }),
       ]),
       makeDemoBox().add([
-        Thing.classes.Label.make({
+        Thing.Label.make({
           text: "Magenta 30 pixel wide diagonal line with arrowhead",
           padding: '5px',
         }),
@@ -133,7 +133,7 @@ $(function(){
           w: 2, h: 2,
           backgroundColor: 'green',
         }),
-        Thing.classes.Line.make({
+        Thing.Line.make({
           x: 50, y: 50,
           x2: 250, y2: 250,
           color: 'magenta',
