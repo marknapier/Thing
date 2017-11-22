@@ -101,6 +101,16 @@ var imgNamesNoses = [
 
 //-----------------------
 
+function makeFloor (props = {}) {
+  return Thing.Img.make({
+    src: 'img/wood_texture_smooth_panel_red_oak_pers_left.png', 
+    x: props.x || 0,
+    y: props.y || 4290,
+    w: props.w || 3600,
+    h: props.h || 612
+  });
+}
+
 function makeImagesForBox (names, dim, props) {
   var howMany = Rand.randInt(3,7);
   var midW = dim.w/2;
@@ -117,130 +127,198 @@ function makeImagesForBox (names, dim, props) {
       opacity: 0.5 + (Rand.randFloat() * 0.7),
       filter: 'blur(' +(Rand.randPow() * 50.0).toFixed(1)+ 'px)',
       renderOnCenter: props.renderOnCenter,
+      border: props.border,
     });
     images.push(facepart);
   }
   return images;
 }
 
-function makeBoundingBox(box, color, width) {
-  var elbounds = box.getElementBounds(); // bounds of all elements, relative to document
-  var boxbounds = box.getBoundingBox();  // bounds of the box element
+function makeImageCascadeForBox (names, dim, props) {
+  var howMany = Rand.randInt(3,7);
+  var midW = dim.w/2;
+  var midH = dim.h/2;
+  var jiggle = props.jiggle || dim.w * (0.1 + (Rand.randFloat() * 0.3));
+  var bwidth = (dim.w * 0.017);
+  var images = [];
+
+  for (var i=0; i < howMany; i++) {
+    var facepart = Thing.Img.make({
+      src: 'img/faceparts/' + Rand.randItem(names),
+      x: (props.renderOnCenter ? midW : 0) + (Rand.randNormal() * jiggle) + (i * 100),   // shift the x,y position slightly
+      y: (props.renderOnCenter ? midH : 0) + (Rand.randNormal() * jiggle) + (i * 100),
+      w: dim.w + (Rand.randNormal() * jiggle),    // change the image size slightly
+      opacity: 0.5 + (Rand.randFloat() * 0.7),
+      filter: 'blur(' +(Rand.randPow() * 50.0).toFixed(1)+ 'px)',
+      renderOnCenter: props.renderOnCenter,
+      border: (bwidth * Rand.randFloat(0.3, 1.7)) + 'px solid yellow',
+    });
+    images.push(facepart);
+  }
+  return images;
+}
+
+function makeBorderBox(box, color, width) {
+  var jiggle = Rand.randFloat(0.9, 1.1);
+  var amount = box.w * 0.1;
   var rect = Thing.make({
-    x: (elbounds.x-boxbounds.x), // position the rectangle relative to the box
-    y: (elbounds.y-boxbounds.y),
-    w: elbounds.w,
-    h: elbounds.h,
-    zIndex: 0,
+    x: amount * Rand.randFloat(-1.0, 1.0),  // position box + or - the jiggle
+    y: amount * Rand.randFloat(-1.0, 1.0),
+    w: box.w * jiggle,
+    h: box.h * jiggle,
     border: width + 'px solid ' + color
   });
   return rect;
 }
 
-function makeStrip(props = {}) {
-  var box = Thing.Box.make({
-    x: props.x,
-    y: props.y,
-    w: props.w,
-    h: props.h,
-    overflow: 'hidden',
-  });
-  box.add(props.content);
-  props.content.translateTo(-props.offset, 0, 0);
-  return box;
-}
+// function makeStrip(props = {}) {
+//   var box = Thing.Box.make({
+//     x: props.x,
+//     y: props.y,
+//     w: props.w,
+//     h: props.h,
+//     overflow: 'hidden',
+//   });
+//   box.add(props.content);
+//   props.content.translateTo(-props.offset, 0, 0);
+//   return box;
+// }
 
-function makeSlices (props = {}) {
-  var outerH = props.h;
-  var columnWidths = makeWidths({x:0, w:props.w, minW:props.w*0.005, maxW:props.w*0.4});
-  var strips = columnWidths
-    .map( function (xw) {   // prep images for each column
-      return {
-        x: xw.x,
-        w: xw.w,
-        content: Thing.Img.make({
-          src:'img/faceparts/' + Thing.Rand.randItem(props.imgNames),
-          w: props.w,
-          h: props.h,
-        })
-      };
-    })
-    .map( function (props = {}) {   // make vertical divs for each column
-      return makeStrip({
-        content: props.content,
-        x: props.x,
-        y: 0,
-        w: props.w,
-        h: outerH,
-        offset: props.x,
-      });
-    });
-  return strips;
-}
+// function makeSlices (props = {}) {
+//   var outerW = props.w;
+//   // var outerH = props.h;
+//   var rowHeights = makeWidths({x:0, w:props.h, minW:props.h*0.005, maxW:props.h*0.4});
+//   var strips = rowHeights
+//     .map( function (xw) {   // prep images for each column
+//       return {
+//         y: xw.x,  // switch x,w to y,h
+//         h: xw.w,
+//         content: Thing.Img.make({
+//           src:'img/faceparts/' + Thing.Rand.randItem(props.imgNames),
+//           w: props.w,  // image will be size of full containing box
+//           h: props.h,
+//         })
+//       };
+//     })
+//     .map( function (props = {}) {   // make vertical divs for each column
+//       return makeStrip({
+//         content: props.content,
+//         x: 0,
+//         y: props.y,
+//         w: outerW,
+//         h: props.h,
+//         offset: props.x,
+//       });
+//     });
+//   return strips;
+// }
 
 // x: starting pos
 // w: total width to fill
 // minW, maxW: min/max width of column
 // return array of objects like: {x: 123, w:345}
-function makeWidths (props) {
-  var columns = [];
-  var x = props.x || 0;
-  var columnW = 0;
-  var remainingW = 0;
-  var maxW = props.maxW;
+// function makeWidths (props) {
+//   var columns = [];
+//   var x = props.x || 0;
+//   var columnW = 0;
+//   var remainingW = 0;
+//   var maxW = props.maxW;
 
-  while (x < props.w) {
-    remainingW = props.w - x;
-    maxW = remainingW > props.maxW ? props.maxW : remainingW;
-    if (remainingW > props.minW) {
-      columnW = Rand.randInt(props.minW, maxW);
-    }
-    else {
-      columnW = remainingW;
-    }
-    columns.push({x: x, w: columnW});
-    x += columnW;
-  }
+//   while (x < props.w) {
+//     remainingW = props.w - x;
+//     maxW = remainingW > props.maxW ? props.maxW : remainingW;
+//     if (remainingW > props.minW) {
+//       columnW = Rand.randInt(props.minW, maxW);
+//     }
+//     else {
+//       columnW = remainingW;
+//     }
+//     columns.push({x: x, w: columnW});
+//     x += columnW;
+//   }
 
-  return columns;
-}
+//   return columns;
+// }
 
 function borderWidth (canvasWidth) {
   return (canvasWidth * 0.0016) * (Rand.randBoolean(45) ? 4 : 1);
 }
 
-function makePolkaDotMaskedBG (props = {x:0, y:0, w:1000, h:500, colors: []}) {
-  var r = Rand.randInt(15, 25);
-  var s = Rand.randInt(20, 200);
+// function makePolkaDotMaskedBG (props = {x:0, y:0, w:1000, h:500, colors: []}) {
+//   var r = Rand.randInt(15, 25);
+//   var s = Rand.randInt(20, 200);
+//   return Thing.Box.make({
+//     x: props.x,
+//     y: props.y,
+//     w: props.w,
+//     h: props.h,
+//     backgroundColor: Rand.randItem(props.colors),
+//     mask: {
+//       image: ImgSVG.makeURL(ImgSVG.makePolkaDotsSVG(r, 100)),
+//       repeat: 'repeat',
+//       size: s + 'px ' + s + 'px',
+//       position: '0% 0%',
+//     },
+//   })
+//   .add(Thing.Pattern.make({
+//     pattern:'PolkaDots',
+//     color: Rand.randItem(['#f00', '#cc0', '#f0c']),
+//     size: Rand.randInt(20,200),
+//   }))
+//   .add(Thing.Pattern.make({
+//     pattern: 'DiagonalStripes',
+//     color: tinycolor(Rand.randItem(props.colors)).setAlpha(0.2),
+//     size: Rand.randInt(200,2000)
+//   }));
+// }
+
+function makePolkaDots (props = {x:0, y:0, w:1000, h:500, colors: []}) {
+  var r = Rand.randInt(20, 50);
+  var s = Rand.randInt(200, 500);
   return Thing.Box.make({
     x: props.x,
     y: props.y,
     w: props.w,
     h: props.h,
-    backgroundColor: Rand.randItem(props.colors),
+    backgroundColor: Rand.randItem(['#f20', '#f63', '#f34', '#e03']),
     mask: {
       image: ImgSVG.makeURL(ImgSVG.makePolkaDotsSVG(r, 100)),
       repeat: 'repeat',
       size: s + 'px ' + s + 'px',
+      position: '0% 0%',
     },
-  })
-  .add(Thing.Pattern.make({
-    pattern:'PolkaDots',
-    color: Rand.randItem(props.colors),
-    size: Rand.randInt(100,1000),
-  }))
-  .add(Thing.Pattern.make({
-    pattern: 'DiagonalStripes',
-    color: tinycolor(Rand.randItem(props.colors)).setAlpha(0.2),
-    size: Rand.randInt(200,2000)
-  }));
+  });
+  // .add(Thing.Pattern.make({
+  //   pattern:'PolkaDots',
+  //   color: Rand.randItem(['red', 'pink', 'magenta']),
+  //   size: Rand.randInt(200,1200),
+  // }))
+  // .add(Thing.Pattern.make({
+  //   pattern: 'DiagonalStripes',
+  //   color: tinycolor(Rand.randItem(props.colors)).setAlpha(0.2),
+  //   size: Rand.randInt(200,2000)
+  // }));
 }
 
-function makeFamousFace (props = {w:1000, h:1500}) {
-  var colors = ['#3f2', '#f45', 'pink', 'cyan', '#ff3', '#0f4', '#332', '#004', 'orange', '#062'];
+function makeFuzzyImageBox (props) {
+  var b = Box.make({x:props.x, y:props.y, w:props.w, h:props.h, backgroundColor:props.backgroundColor, renderOnCenter:true})
+          .add(makeImagesForBox(props.images, {w:props.w, h:props.h}, {jiggle: props.jiggle, renderOnCenter: true}));
+  return b;
+}
+
+function makeFuzzyImageCascade (props) {
+  var b = Box.make({x:props.x, y:props.y, w:props.w, h:props.h, backgroundColor:props.backgroundColor, renderOnCenter:true})
+          .add(makeImageCascadeForBox(props.images, {w:props.w, h:props.h}, {jiggle: props.jiggle, renderOnCenter: true}));
+  return b;
+}
+
+function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
+  var yellows = props.colors || [ '#ff0', '#ef0', '#fe0'];
+  var reds = [ '#f30', '#e00', '#f11', '#f03'];
+  // var mixedcolors = ['#3f2', '#f45', 'pink', 'cyan', '#ff3', '#0f4', '#332', '#004', 'orange', '#062'];
   // var coolColors = ['#32f', '#04c', '#508', '#39e', '#0f4', '#a0a', '#004', '#0d2'];
   var blueColors = ['#30f', '#04f', '#50e', '#36e', '#09f', '#22f', '#00c', '#00f'];
-  var overallBGColor = Rand.randItem(colors);
+  var overallBGColor = Rand.randItem(yellows);
   var highlightFGColor = tinycolor(overallBGColor).brighten(10).lighten(10).toString();
   var highlightFGColor2 = tinycolor(overallBGColor).brighten(10).saturate(25).toString();
   // var smallJiggleSize = props.w * 0.035;
@@ -254,8 +332,14 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   });
 
   // middle background
-  var middleEyes = Box.make({x:0, y:props.h*0.3, w: props.w, h: props.h*0.3, backgroundColor:'pink'});
-  middleEyes.add(  Thing.BGImg.make({
+  var middleEyes = Box.make({
+    x:props.w * 0.05,
+    y:props.h*0.3,
+    w: props.w * 0.9,
+    h: props.h*0.3,
+    backgroundColor:'pink'
+  });
+  middleEyes.add( Thing.BGImg.make({
       url: 'img/faceparts/' + Rand.randItem(imgNamesEyesLeft),
       size: '10% 20%',
       center: true,
@@ -264,11 +348,11 @@ function makeFamousFace (props = {w:1000, h:1500}) {
 
   // bottom half background
   var bottomMouths = Thing.CompositeImg.make({
-    x: 0,
+    x: props.w*0.05,
     y: props.h*0.6,
-    w: props.w,
-    h: props.h*0.4,
-    backgroundColor:'#0f0',
+    w: props.w*0.9,
+    h: props.h*0.3,
+    backgroundColor: Rand.randItem(yellows),
     layers: [
       {
         image: 'url(img/faceparts/' + Rand.randItem(imgNamesMouths) + ')',
@@ -290,29 +374,19 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   bounds.add(bottomMouths);
 
   // overall background
-  bounds.add( makePolkaDotMaskedBG({
+  bounds.add( makePolkaDots({
     x: 0,
     y: 0,
     w: props.w,
     h: props.h * 0.38,
-    colors: colors
+    colors: yellows
   }) );
-
-  // mouth slices
-  bounds.add( Thing.Box.make({
-      x: 0,
-      y: props.h * 0.6,
-      w: props.w,
-      h: props.h * 0.35,
-      mask: 'url(img/faceparts/' + Rand.randItem(imgNamesMouths) + ')',
-    }).add(makeSlices({w: props.w, h: props.h * 0.35, imgNames: imgNamesMouths}))
-  );
 
   // build boxes for face parts
   var eyeY = props.h * 0.15;
-  var eyeRX = props.w * 0.26;
-  var eyeLX = props.w * 0.74;
-  var eyeW = props.w * 0.40;
+  var eyeRX = props.w * 0.3;
+  var eyeLX = props.w * 0.7;
+  var eyeW = props.w * 0.30;
   var noseY = props.h * 0.45;
   var noseW = props.w * 0.25;
   var noseH = props.h * 0.3;
@@ -320,45 +394,46 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   var mouthW = props.w * 0.5;
   var mouthH = props.h * 0.2;
   var centerX = props.w * 0.5;
-  var eyeR = Box.make({x:eyeRX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'#00b900', renderOnCenter:true});
-  var eyeL = Box.make({x:eyeLX, y:eyeY, w:eyeW, h:mouthH, backgroundColor:'#ff1a1a', renderOnCenter:true});
-  var nose = Box.make({x:centerX, y:noseY, w:noseW, h:noseH, backgroundColor:Rand.randItem(blueColors), renderOnCenter:true});
-  var mouth = Box.make({x:centerX, y:mouthY, w:mouthW, h:mouthH, backgroundColor:highlightFGColor, renderOnCenter:true});
-  // var hair = Box.make({x:props.w * -0.02, y:props.h * 0.02, w:props.w * 1.1, h:props.h * 0.75, backgroundColor:Rand.randItem(blueColors), renderOnCenter:false});
+  var eyeR = makeFuzzyImageCascade({
+    x: eyeRX,
+    y: eyeY,
+    w: eyeW,
+    h: mouthH,
+    backgroundColor: Rand.randItem(yellows),
+    images: imgNamesEyesRight,
+  });
+  var eyeL = makeFuzzyImageCascade({
+    x: eyeLX,
+    y: eyeY,
+    w: eyeW,
+    h: mouthH,
+    backgroundColor: Rand.randItem(yellows),
+    images: imgNamesEyesLeft,
+    jiggle: bigJiggleSize,
+  });
+  var nose = makeFuzzyImageCascade({
+    x: centerX,
+    y: noseY,
+    w: noseW,
+    h: noseH,
+    backgroundColor: Rand.randItem(blueColors),
+    images: imgNamesNoses,
+  });
+  var mouth = makeFuzzyImageBox({
+    x: centerX,
+    y: mouthY,
+    w: mouthW,
+    h: mouthH,
+    backgroundColor: highlightFGColor,
+    images: imgNamesMouths,
+  });
 
-  // load face part images
-  var mouths = makeImagesForBox(imgNamesMouths, mouth.getDimensions(), {renderOnCenter: true});
-  var noses = makeImagesForBox(imgNamesNoses, nose.getDimensions(), {renderOnCenter: true});
-  var eyesL = makeImagesForBox(imgNamesEyesLeft, eyeL.getDimensions(), {jiggle: bigJiggleSize, renderOnCenter: true});
-  var eyesR = makeImagesForBox(imgNamesEyesRight, eyeR.getDimensions(), {renderOnCenter: true});
-  // var hairs = makeImagesForBox(imgNamesHair, hair.getDimensions(), {jiggle: smallJiggleSize, renderOnCenter: false});
+  mouth.add(makeBorderBox(mouth, highlightFGColor2, borderWidth(props.w)));
+  nose.add(makeBorderBox(nose, Rand.randItem(reds), borderWidth(props.w)));
+  eyeR.add(makeBorderBox(eyeR, Rand.randItem(reds), borderWidth(props.w)));
+  eyeL.add(makeBorderBox(eyeL, Rand.randItem(yellows), borderWidth(props.w)));
 
-  // have to render before getting bounding box or box will be 0x0
-  mouth.add(mouths);
-  nose.add(noses);
-  eyeR.add(eyesR);
-  eyeL.add(eyesL);
-
-  bounds.add([nose, eyeR, eyeL]);
-  bounds.render();
-
-  // wait for images to load, so image widths are correct, then make bounding boxes
-  Thing.Img.onAllLoaded = function () {
-    // hair
-    //   .add(hairs[0])
-    //   .addMask('url(' + hairs[0].src + ')')
-    //   .css({
-    //     backgroundImage: 'url(' + hairs[1].src + ')',
-    //     backgroundSize: '100px 100px',
-    //     width: hairs[0].w + 'px',
-    //     height: hairs[0].h + 'px',
-    //   });
-    mouth.add(makeBoundingBox(mouth, highlightFGColor2, borderWidth(props.w)));
-    nose.add(makeBoundingBox(nose, '#F00', borderWidth(props.w)));
-    eyeR.add(makeBoundingBox(eyeR, '#F0F', borderWidth(props.w)));
-    eyeL.add(makeBoundingBox(eyeL, '#FF0', borderWidth(props.w)));
-    bounds.render();
-  };
+  bounds.add([mouth, nose, eyeR, eyeL]);
 
   return bounds;
 }
@@ -373,8 +448,8 @@ function makePatternBG (props = {}) {
 
   var diagonalstripesCSS = Thing.Pattern.makeDiagonalStripePatternCSS({
     color: Rand.randItem(props.colors),
-    backgroundColor: Rand.randItem(props.colors),
-    size: Rand.randInt(10,200),
+    backgroundColor: Rand.randItem(['#f20', '#f63', '#f34', '#e03']),
+    size: Rand.randInt(props.w * 0.1, props.w * 0.3),
   });
 
   canvas.css(diagonalstripesCSS);
@@ -382,21 +457,26 @@ function makePatternBG (props = {}) {
 }
 
 $(function(){
-  var canvas = makePatternBG({
+  var yellows = ['#f0f000', '#fffc00', '#f0ff00', '#eef309', '#e0f033', '#f3f333', 'red', 'red'];
+  var darkStripedColumn = makePatternBG({
     x: CW * 0.9,
     y: 0,
     w: CW * 0.1,
     h: CH,
-    colors: ['#150b2f', '#00002b', '#06003e', '#30405e', '#100018', '#16001e'],
+    colors: yellows,
   });
+  var famousFaceParts = makeFamousFacePartsGrid({x: 0, y: 0, w: CW * 0.9, h: CH, colors: yellows});
+  var stage = Thing.Box.make({x: 0, y: 0, w: CW, h: CH});
 
-  makeFamousFace({x: 0, y: 0, w: CW * 0.9, h: CH});
+  stage.add([
+    darkStripedColumn,
+    famousFaceParts,
+    makeFloor(),
+  ]);
 
-  // canvas.add(famous);
-  canvas.render();
+  stage.render();
 
   // Respond to page params and key events
   Thing.Page.setScale(pageParams.scale || 1);
   Thing.Page.initEvents();
-
 });

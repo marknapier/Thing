@@ -50,10 +50,15 @@ class ImgSVG extends Thing {
     return svgTag;
   }
 
-  static makePolkaDotsSVG (radius, size) {
+  // radius: radius of dot (will be capped at 1/4 of size, so dots don't overflow image bounds)
+  // size: size of two-dot image (square)
+  //
+  // SVGs scale up/down very well, so there's no need to set a large size. Just use 100 and scale the image in CSS.
+  static makePolkaDotsSVG (radius=20, size=100) {
     let left = size * 0.25;
     let right = size * 0.75;
-    let svgTag = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><circle shape-rendering='geometricPrecision' cx='${left}' cy='${left}' r='${radius}' fill='black'/><circle shape-rendering='geometricPrecision' cx='${right}' cy='${right}' r='${radius}' fill='black'/></svg>`;
+    let r = radius > size * 0.25 ? size * 0.25 : radius;
+    let svgTag = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><circle shape-rendering='geometricPrecision' cx='${left}' cy='${left}' r='${r}' fill='black'/><circle shape-rendering='geometricPrecision' cx='${right}' cy='${right}' r='${r}' fill='black'/></svg>`;
     return svgTag;
   }
 }
@@ -61,3 +66,38 @@ class ImgSVG extends Thing {
 Thing.addClass(ImgSVG);
 
 module.exports = ImgSVG;
+
+
+/** SVG Polka dot pattern, filled into rectangle
+
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+    <defs>
+        <pattern x="561.2000122070312" y="167" id="pattern-output" width="400" height="350" patternUnits="userSpaceOnUse">
+            <svg xmlns="http://www.w3.org/2000/svg" width="400" height="350">
+                <rect width="100%" height="100%" fill="#fbfbfb"></rect>
+                <g transform="translate(99, 89), rotate(0, 0, 0), scale(1)" fill="#000000" stroke-width="2" stroke="none">
+                    <circle r="25" transform="translate(0, 0), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <circle r="25" class="clone" transform="translate(400, 0), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <circle r="25" class="clone" transform="translate(0, 350), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <circle r="25" class="clone" transform="translate(400, 350), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <rect transform="translate(0, 0), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none" class="shape-overlay"></rect>
+                    <rect transform="translate(400, 0), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none"></rect>
+                    <rect transform="translate(0, 350), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none"></rect>
+                    <rect transform="translate(400, 350), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none"></rect>
+                </g>
+                <g transform="translate(302, 258), rotate(0, 0, 0), scale(1)" fill="#000000" stroke-width="2" stroke="none">
+                    <circle r="25" transform="translate(0, 0), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <circle r="25" class="clone" transform="translate(-400, 0), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <circle r="25" class="clone" transform="translate(0, -350), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <circle r="25" class="clone" transform="translate(-400, -350), rotate(0, 0, 0), scale(4.5)"></circle>
+                    <rect transform="translate(0, 0), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none" class="shape-overlay"></rect>
+                    <rect transform="translate(-400, 0), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none"></rect>
+                    <rect transform="translate(0, -350), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none"></rect>
+                    <rect transform="translate(-400, -350), rotate(0, 0, 0), scale(4.5)" x="-25" y="-25" width="50" height="50" fill="transparent" stroke="none"></rect>
+                </g>
+            </svg>
+        </pattern>
+    </defs>
+    <rect class="preview-output" width="100%" height="100%" fill="url(#pattern-output)"></rect>
+</svg>
+*/

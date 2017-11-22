@@ -31,9 +31,9 @@ class Rand {
 		return Math.floor(Rand.random() * (max - min + 1)) + min;
 	}
 
-	// return float between 0 and .999999
-	static randFloat() {
-	    return Rand.random();
+	// Return a random float between min and max (0 and .99999 by default)
+	static randFloat(min=0.0, max=0.99999) {
+	    return min + (Rand.random() * (max - min));
 	}
 
 	// return true some percentage of the time (defaults to 50%)
