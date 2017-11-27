@@ -23,5 +23,6 @@ require('./Triangle/Triangle.js');
 require('./Room/Room.js');
 require('./Page/Page.js');
 require('./CompositeImg/CompositeImg.js');
+require('./Points/Points.js');
 
 window.Thing = Thing;

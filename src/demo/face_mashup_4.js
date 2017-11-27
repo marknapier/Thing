@@ -103,7 +103,7 @@ var imgNamesNoses = [
 
 function makeFloor (props = {}) {
   return Thing.Img.make({
-    src: 'img/wood_texture_smooth_panel_red_oak_pers_left.png', 
+    src: 'img/wood_texture_smooth_panel_red_oak_pers_left.png',
     x: props.x || 0,
     y: props.y || 4290,
     w: props.w || 3600,
@@ -312,6 +312,148 @@ function makeFuzzyImageCascade (props) {
   return b;
 }
 
+function makeMarker(t, tgt) {
+	var tgtPos = tgt.getPos();
+	return [
+		Thing.make({
+			left: '0px',
+			top: '0px',
+			x: t.x,
+			y: t.y,
+			w: 20,
+			h: 20,
+			backgroundColor: 'green'
+		}),
+		Thing.make({
+			left: '0px',
+			top: '0px',
+			x: tgtPos[0],
+			y: tgtPos[1],
+			w: 20,
+			h: 20,
+			backgroundColor: 'gray'
+		})
+	];
+}
+function makeMarkerNew(from, to, text) {
+  // var tgtPoint = [50, 100];
+  // var distance = CW * 0.1;
+  // var delta = CW * 0.05;
+  // var randY = Rand.randInt(-delta, delta);
+  // var worldPoint = Meninas.getWorldCoordsOf(tgtPoint, targetThing);
+  var worldPoint = [to.x, to.y];
+
+  var line = Thing.Line.make({
+    x1: from.x,
+    y1: from.y,
+    x2: worldPoint[0],
+    y2: worldPoint[1],
+    lineWidth: CW / 1000,
+    color: '#0f0'
+  });
+
+  // var label = Thing.Label.make({
+  //   text: text,
+  //   x: (worldPoint[0] - distance) - 50,
+  //   y: (worldPoint[1] + randY) - 50,
+  //   fontSize: '60px',
+  //   backgroundColor: 'yellow',
+  //   padding: '50px 60px',
+  //   borderRadius: '900px',
+  //   border: '3px solid #360',
+  // });
+
+  // return [line, label];
+  return line;
+}
+
+
+// Points nearby those objects
+function makePointersNEW (props = {})  {
+	var adjacentPoints = Thing.Points.makeAdjacentPoints({
+		points: props.things,
+		spacing: props.spacing || 'even',
+		x: props.x || 0,
+		jiggle: props.jiggle || 5,
+		stretch: props.stretch || 1.5,
+	});
+	var pointers = adjacentPoints.map(function (p, i) {
+		return makeMarker(p, props.things[i], '#' + i);
+	});
+	return pointers;
+}
+
+// function makePointers (props = {})  {
+// 	var pointers = props.things.map(function (p, i) {
+// 		var tgtPos = p.getPos();
+// 		return Thing.make({
+// 			left: '0px',
+// 			top: '0px',
+// 			x: tgtPos[0],
+// 			y: tgtPos[1],
+// 			w: 20,
+// 			h: 20,
+// 			backgroundColor: 'gray'
+// 		});
+// 	});
+// 	return pointers;
+// }
+
+function makePointers (props = {})  {
+	// targets to point to
+	var thingPositions = props.things.map(function (p) {
+		return p.getPos();
+	});
+	var targets = thingPositions.map(function (p) {
+		return Thing.make({
+			left: '0px',
+			top: '0px',
+			x: p.x,
+			y: p.y,
+			w: 20,
+			h: 20,
+			renderOnCenter: true,
+			backgroundColor: 'gray'
+		});
+	});
+
+	// Label positions
+	var adjacentPoints = Thing.Points.makeAdjacentPoints({
+		points: thingPositions,
+		// offset: CW * -0.06,
+		spacing: 'even',
+		x: CW * -0.05,
+		// jiggle: CW * 0.002,
+		stretch: 1.3,
+	});
+	var pointers = adjacentPoints.map(function (p) {
+		return Thing.make({
+			left: '0px',
+			top: '0px',
+			x: p.x,
+			y: p.y,
+			w: 20,
+			h: 20,
+			renderOnCenter: true,
+			backgroundColor: 'green'
+		});
+	});
+
+	// lines
+	var lines = adjacentPoints.map(function (p, i) {
+		return Thing.Line.make({
+		  x: p.x,
+		  y: p.y,
+		  x2: thingPositions[i].x,
+		  y2: thingPositions[i].y,
+		  lineWidth: CW / 1000,
+		  color: '#0f0'
+		});
+	});
+
+	return lines.concat(pointers).concat(targets);
+}
+
 function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
   var yellows = props.colors || [ '#ff0', '#ef0', '#fe0'];
   var reds = [ '#f30', '#e00', '#f11', '#f03'];
@@ -434,6 +576,11 @@ function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
   eyeL.add(makeBorderBox(eyeL, Rand.randItem(yellows), borderWidth(props.w)));
 
   bounds.add([mouth, nose, eyeR, eyeL]);
+
+  setTimeout(function () {
+  	eyeR.add(makePointers({things: eyeR.items, offset: 0, _x: eyeRX * 0.3, spacing: 'any', stretch: 1.0, jiggle: 0}));
+  	bounds.render();
+  }, 2000);
 
   return bounds;
 }

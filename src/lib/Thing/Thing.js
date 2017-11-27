@@ -74,12 +74,24 @@ class Thing {
     };
   }
 
+  // get position of element relative to page
+  // only works after element is rendered on page
   getPosition () {
-    // relative to page
     var xy = this.$element.offset();
     var z = this.$element.css('z-index');
     z = z ? parseInt(z) : undefined;
     return [xy.left, xy.top, z];
+  }
+
+  getPos () {
+    let x = this.x;
+    let y = this.y;
+    let z = this.z;
+    if (this.renderOnCenter) {
+      x -= (this.w || 0)/2;
+      y -= (this.h || 0)/2;
+    }
+    return {x, y, z};
   }
 
   // Return the element's CSS transform matrix as array of 6 or 16 values.
