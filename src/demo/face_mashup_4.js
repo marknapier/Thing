@@ -402,8 +402,9 @@ function makePointersNEW (props = {})  {
 function makePointers (props = {})  {
 	// targets to point to
 	var thingPositions = props.things.map(function (p) {
-		return p.getPos();
+    return p.getPos();
 	});
+  // make target spot
 	var targets = thingPositions.map(function (p) {
 		return Thing.make({
 			left: '0px',
@@ -413,19 +414,20 @@ function makePointers (props = {})  {
 			w: 20,
 			h: 20,
 			renderOnCenter: true,
-			backgroundColor: 'gray'
+			backgroundColor: 'gray',
+      borderRadius: '9999px',
 		});
 	});
 
 	// Label positions
 	var adjacentPoints = Thing.Points.makeAdjacentPoints({
 		points: thingPositions,
+    x: CW * -0.05,
 		// offset: CW * -0.06,
-		spacing: 'even',
-		x: CW * -0.05,
-		// jiggle: CW * 0.002,
-		stretch: 1.3,
+		jiggle: CW * 0.006,
+		stretch: 1.4,
 	});
+  // make label spot
 	var pointers = adjacentPoints.map(function (p) {
 		return Thing.make({
 			left: '0px',
@@ -435,23 +437,55 @@ function makePointers (props = {})  {
 			w: 20,
 			h: 20,
 			renderOnCenter: true,
-			backgroundColor: 'green'
+			backgroundColor: 'green',
+      borderRadius: '9999px',
 		});
 	});
 
-	// lines
-	var lines = adjacentPoints.map(function (p, i) {
-		return Thing.Line.make({
-		  x: p.x,
-		  y: p.y,
-		  x2: thingPositions[i].x,
-		  y2: thingPositions[i].y,
-		  lineWidth: CW / 1000,
-		  color: '#0f0'
-		});
-	});
+  // lines
+  var lines = adjacentPoints.map(function (p, i) {
+    return Thing.Line.make({
+      x: p.x,
+      y: p.y,
+      x2: p._targetThing.x,
+      y2: p._targetThing.y,
+      lineWidth: CW / 1000,
+      color: '#0f0'
+    });
+  });
 
-	return lines.concat(pointers).concat(targets);
+  // Labels
+  var labels = adjacentPoints.map(function (p, i) {
+    var targetThing = props.things[i];
+    return Thing.Label.make({
+      text: Math.round(targetThing.getPos().x) + ', ' + Math.round(targetThing.getPos().y),
+      x: p.x - 300,  //(300 + (i * 30)),
+      y: p.y - 50,
+      fontSize: 86,
+      fontWeight: 700,
+      textShadow: '1px 1px 3px rgba(0,0,0,0.2)',
+      color: '#0c0',
+      html: true,
+    });
+  });
+
+  // Description
+  var details = adjacentPoints.map(function (p, i) {
+    var targetThing = props.things[i];
+    var css = targetThing.$element.css('filter') + ', opacity=' + targetThing.$element.css('opacity');
+    return Thing.Label.make({
+      text: css,
+      x: p.x - 200,  //(300 + (i * 30)),
+      y: p.y + 30,
+      fontSize: 40,
+      fontWeight: 400,
+      textShadow: '1px 1px 3px rgba(0,0,0,0.2)',
+      color: '#434c89',
+      html: true,
+    });
+  });
+
+	return lines.concat(pointers).concat(targets).concat(labels).concat(details);
 }
 
 function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
