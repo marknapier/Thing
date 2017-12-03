@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Img Demo</title>
+    <link href="reset.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  let Rand = Thing.Rand;
+
+  function makeDemoBox (props = {}) {
+    return Thing.Box.make($.extend({
+        display: 'inline-block',
+        position: 'relative',
+        margin: '30px',
+        width: '300px',
+        height: '300px',
+        border: '1px dotted #ccc',
+        backgroundColor: '#fff'
+      }, props)).add(Thing.Label.make({text: props.text, y: -24, fontSize: '14px', fontWeight: 700}));
+  }
+
+  // Wait for image to load, then place marker at lower right corner.
+  function makeImageWithMarker() {
+    let demobox = makeDemoBox({text: 'Image with marker (async load img)'}).add(
+      Thing.Img.make({
+        src: 'img/faceparts/marilyn_mouth_square.png',
+        x: 50,
+        y: 50,
+        onImgLoaded: function addMarker(img) {
+          demobox.add(Thing.make({
+              x: img.x + img.w,
+              y: img.y + img.h,
+              w: 20,
+              h: 20,
+              backgroundColor: '#0f0',
+          }))
+          .render()
+        },
+      }),
+    );
+
+    return demobox;
+  }
+
+  // Wait for image batch to load, then add to box
+  // NOTE: onImgLoaded and onImgError callbacks in loadBatch Img props will be ignored.
+  // These callbacks are overridden internally by Img.loadBatch() to manage loading.
+  // Use the batchLoaded() callback instead.
+  function makeImageBatch() {
+    let demobox = makeDemoBox({text: 'Image batch (async load)'});
+    Thing.Img.loadBatch([
+        {
+          src: 'img/faceparts/marilyn_mouth_square.png',
+        },
+        {
+          src: 'img/faceparts/mona_mouth_square.png',
+          w: 170,
+        },
+        {
+          src: 'img/faceparts/elvis_mouth_square.png',
+        },
+      ],
+      function batchLoaded(imgs) {
+        // once images are loaded we can access their dimensions to cascade them
+        imgs[1].translate(50, imgs[0].y + imgs[0].h);
+        imgs[2].translate(100, imgs[1].y + imgs[1].h);
+        demobox.add(imgs).render();
+      },
+    );
+
+    return demobox;
+  }
+
+  function makeDemoBoxes() {
+    return [
+      makeDemoBox({text: 'Plain vanilla image'}).add([
+        Thing.Img.make({
+          src: 'img/faceparts/marilyn_mouth_square.png',
+        }),
+      ]),
+      makeDemoBox({text: 'Image with set width keeps aspect ratio'}).add([
+        Thing.Img.make({
+          src: 'img/faceparts/marilyn_mouth_square.png',
+          w: 280,
+        }),
+      ]),
+      makeDemoBox({text: 'Image with set width and height'}).add([
+        Thing.Img.make({
+          src: 'img/faceparts/marilyn_mouth_square.png',
+          w: 200,
+          h: 280,
+        }),
+      ]),
+      makeDemoBox({text: 'Image with transform (center and rotate 90deg)'}).add([
+        Thing.Img.make({
+          src: 'img/faceparts/marilyn_mouth_square.png',
+          x: 65,
+          y: 100,
+          rotate: {z: 90},
+        }),
+      ]),
+      makeImageWithMarker(),
+      makeImageBatch(),
+    ];
+  }
+
+  // Render demos
+  makeDemoBox({
+      width: '800px',
+      height: 'auto',
+      border: 'none',
+  })
+  .add(makeDemoBoxes())
+  .render();
+});
+</script>
+
+  </body>
+</html>

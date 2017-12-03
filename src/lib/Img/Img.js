@@ -6,20 +6,25 @@ var Thing = require('../Thing/Thing.js');
 
 class Img extends Thing {
   init (props) {
-    var placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAABV9JREFUeJzt3c1u3UQch+F/EBK9AsQCVWfVQq4CbhxuA4EqsSmh+7Iui9QCQvI7Yx+PP59H8i6yZo7mzfgkln1XVZ8KeNYXaw8AtkwgEAgEAoFAIBAIBAKBQCAQCAQCgeDLET97120UsLymO0jsIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIM+7VNV3aw9iQfdV9XrtQWzVp8bjLC5V9XtVPdQ5Irmvqg9V9a7OFUnzuhfIPy71GMcw56NHMsQxzPdMkQhkpEv9N46jR/I0jrNFIpARLvV8HEeN5KU4zhSJQBpdKsdxtEiuxXGWSATS4FJtcRwlktY4zhCJQK641Lg4/h3J94uP9nZj4zh6JAIJLjUtjr1GMjWOI0cikBdc6rY49hbJrXEcNRKBPONS88Sxl0jmiuOIkTTN+Wy3mryqqq9mPN83VfVTbTOS+6r6uaq+nvGcrz4fp3KmHaTqcTE/1Hy/Vbe4k8y9c3yqqvdV9WbJSXTmEis4ciTiaCOQK44YiTjaCaRBj0j+rHUiEcc4Aml0hEjEMZ5ARthzJOKYRiAjfV+Pi3pPkYhjOoFMsKdIesTxR50jjiqBTLaHSMRxO4HcYMuRiGMeArlRr0jubxiTOOYjkBlsKRJxzEsgM9lCJOKYn0BmtGYk4uhDIDNbIxJx9COQDu5ruUh6xfF2lk9i/wTSyRKRiKM/gXTUMxJxLEMgnfWI5EOJYykCWUCPSMSxDIEsZKuRiCMTyIJ6fG8QR18CWdhWInkocbQQyArWjkQc7QSykrUiEcc4AlnR0pGIYzyBrGypSMQxjUA2oHck4phOIBvRKxJx3Kbpcz7b092P5m7tAZyBHaSfJS6x9vzOxDW5xFrZkl/SRTKeQFa0xp95RTKOQFay5j8KRdJOICvYwq0mImkjkIWtHYdIxhHIgrYSh0jaCWQhW4tDJG0EsoCtxiGS6wTSWY84HqrPi0VF8n8C6ahXHG/rcTGLpD+BdNIzjoFI+hNIB0vEMRBJXwKZ2ZJxDETSj0BmtEYcA5H0IZCZrBnHQCTzE8gMthDHQCTzEsiNtviUdZHMRyA32GIcA5HMQyATbTmOgUhuJ5AJ9hDHQCS3EchIe4pjIJLpBDLCHuMYiGQagTTacxwDkYwnkAZHiGMgknEEckWvON4sOYknRNJOIMER4xiIpI1AXnDkOAYiuU4gzzhDHINekRzlifJNcz7b090/fj7m8lBVP1TVrzOecy6/VNWP9fiK6rl8rKq/ZjzfLpxpB6mqel1V7+q4O8dTc+0kv1XVtwuPvSeXWMGtkewljsGtkRwtjiqBXDU1kve1rzgGUyM5YhxVAmkyNpK9xjEYG8lR46gSSLPWSPYex6A1kiPHUSWQUa5FcpQ4BtciOXocVQIZ7aVIjhbH4KVIzhBHlUAmeRrJUeMYPI3kLHFUCWSyIZKjxzEYIjlTHFUCucnrOkccg7d1rjiqGtf9XbUvfi+t50ia1v3Z7sWCUQQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQHBXVZ/WHgRslR0EAoFAIBAIBAKBQCAQCAQCgUAgEAgEgr8BiQVzq9Lv1OoAAAAASUVORK5CYII=';
-
     props = props || {};
-    props.src = props.src || placeholder;
 
     this.type = 'Img';
     this.aspectRatio = 1;
     this.loaded = false;
+    this.onImgLoaded = props.onImgLoaded;
+    this.onImgError = props.onImgError;
     this.src = props.src;
 
     this.setDefaultProps(props);
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
 
-    Img.loading(this);
+    // lazy init a queue to track loaded images
+    Img.imgQueue = Img.imgQueue || new ImgQueue({onEmpty: () => Img.onAllLoaded()});
+
+    // track the image load
+    Img.imgQueue.add(this);
+
+    // load the image
     loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
   }
 
@@ -37,16 +42,20 @@ class Img extends Thing {
     });
     // apply transforms now that we know image width and height
     this.transform();
-    Img.loaded(this);
+    // clear image from the load queue
+    Img.imgQueue.remove(this);
+    // exec callback if any
+    this.onImgLoaded && this.onImgLoaded(this);
   }
 
   onError (img) {
     Thing.msg('Img.onError: Failed to load ' + img.src);
     this.loaded = true;
-    this.error = true;
     this.width = this.height = 0;
     this.aspectRatio = 1;
-    Img.loaded(this);
+    Img.imgQueue.remove(this);
+    // exec callback if any
+    this.onImgError && this.onImgError(this);
   }
 
   setWidth (w) {
@@ -59,34 +68,60 @@ class Img extends Thing {
     return this;
   }
 
-  static loading (img) {
-    Img.queuedImgs = Img.queuedImgs || [];
-    if (img && !img.loaded) {
-        Img.queuedImgs.push(img);
-    }
-    return Img.queuedImgs.length;
-  }
-
-  static loaded (img) {
-    Img.queuedImgs = Img.queuedImgs || [];
-    if (img && img.loaded) {
-        var index = Img.queuedImgs.indexOf(img);
-        if (index > -1) {
-            Img.queuedImgs.splice(index, 1);
-        }
-        if (Img.queuedImgs.length === 0) {
-            Img.onAllLoaded();
-        }
-    }
-    return Img.queuedImgs.length === 0;
-  }
-
   static onAllLoaded () {
     Thing.msg("IMG.onAllLoaded(): triggered");
   }
 
+  static loadBatch (propsArray = [], onBatchLoaded = () => {}) {
+    let q = new ImgQueue({onEmpty: () => { onBatchLoaded(loaded); }});
+    let loaded = [];
+    propsArray.forEach(function (props) {
+        props.onImgLoaded = (img) => { 
+            loaded.push(img); // has to be BEFORE q.remoe() so last image is included when q.onEmpty() fires.
+            q.remove(img); 
+        };
+        props.onImgError = (img) => { 
+            q.remove(img); 
+        };
+        q.add(Img.make(props));
+    });
+  }
 }
+
 Thing.addClass(Img);
+
+
+class ImgQueue {
+    constructor (props = {onEmpty: function () {}}) {
+        this.queuedImgs = [];
+        this.onEmpty = props.onEmpty;
+    }
+
+    add (img) {
+        if (img && !img.loaded) {
+            this.queuedImgs.push(img);
+        }
+        return this.queuedImgs.length;
+    }
+
+    remove (img) {
+        if (img && img.loaded) {
+            var index = this.queuedImgs.indexOf(img);
+            if (index > -1) {
+                this.queuedImgs.splice(index, 1);
+            }
+            if (this.queuedImgs.length === 0) {
+                // Img.onAllLoaded();
+                this.onEmpty && this.onEmpty();
+            }
+        }
+        return this.queuedImgs.length;
+    }
+
+    size () {
+        return this.queuedImgs.length;
+    }
+}
 
 
 function loadImage (src, callback, errorCallback) {
