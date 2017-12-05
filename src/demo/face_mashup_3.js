@@ -343,7 +343,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   bounds.render();
 
   // wait for images to load, so image widths are correct, then make bounding boxes
-  Thing.Img.onAllLoaded = function () {
+  Thing.Img.onAllLoaded(function () {
     // hair
     //   .add(hairs[0])
     //   .addMask('url(' + hairs[0].src + ')')
@@ -358,7 +358,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
     eyeR.add(makeBoundingBox(eyeR, '#F0F', borderWidth(props.w)));
     eyeL.add(makeBoundingBox(eyeL, '#FF0', borderWidth(props.w)));
     bounds.render();
-  };
+  });
 
   return bounds;
 }

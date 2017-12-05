@@ -3,7 +3,6 @@ var Thing = require('../Thing/Thing.js');
 /*
     src: <file path>
 */
-
 class Img extends Thing {
   init (props) {
     props = props || {};
@@ -18,11 +17,8 @@ class Img extends Thing {
     this.setDefaultProps(props);
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
 
-    // lazy init a queue to track loaded images
-    Img.imgQueue = Img.imgQueue || new ImgQueue({onEmpty: () => Img.onAllLoaded()});
-
     // track the image load
-    Img.imgQueue.add(this);
+    pageImgQueue.add(this);
 
     // load the image
     loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
@@ -43,7 +39,7 @@ class Img extends Thing {
     // apply transforms now that we know image width and height
     this.transform();
     // clear image from the load queue
-    Img.imgQueue.remove(this);
+    pageImgQueue.remove(this);
     // exec callback if any
     this.onImgLoaded && this.onImgLoaded(this);
   }
@@ -53,7 +49,7 @@ class Img extends Thing {
     this.loaded = true;
     this.width = this.height = 0;
     this.aspectRatio = 1;
-    Img.imgQueue.remove(this);
+    pageImgQueue.remove(this);
     // exec callback if any
     this.onImgError && this.onImgError(this);
   }
@@ -68,8 +64,14 @@ class Img extends Thing {
     return this;
   }
 
-  static onAllLoaded () {
-    Thing.msg("IMG.onAllLoaded(): triggered");
+  static onAllLoaded (func) {
+    if (typeof func === 'function') {
+        onLoadFunctions.push(func);
+    }
+    else {
+        Thing.msg("IMG.onAllLoaded(): triggered");
+        onLoadFunctions.forEach( (f) => { f(); } );
+    }
   }
 
   static loadBatch (propsArray = [], onBatchLoaded = () => {}) {
@@ -111,18 +113,16 @@ class ImgQueue {
                 this.queuedImgs.splice(index, 1);
             }
             if (this.queuedImgs.length === 0) {
-                // Img.onAllLoaded();
                 this.onEmpty && this.onEmpty();
             }
         }
         return this.queuedImgs.length;
     }
 
-    size () {
+    remaining () {
         return this.queuedImgs.length;
     }
 }
-
 
 function loadImage (src, callback, errorCallback) {
     var img = new Image();
@@ -134,5 +134,8 @@ function loadImage (src, callback, errorCallback) {
     };
     img.src = src;
 }
+
+var onLoadFunctions = [];
+var pageImgQueue = new ImgQueue({onEmpty: () => Img.onAllLoaded()});
 
 module.exports = Img;

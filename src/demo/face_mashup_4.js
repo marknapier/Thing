@@ -524,10 +524,10 @@ function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
 
   bounds.add([mouth, nose, eyeR, eyeL]);
 
-  Thing.Img.onAllLoaded = function () {
+  Thing.Img.onAllLoaded(function () {
   	eyeR.add(makePointers({things: eyeR.items, offset: 0, _x: eyeRX * 0.3, spacing: 'any', stretch: 1.0, jiggle: 0}));
   	bounds.render();
-  };
+  });
 
   return bounds;
 }
