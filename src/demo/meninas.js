@@ -301,6 +301,16 @@ window.Meninas = (function () {
     return tgtPoint;
   }
 
+  function getPointInThing(thing, point) {
+    var M = makeMatrix3D( thing.getCSSTransform() );
+    var dim = thing.getDimensions();
+    var tp = transformPoint(point, M, [dim.w/2, dim.h/2]);
+    return tp;
+  }
+
+  // end of matrix functions
+  //----------------------------------------------------
+
   function makeFloorBleached(options) {
     var defaultOptions = {
       x: -1200,
@@ -350,6 +360,7 @@ window.Meninas = (function () {
     makeMatrix2D: makeMatrix2D,
     makeMatrix3D: makeMatrix3D,
     transformPoint: transformPoint,
+    getPointInThing: getPointInThing,
     getPositionOf: getPositionOf,
     getWorldCoordsOf: getWorldCoordsOf,
     makeFloorBleached: makeFloorBleached

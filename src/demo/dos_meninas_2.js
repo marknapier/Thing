@@ -99,7 +99,7 @@ $(function () {
     background.render();
   }
 
-  Thing.Img.onAllLoaded = makeImgPointers;
+  Thing.Img.onAllLoaded(makeImgPointers);
 
   window.menina = menina;
   window.BG = background;

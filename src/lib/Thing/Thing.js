@@ -43,7 +43,7 @@ class Thing {
   render () {
     var parentElement = (this.parent && this.parent.$element) || $(document.body);
     parentElement.append(this.$element);
-    this.$element.css(this.props);
+    this.$element.css(Thing.convertToCSS(this.props));
     return this;
   }
 
@@ -263,6 +263,7 @@ class Thing {
     styles.width = props.width || (props.w && (props.w + "px")),
     styles.height = props.height || (props.h && (props.h + "px")),
     styles.transform = props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y, props.z, props.renderOnCenter, props.w, props.h)),
+
     // These are not true CSS properties so remove them
     delete styles.rotate;
     delete styles.scale;
@@ -275,6 +276,9 @@ class Thing {
     delete styles.r;
     delete styles.mask;
     delete styles.renderOnCenter;
+    delete styles.onImgLoaded;
+    delete styles.onImgError;
+
     return styles;
   }
 

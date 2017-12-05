@@ -1,11 +1,13 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
+var Rand = Thing.Rand;
+var Img = Thing.Img;
 
 function makePattern (name, size) {
-  var Rand = Thing.classes.Rand;
-  var Pattern = Thing.classes.Pattern;
+  var Rand = Thing.Rand;
+  var Pattern = Thing.Pattern;
   var P =  Pattern.make({pattern: name, size: size, stretch: true});
-  var box = Thing.classes.Box.make( {
+  var box = Thing.Box.make( {
     x: Rand.randInt(0,1000),
     y: 0,
     w: Rand.randInt(200,1600),
@@ -22,11 +24,11 @@ function makePattern (name, size) {
 }
 
 function makeMeninaSandwich(props) {
-  var Rand = Thing.classes.Rand;
-  var Img = Thing.classes.Img;
+  var Rand = Thing.Rand;
+  var Img = Thing.Img;
   var sofaSizes = [100, 160, 225, 280, 350, 500];
 
-  var mWich = Thing.classes.Box.make({
+  var mWich = Thing.Box.make({
     x: props.x,
     y: 1030,
     w: 1300,
@@ -41,7 +43,7 @@ function makeMeninaSandwich(props) {
     filter: 'drop-shadow(10px 10px 20px rgba(0,0,0,0.7))'
   }).scaleTo(1.01);
 
-  var meninaPatterns = Thing.classes.Box.make({
+  var meninaPatterns = Thing.Box.make({
     width: '100%',
     height: '100%',
     backgroundColor: Rand.randItem(Meninas.greens),
@@ -63,10 +65,20 @@ function makeMeninaSandwich(props) {
   return mWich;
 }
 
-$(function () {
-  var Rand = Thing.classes.Rand;
-  var Img = Thing.classes.Img;
+function makePointer(tgtPoint, z) {
+  var pointer = Meninas.makeTextArrow(
+    Thing.Rand.randInt(tgtPoint[0] - 100, tgtPoint[0] + 100), 
+    Thing.Rand.randInt(tgtPoint[1] - 150, tgtPoint[1] - 350),
+    tgtPoint[0],
+    tgtPoint[1],
+    '#5dff1d', parseInt(tgtPoint[0]), 60, z+5000
+  );
+  pointer[1].css({fontSize:'200px', fontWeight: 'bold'});
 
+  return pointer;
+}
+
+$(function () {
   // setup the stage
   var aspectRatio = 0.72;
   var pixelWidth = 5000;
@@ -78,8 +90,15 @@ $(function () {
     src:'img/las_meninas_girl_t.png',
     x: 1100,
     y: 1700,
-    zIndex: 40000
-  }).scaleTo(1.8);
+    zIndex: 40000,
+    scale: 1.8,
+    onImgLoaded: (img) => {
+      var tgtPoint = Meninas.getPointInThing(img, [500, 100]);
+      var pos = img.getPosition();
+      background.add(makePointer(tgtPoint, pos[2]));
+      background.render();
+    },
+  });
 
   var rightWall = Img.make({
       src: 'img/vintagewallpaper4_crop.png',
@@ -99,16 +118,16 @@ $(function () {
       background: 'radial-gradient(at 40% 30%, rgba(250, 239, 200, 0.89) 10%, transparent 50%, rgba(124, 72, 82, 0.54) 90%)'
     });
 
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     w: 4150,
     h: 2800,
     overflow: 'hidden'
   });
 
-  var wallpaper =  Thing.classes.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
+  var wallpaper =  Thing.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
 
   // Room edge right side
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
     lineWidth: 20,
@@ -117,7 +136,7 @@ $(function () {
   });
 
   // makeFloor
-  var floorImg = Thing.classes.Img
+  var floorImg = Thing.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak_pers_left.png',
       right: '0px',
@@ -133,7 +152,7 @@ $(function () {
   var meninaSandwich4 = makeMeninaSandwich({x: 3700});
   var meninaSandwiches = [meninaSandwich1,meninaSandwich2,meninaSandwich3,meninaSandwich4];
 
-  var codeLabel = Thing.classes.Label.make({
+  var codeLabel = Thing.Label.make({
     text: 'waiting...',
     x: 2400,
     y: 200,
@@ -145,39 +164,20 @@ $(function () {
     whiteSpace: 'pre'
   });
 
-  var pos = menina.getPosition();
-
-  // called after images load (renders Background)
-  function makeImgPointers () {
-    var dim = menina.getDimensions();
-    var point = [500, 100];
-    var M = Meninas.makeMatrix3D( menina.getCSSTransform() );
-    var tp = Meninas.transformPoint(point, M, [dim.w/2, dim.h/2]);
-
-    // point to Menina
-    var pointer = Meninas.makeTextArrow(
-      Rand.randInt(tp[0]-100, tp[0]+100), Rand.randInt(tp[1]-150, tp[1]-350),
-      tp[0], tp[1],
-      '#5dff1d', parseInt(tp[0]), 60, pos[2]+5000);
-    pointer[1].css({fontSize:'200px', fontWeight: 'bold'});
-
+  function makeImgCodeLabel () {
     // update the code text AFTER render
-    var codeText = JSON.stringify(Thing.classes.Rand.randItem(meninaSandwich4.items[1].items).props, null, 4);
+    var codeText = JSON.stringify(Thing.Rand.randItem(meninaSandwich4.items[1].items).props, null, 4);
     codeLabel.setText( codeText );
+  }
 
+  function makeImgPointers () {
     // Arrow with letter
     var meninaPosition = Rand.randItem(meninaSandwiches).getBoundingBox();
     background.add( Meninas.makeBubbleArrow(
             Rand.randInt(100,3000), Rand.randInt(100,500),
             meninaPosition.x+meninaPosition.w/2, meninaPosition.y,
             '#ceff34', Rand.randItem(['A','B','C','D']), false, Rand.randInt(3000,15000)) );
-
-    background.add(pointer);
-    background.render();
   }
-  Img.onAllLoaded = makeImgPointers;
-
-  window.BG = background;
 
   Meninas.scaleDocument(1);
 
@@ -196,5 +196,10 @@ $(function () {
   background.add(floorImg);
 
   background.render();
+
+  // called after all images load
+  Img.onAllLoaded(makeImgCodeLabel);
+  Img.onAllLoaded(makeImgPointers);
+  Img.onAllLoaded(() => {background.render();});  // re-render background so changes appear
 
 });
