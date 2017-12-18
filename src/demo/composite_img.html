@@ -15,10 +15,10 @@
 
 <script>
 $(function(){
-  let Rand = Thing.classes.Rand;
+  let Rand = Thing.Rand;
 
   function makeHeader (props) {
-    return Thing.classes.Label.make($.extend({}, {
+    return Thing.Label.make($.extend({}, {
       padding: '25px 0px 0px 10px',
       fontSize: '32px',
       fontWeight: 'bold',
@@ -27,7 +27,7 @@ $(function(){
   }
 
   function makeLabel (props) {
-    return Thing.classes.Label.make($.extend({
+    return Thing.Label.make($.extend({
       padding: '5px',
       zIndex: 100,
       width: '100%',
@@ -36,7 +36,7 @@ $(function(){
   }
 
   function makeDemoBox (props) {
-    return Thing.classes.Box.make($.extend({
+    return Thing.Box.make($.extend({
         display: 'inline-block',
         position: 'relative',
         margin: '20px',
@@ -49,7 +49,7 @@ $(function(){
   }
 
   function makeCompositeImg (props) {
-    return Thing.classes.CompositeImg.make($.extend({}, {
+    return Thing.CompositeImg.make($.extend({}, {
       w: 300,
       h: 200,
     }, props));
@@ -378,7 +378,7 @@ $(function(){
 
       makeHeader({ text: "Multiple layers and effects" }),
 
-      Thing.classes.CompositeImg.make({
+      Thing.CompositeImg.make({
         position: 'relative',
         display: 'inline-block',
         backgroundColor: '#06d',
@@ -400,7 +400,7 @@ $(function(){
         ]
       }),
 
-      Thing.classes.CompositeImg.make({
+      Thing.CompositeImg.make({
         position: 'relative',
         display: 'inline-block',
         backgroundColor: 'rgb(0, 221, 8)',
@@ -419,7 +419,7 @@ $(function(){
         ]
       }),
 
-      Thing.classes.Box.make({
+      Thing.Box.make({
         position: 'relative',
         display: 'inline-block',
         margin: '20px',
@@ -427,7 +427,7 @@ $(function(){
         w: 300,
         h: 600,
       }).add([
-        Thing.classes.CompositeImg.make({
+        Thing.CompositeImg.make({
           backgroundColor: 'pink',
           w: 300,
           h: 600,
@@ -440,7 +440,7 @@ $(function(){
             },
           ]
         }),
-        Thing.classes.CompositeImg.make({
+        Thing.CompositeImg.make({
           backgroundColor: '#06d',
           w: 300,
           h: 600,
@@ -461,6 +461,27 @@ $(function(){
         })
       ]),
 
+      Thing.CompositeImg.make({
+        position: 'relative',
+        display: 'inline-block',
+        backgroundColor: 'transparent',
+        margin: '20px',
+        w: 400,
+        h: 400,
+        layers: [
+          { image: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+            repeat: 'no-repeat',
+            size: '100% 100%',
+            blendMode: 'normal' },
+          { image: 'linear-gradient(rgba(255, 255, 0, 0.31) 10%, rgba(0, 0, 0, 0) 90%)',
+            size: '90% 90%',
+            blendMode: 'saturation' },
+          { image: 'linear-gradient(rgba(254, 255, 215, 0.9) 10%, rgba(3, 0, 58, 0.28) 90%)',
+            size: '90% 90%',
+            blendMode: 'overlay' },
+        ],
+      }),
+
     ];
   }
 
@@ -474,7 +495,7 @@ $(function(){
   .render();
 
   // Reference image link
-  Thing.classes.Label.make({
+  Thing.Label.make({
     position: 'relative',
     margin: '10px',
     text: '<a href="CompositeImg_demo_page.png" target="blank">Reference:<br><img src="CompositeImg_demo_page.png" width="100px"></a>',
