@@ -108,9 +108,9 @@ var imgNamesHair = [
 
 //-----------------------
 
-// function randomFacePart() {
-// 	return 'img/faceparts/' + Thing.Rand.randItem(Thing.Rand.randItem(facepartArrays));
-// }
+function jiggle (num, maxDistance = 0) {
+  return num + (Thing.Rand.randFloat(-1, 1) * maxDistance);
+}
 
 function makeFloor (props = {}) {
   return Thing.Img.make({
@@ -324,22 +324,45 @@ function around(val, distance=540) {
 	return val + (Thing.Rand.randNormal() * distance);
 }
 
-function makeImageGrid(props = {}) {
-	var box = Box.make({
-	  x: props.x,
-	  y: props.y,
-	  w: props.w,
-	  h: props.h,
-	  backgroundColor: props.backgroundColor,
-	  mixBlendMode: props.mixBlendMode,
-	})
-	.add(Thing.BGImg.make({
-    src: props.url,
-    size: Thing.Rand.randInt(0.5, 50) + '%',
-    center: true,
-    repeat: true,
-	}));
-	return box;
+function makeMouthGrid(props) {
+  return Thing.CompositeImg.make({
+    x: props.x,
+    y: props.y,
+    w: props.w,
+    h: props.h,
+    backgroundColor: Thing.Rand.randItem(props.colors),
+    layers: [
+      {
+        image: 'url(img/faceparts/' + Thing.Rand.randItem(props.imgNames) + ')',
+        size: '20% 15%',
+        repeat: 'repeat',
+        blendMode: 'normal'
+      },
+      {
+        image: 'url(img/faceparts/' + Thing.Rand.randItem(props.imgNames) + ')', //diagonalstripes.backgroundImage,
+        size: '80% 60%',  //diagonalstripes.backgroundSize,
+        position: 'center',
+        // repeat: 'repeat',
+        blendMode: 'hard-light'
+      }
+    ],
+  });
+}
+
+function makeEyeGrid(props) {
+  return Box.make({
+    x: props.x,
+    y: props.y,
+    w: props.w,
+    h: props.h,
+    backgroundColor: props.backgroundColor,
+  })
+  .add(Thing.BGImg.make({
+      url: 'img/faceparts/' + Thing.Rand.randItem(props.imgNames),
+      size: '10% 20%',
+      center: true,
+      repeat: true,
+  }));
 }
 
 function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
@@ -353,6 +376,7 @@ function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
   var highlightFGColor2 = tinycolor(overallBGColor).brighten(10).saturate(25).toString();
   var smallJiggleSize = props.w * 0.035;
   var bigJiggleSize = props.w * 0.15;
+
   var bounds = Box.make({
     x: around(props.w * 0.06, bigJiggleSize),
     y: around(props.h * 0.06, bigJiggleSize),
@@ -362,40 +386,24 @@ function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
   });
 
   // middle background
-  var middleEyes = makeImageGrid({
-    x: around(props.w * 0.05, bigJiggleSize),
-    y: around(props.h*0.3, bigJiggleSize),
-    w: around(props.w * 0.9, bigJiggleSize),
-    h: around(props.h*0.3, bigJiggleSize),
-    backgroundColor: 'transparent',
-    url: 'img/faceparts/' + Rand.randItem(imgNamesEyesLeft),
+  var middleEyes = makeEyeGrid({
+    x: jiggle(props.w * 0.05, bigJiggleSize),
+    y: jiggle(props.h * 0.3, bigJiggleSize),
+    w: jiggle(props.w * 0.9, bigJiggleSize),
+    h: jiggle(props.h * 0.3, bigJiggleSize),
+    backgroundColor: Rand.randItem(['transparent', 'pink']),
+    imgNames: imgNamesEyesLeft,
   });
 
   // bottom half background
-  var bottomMouths = Thing.CompositeImg.make({
-    x: around(props.w*0.05, bigJiggleSize),
-    y: around(props.h*0.5, bigJiggleSize),
-    w: props.w * Thing.Rand.randFloat(0.6, 0.9),
-    h: around(props.h*0.3, bigJiggleSize),
-    backgroundColor: Rand.randItem(yellows),
-    layers: [
-      {
-        image: 'url(img/faceparts/' + Rand.randItem(imgNamesMouths) + ')',
-        // size: '{{around(20)}}% {{around(15)}}%',
-        size: '20% 15%',
-        position: (props.w * 0.03) + 'px',
-        repeat: 'repeat',
-        blendMode: 'normal'
-      },
-      {
-        image: 'url(img/faceparts/' + Rand.randItem(imgNamesMouths) + ')', //diagonalstripes.backgroundImage,
-        size: '80% 60%',  //diagonalstripes.backgroundSize,
-        position: 'center',
-        // repeat: 'repeat',
-        blendMode: 'hard-light'
-      }
-    ],
-  });
+  var bottomMouths = makeMouthGrid({
+    x: props.w * 0.05,
+    y: props.h * 0.6,
+    w: props.w * 0.9,
+    h: props.h * 0.3,
+    colors: yellows,
+    imgNames: imgNamesMouths,
+  }); 
 
   bounds.add(middleEyes);
   bounds.add(bottomMouths);
@@ -551,7 +559,6 @@ $(function(){
   });
 
   stage.add([
-  	// Thing.BGImg.make({src: 'img/victorian_red_velvet_wallpaper.jpg', randomFacePart(), repeat: true, size: '30% 20%'}),
   	Thing.BGImg.make({src: 'img/victorian_red_velvet_wallpaper.jpg', mixBlendMode: 'hard-light', repeat: true, size: '40% 30%'}),
   	Thing.make({background: 'radial-gradient(at 30% 25%, rgb(229, 255, 0) 20%, rgba(0, 10, 25, 0.97) 90%)', mixBlendMode: 'overlay', width: '100%', height: '100%'}),
     darkStripedColumn,
