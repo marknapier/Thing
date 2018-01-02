@@ -4,7 +4,8 @@ var Rand = Thing.Rand;
 
 var pageParams = Thing.Page.getParams();
 var aspectRatio = 0.620;
-var CW = pageParams.canvasWidth || 6000;  // canvas width
+var idealCanvasWidth = 6000;
+var CW = pageParams.canvasWidth || idealCanvasWidth;
 var CH = CW * aspectRatio;
 
 var plantNamesSmall = [
@@ -16,8 +17,8 @@ var plantNamesSmall = [
 function makeFigure (props = {z: 150}) {
   var borderWidth = CW * 0.0015;
   var torso = Thing.Img.make($.extend({
-    x: CW * 0.07,
-    y: CW * 0.2366,
+    x: props.x,
+    y: props.y,
     z: props.z,
     rotate: {z: 30},
     src: 'img/Titian_Venus_of_Urbino_torso_t.png',
@@ -54,98 +55,185 @@ var thigh = null;
 var calf = null;
 var foot = null;
 
-function makeFigure3 (props = {x: 0, y: 0, z: 0}) {
-  var borderWidth = 10; //CW * 0.0015;
+function makeFigure3 (props = {x: 0, y: 0, z: 0, scale: 1}) {
+  var S = props.scale || 1.0;
+  var borderWidth = 10 * S; //CW * 0.0015;
 
   var torso = makeAttachable({
-      thing: Thing.Img.make($.extend({
+    thing: Thing.Img.make({
       x: props.x,
       y: props.y,
+      z: props.z,
+      w: 482 * S,
       src: 'img/Titian_Venus_of_Urbino_torso_t_vert.png',
       border: borderWidth + 'px dashed #0f0',
       rotate: {z: Rand.randInt(-60, 60)},
-    }, props)),
+    }),
     borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
-    origin: {x: 300/3, y: 100/2},
+    origin: {x: (300/3) * S, y: (100/2) * S},
     attachPoints: {
-      hipRight: {x: 100, y: 860},
-      hipLeft: {x: 400, y: 860},
-      neck: {x: 400, y: 140},
+      hipRight: {x: 100 * S, y: 860 * S},
+      hipLeft: {x: 400 * S, y: 860 * S},
+      neck: {x: 400 * S, y: 140 * S},
+      armRight: {x: 100 * S, y: 120 * S},
+      armLeft: {x: 500 * S, y: 230 * S},
     },
   });
 
   var head = makeAttachable({
     thing: Thing.Img.make({
+      w: 375 * S,
       src: 'img/Titian_Venus_of_Urbino_head_t_vert.png',
-      rotate: {z: Rand.randInt(-10, 10)},
+      rotate: {z: Rand.randInt(-20, 40)},
+      zIndex: 10,
     }),
-    origin: {x: 200, y: 460},
+    origin: {x: 200 * S, y: 460 * S},
     attachPoints: {},
+  });
+
+  var upperarmRight = makeAttachable({
+    thing: Thing.Img.make({
+      w: 160 * S,
+      src: 'img/botticelli_venus_upperarm_right.png',
+      // border: borderWidth + 'px dashed #0f0',
+      rotate: {z: Rand.randInt(-120, 130)},
+      zIndex: 30,
+    }),
+    borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
+    origin: {x: 90 * S, y: 50 * S},
+    attachPoints: {
+      elbow: {x: 40 * S, y: 460 * S}
+    },
+  });
+
+  var forearmRight = makeAttachable({
+    thing: Thing.Img.make({
+      w: 200 * S,
+      src: 'img/botticelli_venus_forearm_right.png',
+      // border: borderWidth + 'px dashed #0f0',
+      rotate: {z: Rand.randInt(-160, 0)},
+    }),
+    borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
+    origin: {x: 120 * S, y: 50 * S},
+    attachPoints: {
+      // knee: {x: 175 * S, y: 740 * S}
+    },
+  });
+
+  var upperarmLeft = makeAttachable({
+    thing: Thing.Img.make({
+      w: 150 * S,
+      src: 'img/botticelli_venus_upperarm_left.png',
+      // border: borderWidth + 'px dashed #0f0',
+      rotate: {z: Rand.randInt(-120, 130)},
+      zIndex: 30,
+    }),
+    borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
+    origin: {x: 80 * S, y: 50 * S},
+    attachPoints: {
+      elbow: {x: 110 * S, y: 460 * S}
+    },
+  });
+
+  var forearmLeft = makeAttachable({
+    thing: Thing.Img.make({
+      w: 240 * S,
+      src: 'img/Titian_Venus_of_Urbino_forearm_left.png',
+      // border: borderWidth + 'px dashed #0f0',
+      rotate: {z: Rand.randInt(0, 160)},
+    }),
+    borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
+    origin: {x: 120 * S, y: 50 * S},
+    attachPoints: {
+      // knee: {x: 175 * S, y: 740 * S}
+    },
   });
 
   var thighRight = makeAttachable({
     thing: Thing.Img.make({
+      w: 301 * S,
       src: 'img/Titian_Venus_of_Urbino_thigh_right_t.png',
       border: borderWidth + 'px dashed #0f0',
-      rotate: {z: Rand.randInt(-10, 10)},
-      zIndex: 10,  // pull it forward over right thigh
+      rotate: {z: Rand.randInt(-25, 25)},
+      zIndex: 5,  // pull it forward over left thigh
     }),
     borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
-    origin: {x: 115, y: 120},
+    origin: {x: 115 * S, y: 120 * S},
     attachPoints: {
-      knee: {x: 175, y: 740}
+      knee: {x: 175 * S, y: 740 * S}
     },
   });
   thigh = thighRight;
 
-
-
   var thighLeft = makeAttachable({
     thing: Thing.Img.make({
+      w: 301 * S,
       src: 'img/Titian_Venus_of_Urbino_thigh_left_t.png',
       border: borderWidth + 'px dashed #0f0',
-      rotate: {z: Rand.randInt(-10, 10)},
+      rotate: {z: Rand.randInt(-25, 25)},
+      zIndex: 1,
     }),
     borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
-    origin: {x: 190, y: 120},
+    origin: {x: 190 * S, y: 120 * S},
     attachPoints: {
-      knee: {x: 150, y: 740}
+      knee: {x: 150 * S, y: 740 * S}
     },
   });
 
   var calfRight = makeAttachable({
     thing: Thing.Img.make({
+      w: 192 * S,
       src: 'img/Titian_Venus_of_Urbino_calf_right_t.png',
       border: borderWidth + 'px dashed #0f0',
-      rotate: {z: Rand.randInt(-10, 10)},
+      rotate: {z: Rand.randInt(5, -90)},
     }),
     borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
-    origin: {x: 60, y: 55},
+    origin: {x: 60 * S, y: 55 * S},
     attachPoints: {
-      ankle: {x: 85, y: 600}
+      ankle: {x: 85 * S, y: 600 * S}
     },
   });
 
   calf = calfRight;
 
-  var footRight = makeAttachable({
+  var calfLeft = makeAttachable({
     thing: Thing.Img.make({
-      src: 'img/Titian_Venus_of_Urbino_foot_right_t.png',
-      border: borderWidth + 'px dashed #f39',
-      rotate: {z: Rand.randInt(-30, 0)},
+      w: 192 * S,
+      src: 'img/botticelli_venus_calf_left.png',
+      // border: borderWidth + 'px dashed #0f0',
+      rotate: {z: Rand.randInt(5, -90)},
     }),
     borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
-    origin: {x: 280, y: 24},
+    origin: {x: 60 * S, y: 55 * S},
+    attachPoints: {
+      ankle: {x: 85 * S, y: 600 * S}
+    },
+  });
+
+  var footRight = makeAttachable({
+    thing: Thing.Img.make({
+      w: 352 * S,
+      src: 'img/Titian_Venus_of_Urbino_foot_right_t.png',
+      border: borderWidth + 'px dashed #f39',
+      rotate: {z: Rand.randInt(-40, 20)},
+    }),
+    borderWidth: borderWidth,  // need to pass border width or rotations will be off-center
+    origin: {x: 280 * S, y: 24 * S},
     attachPoints: {},
   });
 
   foot = footRight;
 
+  upperarmRight.attach(forearmRight, 'elbow');
+  upperarmLeft.attach(forearmLeft, 'elbow');
+  thighRight.attach(calfRight, 'knee');
+  thighLeft.attach(calfLeft, 'knee');
+  calfRight.attach(footRight, 'ankle');
   torso.attach(head, 'neck');
+  torso.attach(upperarmLeft, 'armLeft');
+  torso.attach(upperarmRight, 'armRight');
   torso.attach(thighRight, 'hipRight');
   torso.attach(thighLeft, 'hipLeft');
-  thighRight.attach(calfRight, 'knee');
-  calfRight.attach(footRight, 'ankle');
 
   return torso;
 }
@@ -166,15 +254,28 @@ function makeAttachable (props = {}) {
 
   var attachPoints = props.attachPoints;
   var origin = {x: props.origin.x + props.borderWidth, y: props.origin.y + props.borderWidth};
-  var thing = props.thing;  //Thing.make(props);
+  var thing = props.thing;
 
   // put marker at rotation point
-  var dotO = Thing.make({w: 20, h: 20, x: (origin.x-props.borderWidth) - (20/2), y: (origin.y-props.borderWidth) - (20/2), backgroundColor: 'green', borderRadius: '20px'});
+  var dotO = Thing.make({
+    w: 20,
+    h: 20,
+    x: (origin.x-props.borderWidth) - (20/2),
+    y: (origin.y-props.borderWidth) - (20/2),
+    backgroundColor: 'green',
+    borderRadius: '20px',
+  });
   thing.$element.append(dotO.$element);
 
   // put markers at attachment points
   Object.entries(attachPoints).forEach(([name, point]) => {
-    let dotA = Thing.make({w: 20, h: 20, x: point.x - (20/2), y: point.y - (20/2), backgroundColor: 'gray'});
+    let dotA = Thing.make({
+      w: 20,
+      h: 20,
+      x: point.x - (20/2),
+      y: point.y - (20/2),
+      backgroundColor: 'gray',
+    });
     thing.$element.append(dotA.$element);
   });
 
@@ -194,9 +295,6 @@ function makeAttachable (props = {}) {
 
   return thing;
 }
-
-
-
 
 function makePlants () {
   function randX () {
@@ -330,16 +428,16 @@ function makePointer(targetThing, text) {
   }).render();
 }
 
+function makeSignature() {
+  return Thing.Label.make({
+    text: 'napier ' + Thing.Rand.getSeed(),
+  });
+}
+
 var stg;
 
 $(function () {
-  // surface
-  // box
-  // bg color
-  // bg pattern
-  //    opacity
-  // gradient
-  // fill parent container
+  Thing.Rand.init(pageParams.randomSeed);
 
   // Floor
   var floorImg = Thing.Img
@@ -364,7 +462,13 @@ $(function () {
   });
 
   // All the things go here
-  var venusStanding = makeFigure3({x: CW * 0.7, y: CH * 0.1, z: 15});
+  var venusStanding = makeFigure3({
+    scale: CW/idealCanvasWidth,
+    x: CW * 0.7,
+    y: CH * 0.1,
+    z: 15
+  });
+
   var stage = Thing.Box.make({
     w: CW,
     h: CH,
@@ -375,13 +479,15 @@ $(function () {
     edge,
     makePlants(),
     makeCouch({z: 100}),
-    makeFigure({z: 100}),
+    makeFigure({
+      x: CW * 0.07,
+      y: CW * 0.2366,
+      z: 100
+    }),
     venusStanding,
   ]);
 
   stg = stage;
-
-
 
   // Background pattern fills the entire page
   var background = Meninas.makeBackground(CW, CH)
@@ -399,6 +505,8 @@ $(function () {
   makePointer(foot, 'C');
   makePointer(calf, 'B');
   makePointer(thigh, 'A');
+
+  makeSignature().render();
 
   // Respond to page params and key events
   Thing.Page.setScale(pageParams.scale || 1);

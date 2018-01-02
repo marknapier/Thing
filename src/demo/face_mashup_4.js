@@ -90,27 +90,27 @@ var imgNamesNoses = [
   "washington_nose_fuzzy.png",
 ];
 
-// var imgNamesHair = [
-//   "elvis_hair_high.png",
-//   "elvis_hair.png",
-//   "marilyn_hair.png",
-//   "mona_hair.png",
-//   "washington_hair.png",
-//   "chaplin_hat.png",
-// ];
-
-var facepartArrays = [
-	imgNamesEyesLeft,
-	imgNamesEyesRight,
-	imgNamesNoses,
-	imgNamesMouths,
+var imgNamesHair = [
+  "elvis_hair_high.png",
+  "elvis_hair.png",
+  "marilyn_hair.png",
+  "mona_hair.png",
+  "washington_hair.png",
+  "chaplin_hat.png",
 ];
+
+// var facepartArrays = [
+// 	imgNamesEyesLeft,
+// 	imgNamesEyesRight,
+// 	imgNamesNoses,
+// 	imgNamesMouths,
+// ];
 
 //-----------------------
 
-function randomFacePart() {
-	return 'img/faceparts/' + Thing.Rand.randItem(Thing.Rand.randItem(facepartArrays));
-}
+// function randomFacePart() {
+// 	return 'img/faceparts/' + Thing.Rand.randItem(Thing.Rand.randItem(facepartArrays));
+// }
 
 function makeFloor (props = {}) {
   return Thing.Img.make({
@@ -251,10 +251,10 @@ function makePointers (props = {})  {
 	// Label positions
 	var adjacentPoints = Thing.Points.makeAdjacentPoints({
 		points: thingPositions,
-    x: CW * -0.05,
+    x: props.w * -0.05,
 		// offset: CW * -0.06,
-		jiggle: CW * 0.006,
-		stretch: 1.4,
+		jiggle: props.w * 0.006,
+		stretch: 1.8,
 	});
   // make label spot
 	var pointers = adjacentPoints.map(function (p) {
@@ -286,14 +286,17 @@ function makePointers (props = {})  {
   // Labels
   var labels = adjacentPoints.map(function (p, i) {
     var targetThing = props.things[i];
+    var size = Thing.Rand.randInt(92, 160);
+    var numbers = Math.round(targetThing.getPos().x) + ', ' + Math.round(targetThing.getPos().y);
+    var shadowSize = 1 + Math.floor(props.w * 0.0033);
     return Thing.Label.make({
-      text: Math.round(targetThing.getPos().x) + ', ' + Math.round(targetThing.getPos().y),
-      x: p.x - 300,  //(300 + (i * 30)),
-      y: p.y - 50,
-      fontSize: 86,
+      text: numbers,
+      x: p.x - ((size/2) * numbers.length),
+      y: p.y - (size/2),
+      fontSize: size,
       fontWeight: 700,
-      textShadow: '1px 1px 3px rgba(0,0,0,0.2)',
-      color: '#0c0',
+      textShadow: shadowSize + 'px ' +shadowSize + 'px ' + shadowSize + 'px rgba(0,0,0,0.5)',
+      color: props.color,
       html: true,
     });
   });
@@ -348,7 +351,7 @@ function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
   var overallBGColor = Rand.randItem(yellows);
   var highlightFGColor = tinycolor(overallBGColor).brighten(10).lighten(10).toString();
   var highlightFGColor2 = tinycolor(overallBGColor).brighten(10).saturate(25).toString();
-  // var smallJiggleSize = props.w * 0.035;
+  var smallJiggleSize = props.w * 0.035;
   var bigJiggleSize = props.w * 0.15;
   var bounds = Box.make({
     x: around(props.w * 0.06, bigJiggleSize),
@@ -407,7 +410,7 @@ function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
   }) );
 
   // build boxes for face parts
-  var eyeY = rebel()? props.h * 0.3 : props.h * 0.15;
+  var eyeY = rebel()? props.h * 0.3 : props.h * 0.3;
   var eyeRX = props.w * 0.3;
   var eyeLX = props.w * 0.7;
   var eyeW = props.w * 0.30;
@@ -451,16 +454,43 @@ function makeFamousFacePartsGrid (props = {w:1000, h:1500}) {
     backgroundColor: highlightFGColor,
     images: imgNamesMouths,
   });
+  var hair = Box.make({
+  	x: props.w * -0.005,
+  	y: props.h * 0.005,
+  	w: props.w * 0.9,
+  	h: props.h * 0.8,
+  	backgroundColor: Rand.randItem(blueColors),
+  	renderOnCenter: false,
+  });
+  var hairs = makeImagesForBox(imgNamesHair, hair.getDimensions(), {jiggle: smallJiggleSize, renderOnCenter: false});
 
   mouth.add(makeBorderBox(mouth, highlightFGColor2, borderWidth(props.w)));
   nose.add(makeBorderBox(nose, Rand.randItem(reds), borderWidth(props.w)));
   eyeR.add(makeBorderBox(eyeR, Rand.randItem(reds), borderWidth(props.w)));
   eyeL.add(makeBorderBox(eyeL, Rand.randItem(yellows), borderWidth(props.w)));
 
-  bounds.add([mouth, nose, eyeR, eyeL]);
+  bounds.add([hair, mouth, nose, eyeR, eyeL]);
 
   Thing.Img.onAllLoaded(function () {
-  	eyeR.add(makePointers({things: eyeR.items, offset: 0, _x: eyeRX * 0.3, spacing: 'any', stretch: 1.0, jiggle: 0}));
+    hair
+      // .add(hairs[0])
+      .addMask('url(' + hairs[0].src + ')')
+      .css({
+        backgroundImage: 'url(' + hairs[1].src + ')',
+        backgroundSize: '100px 100px',
+        width: hairs[0].w + 'px',
+        height: hairs[0].h + 'px',
+        // mixBlendMode: 'color-burn',
+      })
+      ;
+  	eyeR.add(makePointers({
+  		things: eyeR.items,
+  		color: '#0f0',
+  		offset: 0,
+  		w: props.w,
+  		spacing: 'any',
+  		stretch: 1.0,
+  		jiggle: 0}));
   	bounds.render();
   });
 
@@ -488,6 +518,12 @@ function makePatternBG (props = {}) {
 function rebel() {
 	return Thing.Rand.randInt(0, 100) > 90;
 }
+
+// function addPictureFrame (box, props = {}) {
+//   box.add(Thing.Img.make($.extend({
+//     src: 'img/gold_picture_frame_vert.png',
+//   }, props)));
+// }
 
 $(function(){
   var yellows = ['#f0f000', '#fffc00', '#f0ff00', '#eef309', '#e0f033', '#f3f333', 'red', 'red'];
@@ -517,10 +553,17 @@ $(function(){
   stage.add([
   	// Thing.BGImg.make({url: 'img/victorian_red_velvet_wallpaper.jpg', randomFacePart(), repeat: true, size: '30% 20%'}),
   	Thing.BGImg.make({url: 'img/victorian_red_velvet_wallpaper.jpg', mixBlendMode: 'hard-light', repeat: true, size: '40% 30%'}),
+  	Thing.make({background: 'radial-gradient(at 30% 25%, rgb(229, 255, 0) 20%, rgba(0, 10, 25, 0.97) 90%)', mixBlendMode: 'overlay', width: '100%', height: '100%'}),
     darkStripedColumn,
     famousFaceParts,
     makeFloor(),
   ]);
+
+  // addPictureFrame(famousFaceParts, {
+  // 	x: CW * Thing.Rand.randFloat(-0.1, 0.1),
+  // 	y: CW * Thing.Rand.randFloat(-0.1, 0.1),
+  // 	w: CW * Thing.Rand.randFloat(0.505, 0.85),
+  // });
 
   stage.render();
 

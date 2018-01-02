@@ -12,6 +12,10 @@ class Rand {
 		MTRand = new MersenneTwister(seed);
 	}
 
+	static getSeed() {
+		return seed;
+	}
+
 	static random() {
 		MTRand || Rand.init();
 		return MTRand.random();
