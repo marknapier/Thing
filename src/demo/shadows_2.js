@@ -25,10 +25,10 @@ var greens = [
 ];
 
 function makePattern (name, size) {
-  var Rand = Thing.classes.Rand;
-  var Pattern = Thing.classes.Pattern;
+  var Rand = Thing.Rand;
+  var Pattern = Thing.Pattern;
   var P =  Pattern.make({pattern: name, size: size});
-  var box = Thing.classes.Box.make( {
+  var box = Thing.Box.make( {
     x: Rand.randInt(0,1000),
     y: 0,
     w: Rand.randInt(200,1600),
@@ -45,10 +45,10 @@ function makePattern (name, size) {
 }
 
 function makeMeninaSandwich(props) {
-  var Rand = Thing.classes.Rand;
+  var Rand = Thing.Rand;
   var sofaSizes = [100, 160, 225, 280, 350, 500];
 
-  var mWich = Thing.classes.Box.make({
+  var mWich = Thing.Box.make({
     x: props.x,
     y: 0,
     w: 3000,
@@ -63,7 +63,7 @@ function makeMeninaSandwich(props) {
     'radial-gradient(transparent 300px, #fff 300px, #fff 800px, transparent 800px, transparent 850px, #fff 850px, #fff 1400px, transparent 1400px)'
   ];
 
-  var meninaPatterns = Thing.classes.Box.make({
+  var meninaPatterns = Thing.Box.make({
     width: '100%',
     height: '100%',
     backgroundColor: Rand.randItem(greens),
@@ -84,7 +84,7 @@ function makeMeninaSandwich(props) {
 }
 
 $(function () {
-  var Img = Thing.classes.Img;
+  var Img = Thing.Img;
 
   // setup the stage
   var aspectRatio = 0.72;
@@ -111,16 +111,16 @@ $(function () {
       background: 'radial-gradient(at 40% 30%, rgba(250, 239, 200, 0.89) 10%, transparent 50%, rgba(124, 72, 82, 0.54) 90%)'
     });
 
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     w: 4150,
     h: 2800,
     overflow: 'hidden'
   });
 
-  var wallpaper =  Thing.classes.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
+  var wallpaper =  Thing.PatternStripes.make({color: 'rgba(196, 191, 138, 0.52)', size: 200});
 
   // Room edge right side
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x1:4150, y1:0,
     x2:4150, y2:3000,
     lineWidth: 20,
@@ -129,7 +129,7 @@ $(function () {
   });
 
   // makeFloor
-  var floorImg = Thing.classes.Img
+  var floorImg = Thing.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak_pers_left.png',
       right: '0px',
@@ -145,7 +145,7 @@ $(function () {
   var meninaSandwich3 = makeMeninaSandwich({x: 1600});
   var meninaSandwich4 = makeMeninaSandwich({x: 2000});
 
-  var codeLabel = Thing.classes.Label.make({
+  var codeLabel = Thing.Label.make({
     text: 'waiting...',
     x: 2400,
     y: 200,

@@ -24,9 +24,9 @@ function scaleDocument (n) {
 }
 
 function makePattern (name) {
-  var Rand = Thing.classes.Rand;
-  var Pattern = Thing.classes.Pattern;
-  var box = Thing.classes.Box
+  var Rand = Thing.Rand;
+  var Pattern = Thing.Pattern;
+  var box = Thing.Box
     .make( {
       x: Rand.randInt(0,1000),
       y: 0,
@@ -44,10 +44,10 @@ function makePattern (name) {
 }
 
 function makeTextPane (x, y, w, h) {
-  var Rand = Thing.classes.Rand;
-  var TextPane = Thing.classes.TextPane;
+  var Rand = Thing.Rand;
+  var TextPane = Thing.TextPane;
   var bgColor = '#339911';
-  var textBox = Thing.classes.Box.make({
+  var textBox = Thing.Box.make({
       x: x,
       y: y,
       w: w,
@@ -82,8 +82,8 @@ function makeTextPane (x, y, w, h) {
 }
 
 function makeMenina() {
-  var Rand = Thing.classes.Rand;
-  var i = Thing.classes.Img
+  var Rand = Thing.Rand;
+  var i = Thing.Img
     .make({
       src:'img/las_meninas_girl_t.png',
       x: Rand.randInt(0, 500),
@@ -96,7 +96,7 @@ function makeMenina() {
 }
 
 function makeFloor () {
-  var i = Thing.classes.Img
+  var i = Thing.Img
     .make({
       src:'img/wood_texture_smooth_panel_red_oak.jpg',
       w: 1000,
@@ -111,7 +111,7 @@ function makeFloor () {
 }
 
 function makeRightWall () {
-  var i = Thing.classes.Img
+  var i = Thing.Img
     .make({
       src: 'img/vintagewallpaper4_crop.png',   //'img/vintagewallpaper4_crop_cutout_1.png',
       w: 1000,
@@ -138,7 +138,7 @@ function makeRightWall () {
 }
 
 function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
-  var l = Thing.classes.Line.make({
+  var l = Thing.Line.make({
     x1:bubbleX, y1:bubbleY,
     x2:targetX, y2:targetY,
     color:'#BADA55',
@@ -149,8 +149,8 @@ function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
   l.arrowHead.css({boxShadow: '0px 0px 9px -1px rgba(10,20,0,0.75)'});
   l.render();
 
-  var c = Thing.classes.Circle.make({
-    text: '' + Thing.classes.Rand.randInt(1, 67),
+  var c = Thing.Circle.make({
+    text: '' + Thing.Rand.randInt(1, 67),
     x: bubbleX,
     y: bubbleY,
     r: 30,
@@ -161,7 +161,7 @@ function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY) {
 }
 
 function makeBackground (w, h, scale) {
-  return Thing.classes.Box
+  return Thing.Box
       .make({
         w: w,
         h: h,
@@ -175,9 +175,9 @@ function makeBackground (w, h, scale) {
 }
 
 $(function () {
-  var Rand = Thing.classes.Rand;
-  var Img = Thing.classes.Img;
-  var TextPane = Thing.classes.TextPane;
+  var Rand = Thing.Rand;
+  var Img = Thing.Img;
+  var TextPane = Thing.TextPane;
 
   // setup the stage
   var aspectRatio = .72;
@@ -211,7 +211,7 @@ $(function () {
   background.add(makeRightWall());
   background.add(makeFloor())
 
-  var edge = Thing.classes.Line.make({
+  var edge = Thing.Line.make({
     x1:1345, y1:0,
     x2:1345, y2:1000,
     lineWidth: 8,

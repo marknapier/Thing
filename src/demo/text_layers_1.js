@@ -1,5 +1,5 @@
 var Thing = window.Thing;
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
 class TextPane extends Thing {
     init (props) {
@@ -42,7 +42,7 @@ class TextPane extends Thing {
 }
 
 function makeTextPane (props) {
-    var linesBox = Thing.classes.Box.make({
+    var linesBox = Thing.Box.make({
         w: props.w,
         h: props.h,
         overflow: 'hidden',
@@ -86,13 +86,13 @@ function main () {
 
     var txt0 = makeTextPane({w: pixelWidth, h: pixelHeight, backgroundColor: Rand.randItem(greens), fontSize: Rand.randInt(80,300)});
     txt0.add([
-        Thing.classes.Pattern.make({pattern: 'GraphPaper', backgroundColor: 'transparent'}).css({opacity: 0.7}),
-        Thing.classes.Pattern.make({pattern: 'PolkaDots', size: 40}),
+        Thing.Pattern.make({pattern: 'GraphPaper', backgroundColor: 'transparent'}).css({opacity: 0.7}),
+        Thing.Pattern.make({pattern: 'PolkaDots', size: 40}),
     ]);
 
     var txt1 = makeTextPane({w: pixelWidth, h: pixelHeight, backgroundColor: Rand.randItem(greens)});
 
-    var polkas = Thing.classes.Pattern.make({pattern: 'PolkaDots', size: 207, radius: 30, color: '#fff'});
+    var polkas = Thing.Pattern.make({pattern: 'PolkaDots', size: 207, radius: 30, color: '#fff'});
 
     txt1.css({
       WebkitMaskImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'><circle shape-rendering='geometricPrecision' cx='500' cy='500' r='300' stroke='black' stroke-width='0' fill='black'/></svg>\")",
@@ -101,7 +101,7 @@ function main () {
       WebkitMaskPosition: '0 0'
     });
     txt1.add([
-        Thing.classes.Pattern.make({pattern: 'GraphPaper', backgroundColor: 'transparent'}).css({opacity: 0.7}),
+        Thing.Pattern.make({pattern: 'GraphPaper', backgroundColor: 'transparent'}).css({opacity: 0.7}),
         polkas,
     ]);
 

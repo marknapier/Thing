@@ -1,8 +1,8 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
-var pageParams = Thing.classes.Page.getParams();
+var pageParams = Thing.Page.getParams();
 var aspectRatio = 0.620;
 var CW = pageParams.canvasWidth || 6000;  // canvas width
 var CH = CW * aspectRatio;
@@ -17,7 +17,7 @@ function makeLump (props) {
     'rubens_venus_leg_left.png',
   ];
   var imgs = imgNames.map( function (imgName) {
-    return Thing.classes.Img.make({
+    return Thing.Img.make({
       src: 'img/' + imgName,
       x: Rand.randNormal() * (CW * 0.025),
       y: Rand.randInt(0, CW * 0.15),
@@ -28,7 +28,7 @@ function makeLump (props) {
     });
   });
 
-  return Thing.classes.Box.make({
+  return Thing.Box.make({
     x: 0,
     y: 500,
     w:1000,
@@ -38,7 +38,7 @@ function makeLump (props) {
 }
 
 function makeRoom (props) {
-  var r = Thing.classes.Room.make($.extend({
+  var r = Thing.Room.make($.extend({
     x: 1000,
     y:  120,
     w: 1000,
@@ -68,10 +68,10 @@ function makeWrappedRoom (props) {
   }, props);
 
   // outer div
-  var wrapper = Thing.classes.Box.make(props);
+  var wrapper = Thing.Box.make(props);
 
   // room has same dimensions as wrapper
-  var r = Thing.classes.Room.make({
+  var r = Thing.Room.make({
     w: props.w,
     h: props.h,
     d: props.d || 1000,
@@ -110,7 +110,7 @@ var transparentPatterns = [
 ];
 
 function randomPattern (patterns) {
-  var P = Thing.classes.Pattern.make(Thing.classes.Rand.randItem(patterns));
+  var P = Thing.Pattern.make(Thing.Rand.randItem(patterns));
   return P;
 }
 
@@ -133,7 +133,7 @@ $(function () {
   });
   legRoom.add(makeLump());
   legRoom.rotate({y: 25});
-  legRoom.bottom.add(Thing.classes.BGImg.make({
+  legRoom.bottom.add(Thing.BGImg.make({
     url:'img/persian_carpet_fine_red_1.png'
   }));
 
@@ -224,8 +224,8 @@ $(function () {
   ]);
   background.render();
 
-  Thing.classes.Page.setScale(pageParams.scale || 1);
-  Thing.classes.Page.initEvents();
+  Thing.Page.setScale(pageParams.scale || 1);
+  Thing.Page.initEvents();
 
   // for debugging
   window.mainRoom = mainRoom;

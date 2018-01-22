@@ -1,6 +1,6 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
 function makeLump (props) {
   var imgNames = [
@@ -11,7 +11,7 @@ function makeLump (props) {
     'rubens_venus_leg_left.png',
   ];
   var imgs = imgNames.map( function (imgName) {
-    return Thing.classes.Img.make({
+    return Thing.Img.make({
       src: 'img/' + imgName,
       x: Rand.randNormal() * 100,
       y: Rand.randInt(0, 800),
@@ -21,7 +21,7 @@ function makeLump (props) {
       filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
     });
   });
-  return Thing.classes.Box.make({
+  return Thing.Box.make({
     x: 0,
     y: 500,
     w:1000,
@@ -42,10 +42,10 @@ function makeWrappedRoom (props) {
   }, props);
 
   // outer div
-  var wrapper = Thing.classes.Box.make(props);
+  var wrapper = Thing.Box.make(props);
 
   // room has same dimensions as wrapper
-  var r = Thing.classes.Room.make({
+  var r = Thing.Room.make({
     w: props.w,
     h: props.h,
     d: props.d || 1000,
@@ -70,7 +70,7 @@ $(function () {
   var aspectRatio = 0.625;
   var pixelWidth = 5000;
   var pixelHeight = pixelWidth * aspectRatio;
-  
+
   var background = Meninas.makeBackground(pixelWidth, pixelHeight)
     .css({
       backgroundColor:'rgb(60, 47, 70)',
@@ -84,7 +84,7 @@ $(function () {
     background: 'radial-gradient(at 40% 30%, rgba(255, 255, 255, 0.3) 10%, rgba(94, 72, 82, 0.54) 90%)'
   });
 
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     background: 'linear-gradient(90deg, rgba(255, 244, 156, 0.3) 4px, transparent 4px)',
     backgroundSize: '8px',
     w: 5000,
@@ -115,7 +115,7 @@ $(function () {
   corridor.room.right.css({backgroundImage: 'radial-gradient(at 60% 60%, rgba(184, 155, 176, 0.3) 10%, rgba(28, 17, 22, 0.46) 90%)'});
   corridor.room.bottom.css({backgroundImage: 'radial-gradient(at 50% 65%, rgba(61, 54, 41, 0.3) 40%, rgba(28, 17, 22, 0.3) 140%)'});
 
-  var rug = Thing.classes.Img.make({
+  var rug = Thing.Img.make({
     x: 3764,
     y: 2000,
     z: 1188,

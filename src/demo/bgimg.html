@@ -14,11 +14,11 @@
 
 <script>
 $(function(){
-  let Rand = Thing.classes.Rand;
+  let Rand = Thing.Rand;
   let bgImage = 'img/marilyn_mouth_square.png';
 
   function makeDemoBox (props) {
-    return Thing.classes.Box.make($.extend({
+    return Thing.Box.make($.extend({
         display: 'inline-block',
         position: 'relative',
         margin: '20px',
@@ -31,7 +31,7 @@ $(function(){
   }
 
   function makeLabel (props) {
-    return Thing.classes.Label.make($.extend({
+    return Thing.Label.make($.extend({
       color: '#fcffce',
       textShadow: '1px 1px 2px black',
       fontSize: '16px',
@@ -44,35 +44,35 @@ $(function(){
     return [
       // 3 sizes
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: 'cover',
           center: false,
           repeat: false
       })).add(makeLabel({text: 'size=cover center=false repeat=false'})),
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: 'cover',
           center: true,
           repeat: false
       })).add(makeLabel({text: 'size=cover center=true repeat=false'})),
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: 'contain',
           center: false,
           repeat: false
       })).add(makeLabel({text: 'size=contain center=false repeat=false'})),
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: 'contain',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=contain center=true repeat=true'})),
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '100% 100%',
           center: false,
@@ -81,28 +81,28 @@ $(function(){
 
       // Center / repeat
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '50% 50%',
           center: false,
           repeat: false
       })).add(makeLabel({text: 'size=50% center=false repeat=false'})),
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '50% 50%',
           center: true,
           repeat: false
       })).add(makeLabel({text: 'size=50% center=true repeat=false'})),
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '50% 50%',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=50% center=true repeat=true'})),
       makeDemoBox().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '50% 50%',
           center: false,
@@ -113,7 +113,7 @@ $(function(){
 
   // Render sample image
   makeDemoBox({display: 'block', height: '100px', width: '200px', border: 'none'})
-    .add(Thing.classes.Img.make({src: bgImage}))
+    .add(Thing.Img.make({src: bgImage}))
     .add(makeLabel({text: 'actual image'}))
     .render();
 
@@ -127,7 +127,7 @@ $(function(){
   .render();
 
   // Reference image link
-  Thing.classes.Label.make({
+  Thing.Label.make({
     position: 'relative',
     margin: '10px',
     text: '<a href="BGImg_demo_page.png" target="blank">Reference:<br><img src="BGImg_demo_page.png" width="100px"></a>',

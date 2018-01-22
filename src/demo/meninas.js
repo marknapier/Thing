@@ -13,10 +13,10 @@ window.Meninas = (function () {
   }
 
   function makePattern (name, size) {
-    var Rand = Thing.classes.Rand;
-    var Pattern = Thing.classes[name] ? Thing.classes[name] : Thing.classes.Pattern;
+    var Rand = Thing.Rand;
+    var Pattern = Thing.classes[name] ? Thing.classes[name] : Thing.Pattern;
     var P =  Pattern.make({pattern: name, size: size});
-    var box = Thing.classes.Box.make( {
+    var box = Thing.Box.make( {
       x: Rand.randInt(0,3000),
       y: 0,
       w: Rand.randInt(400,1600),
@@ -33,10 +33,10 @@ window.Meninas = (function () {
   }
 
   function makeTextPane (x, y, w, h) {
-    var Rand = Thing.classes.Rand;
-    var TextPane = Thing.classes.TextPane;
+    var Rand = Thing.Rand;
+    var TextPane = Thing.TextPane;
     var bgColor = Rand.randItem(greens);
-    var textBox = Thing.classes.Box.make({
+    var textBox = Thing.Box.make({
         x: x,
         y: y,
         w: w,
@@ -71,8 +71,8 @@ window.Meninas = (function () {
   }
 
   function makeMenina() {
-    var Rand = Thing.classes.Rand;
-    var i = Thing.classes.Img
+    var Rand = Thing.Rand;
+    var i = Thing.Img
       .make({
         src:'img/las_meninas_girl_t.png',
         x: Rand.randInt(-500, 4500),
@@ -85,8 +85,8 @@ window.Meninas = (function () {
   }
 
   function makeCouch() {
-    var Rand = Thing.classes.Rand;
-    var i = Thing.classes.Img
+    var Rand = Thing.Rand;
+    var i = Thing.Img
       .make({
         src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
         x: 600,
@@ -99,7 +99,7 @@ window.Meninas = (function () {
   }
 
   function makeFloor () {
-    var i = Thing.classes.Img
+    var i = Thing.Img
       .make({
         src:'img/wood_texture_smooth_panel_red_oak.jpg',
         w: 1000,
@@ -114,7 +114,7 @@ window.Meninas = (function () {
   }
 
   function makeRightWall () {
-    var i = Thing.classes.Img
+    var i = Thing.Img
       .make({
         src: 'img/vintagewallpaper4_crop.png',
         w: 2000,
@@ -143,7 +143,7 @@ window.Meninas = (function () {
   function makeBubbleArrow (bubbleX, bubbleY, targetX, targetY, color, text, shorten, z) {
     z = z || 2200;
 
-    var l = Thing.classes.Line.make({
+    var l = Thing.Line.make({
       x1:bubbleX, y1:bubbleY,
       x2:targetX, y2:targetY,
       color: color,
@@ -154,8 +154,8 @@ window.Meninas = (function () {
       boxShadow: '0px 0px 9px -1px rgba(10,20,0,0.75)'
     });
 
-    var c = Thing.classes.Circle.make({
-      text: text || '' + Thing.classes.Rand.randInt(1, 67),
+    var c = Thing.Circle.make({
+      text: text || '' + Thing.Rand.randInt(1, 67),
       x: bubbleX,
       y: bubbleY,
       r: 100,
@@ -176,7 +176,7 @@ window.Meninas = (function () {
     var r = 30;
     var w = 12;
 
-    var l = Thing.classes.Line.make({
+    var l = Thing.Line.make({
       x1:bubbleX, y1:bubbleY,
       x2:targetX, y2:targetY,
       color: color,
@@ -187,8 +187,8 @@ window.Meninas = (function () {
       boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.25)'
     });
 
-    var c = Thing.classes.Label.make({
-      text: text || '' + Thing.classes.Rand.randInt(1, 67),
+    var c = Thing.Label.make({
+      text: text || '' + Thing.Rand.randInt(1, 67),
       x: bubbleX - r,
       y: bubbleY - (82),  //fontSize
       // w: r*2,
@@ -203,7 +203,7 @@ window.Meninas = (function () {
   }
 
   function makeBackground (w, h) {
-    return Thing.classes.Box
+    return Thing.Box
         .make({
           w: w || 5000,
           h: h || 3600,
@@ -321,7 +321,7 @@ window.Meninas = (function () {
       rotate: {x: 85}
     };
     var _options = $.extend(defaultOptions, options);
-    var floor = Thing.classes.Box.make(_options)
+    var floor = Thing.Box.make(_options)
       .add([
         Thing.make({  // wood texture
           width: '100%',

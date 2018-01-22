@@ -18,7 +18,7 @@
 <script type="text/javascript">
 
 var Thing = window.Thing;
-var Pattern = Thing.classes.Pattern;
+var Pattern = Thing.Pattern;
 
 function makeStripes(props) {
   props = props || {};
@@ -52,15 +52,15 @@ function makeStripes(props) {
 }
 
 function makePattern (name) {
-  return Thing.classes.DemoBox
+  return Thing.DemoBox
     .make( {w:400, h:400, backgroundColor: 'green'} )
-    .add( Thing.classes.Pattern.make({pattern: name}) )
+    .add( Thing.Pattern.make({pattern: name}) )
     .render();
 }
 
 function patternBox() {
-  var Pattern = Thing.classes.Pattern;
-  var pbox = Thing.classes.Box.make({w:800, h:800, backgroundColor:'pink'});
+  var Pattern = Thing.Pattern;
+  var pbox = Thing.Box.make({w:800, h:800, backgroundColor:'pink'});
   pbox.add(Pattern.make({pattern:'DiagonalStripes'}));
   pbox.add(Pattern.make({pattern:'BlueBalls'}));
   pbox.add(Pattern.make({pattern:'Stripes'}));
@@ -68,7 +68,7 @@ function patternBox() {
 }
 
 function makeWrapperBox (props) {
-  return Thing.classes.Box.make($.extend({
+  return Thing.Box.make($.extend({
     position: 'relative',
     margin: '20px',
     border: '2px dotted #eee',
@@ -78,7 +78,7 @@ function makeWrapperBox (props) {
 }
 
 function makeDemoBox (props) {
-  return Thing.classes.Box.make($.extend({
+  return Thing.Box.make($.extend({
     position: 'relative',
     w: 200,
     h: 200,
@@ -111,11 +111,11 @@ $(function () {
 
   // layer two patterns
   var dstripes = makePattern('DiagonalStripes');
-  dstripes.add(Thing.classes.Pattern.make({pattern: 'Stripes'}));
+  dstripes.add(Thing.Pattern.make({pattern: 'Stripes'}));
   dstripes.render();
 
   // Generate a stripe pattern
-  Thing.classes.DemoBox
+  Thing.DemoBox
     .make( {w:400, h:400, backgroundColor: 'green'} )
     .css( makeStripes({
           angle: 90,
@@ -130,10 +130,10 @@ $(function () {
     .render();
 
   // Make a background image
-  Thing.classes.DemoBox
+  Thing.DemoBox
     .make( {w:400, h:400, backgroundColor: 'green'} )
-    .add( Thing.classes.BGImg.make({url:'img/wood-panel-texture-oak.jpg'}) )
-    .add( Thing.classes.Pattern.make({pattern:'DiagonalStripes'}) )
+    .add( Thing.BGImg.make({url:'img/wood-panel-texture-oak.jpg'}) )
+    .add( Thing.Pattern.make({pattern:'DiagonalStripes'}) )
     .render();
 
   makePatternDemo({pattern: 'GraphPaper'}).render();

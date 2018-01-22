@@ -15,10 +15,10 @@
 
 <script>
 $(function(){
-  let Rand = Thing.classes.Rand;
+  let Rand = Thing.Rand;
 
   function makeDemoBox (props) {
-    return Thing.classes.Box.make($.extend({
+    return Thing.Box.make($.extend({
         display: 'inline-block',
         position: 'relative',
         margin: '20px',
@@ -31,7 +31,7 @@ $(function(){
   }
 
   function makeLetter (props) {
-    return Thing.classes.Label.make($.extend({}, {
+    return Thing.Label.make($.extend({}, {
       text: "W",
       fontSize: '200px',
       fontWeight: 'bold',
@@ -42,14 +42,14 @@ $(function(){
   }
 
   function makeLabel (props) {
-    return Thing.classes.Label.make($.extend({}, {
+    return Thing.Label.make($.extend({}, {
       padding: '5px',
       zIndex: 500,
     }, props));
   }
 
   function makeHeader (props) {
-    return Thing.classes.Label.make($.extend({}, {
+    return Thing.Label.make($.extend({}, {
       padding: '25px 0px 0px 10px',
       fontSize: '42px',
       fontWeight: 'bold',

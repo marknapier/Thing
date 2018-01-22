@@ -1,6 +1,6 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
 var greens = [
   'rgba(0, 255, 160, 1.0)',   // light aqua
@@ -34,9 +34,9 @@ var greens = [
 // ];
 
 function makePattern (name, size) {
-  var Pattern = Thing.classes.Pattern;
+  var Pattern = Thing.Pattern;
   var P =  Pattern.make({pattern: name, size: size});
-  var box = Thing.classes.Box.make( {
+  var box = Thing.Box.make( {
     x: Rand.randInt(0,1000),
     y: 0,
     w: Rand.randInt(200,1600),
@@ -53,8 +53,8 @@ function makePattern (name, size) {
 }
 
 function makeMeninaSandwich(props) {
-  var Rand = Thing.classes.Rand;
-  var ImgSVG = Thing.classes.ImgSVG;
+  var Rand = Thing.Rand;
+  var ImgSVG = Thing.ImgSVG;
   var sofaSizes = [100, 160, 225, 280, 350, 500];
   var backgroundMasks = [
     ImgSVG.make({radius: Rand.randInt(500,1000), lineWidth: Rand.randInt(200,600)}).getURL(),
@@ -62,7 +62,7 @@ function makeMeninaSandwich(props) {
     ImgSVG.make({radius: Rand.randInt(1000,1800), lineWidth: Rand.randInt(50,200)}).getURL(),
   ];
 
-  var mWich = Thing.classes.Box.make({
+  var mWich = Thing.Box.make({
     x: props.x,
     y: 0,
     w: 3000,
@@ -71,7 +71,7 @@ function makeMeninaSandwich(props) {
     zIndex: props.zIndex
   });
 
-  var meninaPatterns = Thing.classes.Box.make({
+  var meninaPatterns = Thing.Box.make({
     width: '100%',
     height: '100%',
     backgroundColor: Rand.randItem(greens),
@@ -130,7 +130,7 @@ function makeLump (props) {
     'rubens_venus_leg_left.png',
   ];
   var imgs = imgNames.map( function (imgName) {
-    return Thing.classes.Img.make({
+    return Thing.Img.make({
       src: 'img/' + imgName,
       x: Rand.randNormal() * 100,
       y: Rand.randInt(0, 800),
@@ -140,7 +140,7 @@ function makeLump (props) {
       filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
     });
   });
-  return Thing.classes.Box.make({x: Rand.randInt(0,4000), y: 800, w:1000, h:1000, zIndex: props.zIndex}).add(imgs);
+  return Thing.Box.make({x: Rand.randInt(0,4000), y: 800, w:1000, h:1000, zIndex: props.zIndex}).add(imgs);
 }
 
 $(function () {
@@ -157,13 +157,13 @@ $(function () {
       background: 'radial-gradient(at 40% 30%, rgba(250, 239, 200, 0.89) 10%, transparent 50%, rgba(124, 72, 82, 0.54) 90%)'
     });
 
-  var backWall = Thing.classes.Box.make({
+  var backWall = Thing.Box.make({
     w: 5000,
     h: 2800,
     overflow: 'hidden'
   });
 
-  var wallpaper =  Thing.classes.PatternStripes.make({color: Rand.randItem(greens), size: Rand.randInt(500,5000)});
+  var wallpaper =  Thing.PatternStripes.make({color: Rand.randItem(greens), size: Rand.randInt(500,5000)});
 
   // Bleached wood floor
   var floor = Meninas.makeFloorBleached({w:7500, y:1475, rotate:{x:89}});

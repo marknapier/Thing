@@ -1,12 +1,12 @@
 var Thing = window.Thing;
 
 $(function(){
-  let Rand = Thing.classes.Rand;
+  let Rand = Thing.Rand;
   let bgImage = 'img/marilyn_mouth_square.png';
   let greenColors = ['#3d0', '#3c3', '#5F5', '#3e3', '#4e0'];
 
   function makeColumn (props) {
-    return Thing.classes.Box.make($.extend({
+    return Thing.Box.make($.extend({
         x: Rand.randInt(-20, 4800),
         y: Rand.randInt(-20, 120),
         w: Rand.randFloat() > 0.75 ? Rand.randInt(500, 1500) : Rand.randInt(120, 1000),
@@ -17,7 +17,7 @@ $(function(){
   }
 
   function makeLabel (props) {
-    return Thing.classes.Label.make($.extend({
+    return Thing.Label.make($.extend({
       color: '#33ff33',
       textShadow: '1px 1px 2px black',
       fontSize: '46px',
@@ -37,7 +37,7 @@ $(function(){
         zIndex: Rand.randInt(10,15),
         backgroundColor: 'rgb(35, 40, 30)'
       }).add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
           color: '#3F3',
           fontSize: Rand.randInt(100, 200) + 'px',
           fontWeight: "900",
@@ -57,7 +57,7 @@ $(function(){
         zIndex: Rand.randInt(10,15),
         backgroundColor: 'rgb(42, 250, 36)'
       }).add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
           color: Rand.randItem(['#690', '#330', '#343']),
           fontSize: Rand.randInt(80, 250) + 'px',
           fontWeight: "400",
@@ -76,7 +76,7 @@ $(function(){
       //   opacity: 0.2,
       //   zIndex: 200
       // }).add(
-      //   Thing.classes.BGImg.make({
+      //   Thing.BGImg.make({
       //     url: 'img/goed_detail_1_t.png',
       //     size: 'cover',
       //     center: true,
@@ -84,7 +84,7 @@ $(function(){
       // })).add(makeLabel({text: 'GOED'})),
 
       // Rubens detail
-      Thing.classes.Img.make({
+      Thing.Img.make({
         src: 'img/rubens_swan_wing_venus_hair_1.png',
         x: Rand.randInt(-500, 4000),
         y: Rand.randInt(500, 3000),
@@ -93,7 +93,7 @@ $(function(){
       }),
 
       // Rubens detail
-      Thing.classes.Img.make({
+      Thing.Img.make({
         src: 'img/rubens_swan_wing_venus_hair_1.png',
         x: Rand.randInt(-500, 4000),
         y: Rand.randInt(500, 3000),
@@ -103,7 +103,7 @@ $(function(){
       }),
 
       // Rubens detail
-      Thing.classes.Img.make({
+      Thing.Img.make({
         src: 'img/rubens_swan_wing_venus_hair_1.png',
         x: Rand.randInt(-500, 4000),
         y: Rand.randInt(500, 3000),
@@ -114,42 +114,42 @@ $(function(){
 
       // Mouths
       makeColumn().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: 'cover',
           center: false,
           repeat: false
       })).add(makeLabel({text: 'A: size=cover center=false repeat=false'})),
       makeColumn().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: 'cover',
           center: true,
           repeat: false
       })).add(makeLabel({text: 'size=cover center=true repeat=false'})),
       // makeColumn().add(
-      //   Thing.classes.BGImg.make({
+      //   Thing.BGImg.make({
       //     url: bgImage,
       //     size: '100% 50%',
       //     center: true,
       //     repeat: false
       // })).add(makeLabel({text: 'size=100/50 center=true repeat=false'})),
       makeColumn().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '12% 25%',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=50% center=true repeat=true'})),
       makeColumn().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: 'contain',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=contain center=true repeat=true'})),
       makeColumn().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '100% 100%',
           center: false,
@@ -158,7 +158,7 @@ $(function(){
 
       // Text
       makeColumn().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
           color: Rand.randItem(greenColors),
           fontSize: Rand.randInt(200, 2000) + 'px',
           fontWeight: "400",
@@ -166,7 +166,7 @@ $(function(){
           text: "Large regular 400 weight AaBbCcDdEeFfGg HIJKLMNOP 0123456789 $#@!%^&* (){}<>..."
       })),
       makeColumn().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
           color: Rand.randItem(greenColors),
           fontSize: Rand.randInt(200, 2000) + 'px',
           fontWeight: "400",
@@ -174,7 +174,7 @@ $(function(){
           text: "<p>I will rise</p><p>After a thousand years</p><p>And set my teeth in the silver of the moon</p>"
       })),
       makeColumn().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
           color: Rand.randItem(greenColors),
           fontSize: Rand.randInt(100, 300) + 'px',
           fontWeight: "400",
@@ -183,7 +183,7 @@ $(function(){
           // rotate: {z: Rand.randInt(-10,10)}
       })),
       makeColumn().add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
           color: Rand.randItem(greenColors),
           fontSize: Rand.randInt(200, 2000) + 'px',
           fontWeight: "900",
@@ -194,28 +194,28 @@ $(function(){
 
       // Mouths
       makeColumn({opacity: 0.85}).add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '50% 50%',
           center: false,
           repeat: false
       })).add(makeLabel({text: 'size=50% center=false repeat=false'})),
       makeColumn({opacity: 0.85}).add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '50% 50%',
           center: true,
           repeat: false
       })).add(makeLabel({text: 'size=50% center=true repeat=false'})),
       makeColumn().add(
-        Thing.classes.BGImg.make({
+        Thing.BGImg.make({
           url: bgImage,
           size: '15% 15%',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=50% center=true repeat=true'})),
       // makeColumn().add(
-      //   Thing.classes.BGImg.make({
+      //   Thing.BGImg.make({
       //     url: bgImage,
       //     size: '50% 50%',
       //     center: false,
@@ -232,7 +232,7 @@ $(function(){
         borderLeft: '5px solid #ff7600',
         borderRight: '5px solid #6C0'
       }).add(
-        Thing.classes.Label.make({
+        Thing.Label.make({
           color: '#3F3',
           fontSize: Rand.randInt(40, 120) + 'px',
           fontWeight: "100",
@@ -243,7 +243,7 @@ $(function(){
   }
 
   // Render columns
-  Thing.classes.Box.make({
+  Thing.Box.make({
     backgroundColor: 'rgb(42, 45, 36)',
     backgroundImage: 'url(img/white_grid_1.png)',
     backgroundSize: Rand.randInt(50,200) + '%',

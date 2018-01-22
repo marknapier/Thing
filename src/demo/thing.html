@@ -93,15 +93,15 @@ $(function(){
       border: '2px dashed #eee'
     };
     props = $.extend({}, defaultProps, props);
-    return Thing.classes.Box.make(props);
+    return Thing.Box.make(props);
   }
 
   //---------------------------------------------------------
 
   var arrows = [];
-  var Box = Thing.classes.Box;
-  var Arrow = Thing.classes.Arrow;
-  var Img = Thing.classes.Img;
+  var Box = Thing.Box;
+  var Arrow = Thing.Arrow;
+  var Img = Thing.Img;
 
   function makeBoxOfArrows () {
     makeDemoBox({
@@ -139,7 +139,7 @@ $(function(){
   //---------------------------------------------------------
 
   function makeRandomArrow() {
-    let a = Thing.classes.Arrow.make({
+    let a = Thing.Arrow.make({
       rotate: {z: (Math.random()*360)},
       scale: .2 + (Math.random()*4),
       x: (Math.random()*200),
@@ -165,7 +165,7 @@ $(function(){
   function makeTenLines() {
     let lines = [];
     for (var j=0; j < 10; j++) {
-      var a = Thing.classes.Line.make({
+      var a = Thing.Line.make({
         x1: (Math.random()*100),
         y1: (Math.random()*200),
         x2: (100 + Math.random()*100),
@@ -189,12 +189,12 @@ $(function(){
       height: '320px',
       padding: '10px'
     });
-    var b = Thing.classes.Box.make({
+    var b = Thing.Box.make({
       w:800,
       h:300,
       border:'2px solid black'
     });
-    var p = Thing.classes.Pattern.make({
+    var p = Thing.Pattern.make({
       pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
@@ -207,36 +207,36 @@ $(function(){
   }
 
   function makePatternMask() {
-    var b = Thing.classes.Box.make({w:200, h:580, backgroundColor:'#0c7436'});
-    var p = Thing.classes.Pattern.make({
+    var b = Thing.Box.make({w:200, h:580, backgroundColor:'#0c7436'});
+    var p = Thing.Pattern.make({
       pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
       backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
     });
     b.add(p);
-    b.add(Thing.classes.Img.make({src:'img/marilyn_mouth_square.png', x:30, y:200, w:500, opacity:0.6, filter: 'blur(2px)'}));
-    b.add(Thing.classes.Img.make({src:'img/sofa_3_victorian_sofa_t.png', x:50, y:225, w:600, opacity:1}));
-    b.add(Thing.classes.Img.make({src:'img/marilyn_mouth_square.png', x:20, y:150, w:450, opacity:0.6, filter: 'blur(2px)'}));
-    b.add(Thing.classes.Img.make({src:'img/marilyn_mouth_square.png', x:10, y:100, w:400, opacity:0.6, filter: 'blur(2px)'}));
+    b.add(Thing.Img.make({src:'img/marilyn_mouth_square.png', x:30, y:200, w:500, opacity:0.6, filter: 'blur(2px)'}));
+    b.add(Thing.Img.make({src:'img/sofa_3_victorian_sofa_t.png', x:50, y:225, w:600, opacity:1}));
+    b.add(Thing.Img.make({src:'img/marilyn_mouth_square.png', x:20, y:150, w:450, opacity:0.6, filter: 'blur(2px)'}));
+    b.add(Thing.Img.make({src:'img/marilyn_mouth_square.png', x:10, y:100, w:400, opacity:0.6, filter: 'blur(2px)'}));
     b.addMask('url(img/rubens_adonis_leg_left.png)');
     return b;
   }
 
   function makeImageMask() {
-    var b = Thing.classes.Box.make({
+    var b = Thing.Box.make({
       w: 230,
       h: 575,
       backgroundColor: '#0c7436',
       left: '400px'
     });
-    b.add(Thing.classes.Pattern.make({
+    b.add(Thing.Pattern.make({
       pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
       backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
     }));
-    b.add(Thing.classes.Img.make({
+    b.add(Thing.Img.make({
       src: 'img/rubens_adonis_leg_left.png',
       w: 200,
     }));
@@ -245,19 +245,19 @@ $(function(){
   }
 
   function makeImageShadow() {
-    var b = Thing.classes.Box.make({
+    var b = Thing.Box.make({
       w: 200,
       h: 580,
       left: '800px'
     });
-    b.add(Thing.classes.Pattern.make({
+    b.add(Thing.Pattern.make({
       pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
       backgroundPosition: '-2px -2px, -2px -2px',
       backgroundImage: 'linear-gradient(rgba(60, 60, 60, 0.4) 2px, transparent 2px), linear-gradient(90deg, rgba(60, 60, 60, 0.4) 2px, transparent 2px)',
       stretch: true
     }));
-    b.add(Thing.classes.Img.make({
+    b.add(Thing.Img.make({
       src: 'img/rubens_adonis_leg_left.png',
       w: 200,
       filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'

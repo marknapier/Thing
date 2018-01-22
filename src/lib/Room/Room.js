@@ -6,7 +6,7 @@ var Box = require('../Box/Box.js');
 
  	Parent element must have perspective set to some pixel value or room will be flat.
 
-	var r = Thing.classes.Room.make({
+	var r = Thing.Room.make({
 		x:1000, y:-500,
 		w:1000, h:3625,
 		d:3000,
@@ -148,7 +148,7 @@ class Room extends Box {
 			backfaceVisibility: 'hidden',
 			overflow: 'hidden'
 		};
-		var wall = Thing.classes.Box.make($.extend({}, defaultCSS, cssVals));
+		var wall = Thing.Box.make($.extend({}, defaultCSS, cssVals));
 		wall.$element.addClass('wall');
 		wall.$element.addClass(which);
 		wall.which = which;

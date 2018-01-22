@@ -19,8 +19,8 @@
   function scatterBox (randFunction, title) {
     var size = 100;
     var outerboxsize = ((size+2) * 2)+1;
-    var Box = Thing.classes.Box;
-    var Label = Thing.classes.Label;
+    var Box = Thing.Box;
+    var Label = Thing.Label;
     var outerbox = Box.make({
       position: 'relative',
       display: 'inline-block',
@@ -100,7 +100,7 @@
     return outerbox;
   }
 
-  var Rand = Thing.classes.Rand;
+  var Rand = Thing.Rand;
   var sb = scatterBox(Rand.randFloat, 'randFloat');
   var sb = scatterBox(Rand.randPow, 'randPow');
   var sb = scatterBox(Rand.randSin, 'randSin');

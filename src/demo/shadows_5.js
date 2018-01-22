@@ -1,8 +1,8 @@
 var Thing = window.Thing;
 var Meninas = window.Meninas;
-var Rand = Thing.classes.Rand;
+var Rand = Thing.Rand;
 
-var pageParams = Thing.classes.Page.getParams();
+var pageParams = Thing.Page.getParams();
 var aspectRatio = 0.620;
 var CW = pageParams.canvasWidth || 6000;  // canvas width
 var CH = CW * aspectRatio;
@@ -21,7 +21,7 @@ function makeLeg (props = {}) {
     w: 1000,
     h: 3000,
   }, props);
-  var img = Thing.classes.Img.make({
+  var img = Thing.Img.make({
     src: 'img/' + Rand.randItem(imgNames),
     x: options.x + (Rand.randNormal() * (options.w * 0.1)),
     y: Rand.randInt(0, options.y),
@@ -45,10 +45,10 @@ function makeWrappedRoom (props) {
   }, props);
 
   // outer div
-  var wrapper = Thing.classes.Box.make(props);
+  var wrapper = Thing.Box.make(props);
 
   // room has same dimensions as wrapper
-  var r = Thing.classes.Room.make({
+  var r = Thing.Room.make({
     w: props.w,
     h: props.h,
     d: props.d || 1000,
@@ -81,7 +81,7 @@ function fillFloor () {
 }
 
 function fillSky () {
-  return Thing.classes.BGImg.make({
+  return Thing.BGImg.make({
       url: 'img/clouds_on_light_blue.jpg',
       size: 'cover',
   });
@@ -119,7 +119,7 @@ function makeOverlayRoom (props) {
   // R.room.add(makeLump({x:200, y: 200, w:500, h: 1000}));
 
   R.room.back.add(makeLeg());
-  // R.room.back.add(Thing.classes.Img.make({
+  // R.room.back.add(Thing.Img.make({
   //     src: 'img/leg_eve_left_1.png',
   //     x: 0,
   //     y: 200,
@@ -199,8 +199,8 @@ $(function () {
   ]);
   background.render();
 
-  Thing.classes.Page.setScale(pageParams.scale || 1);
-  Thing.classes.Page.initEvents();
+  Thing.Page.setScale(pageParams.scale || 1);
+  Thing.Page.initEvents();
 
   // for debugging
   window.BG = background;

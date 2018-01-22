@@ -43,12 +43,12 @@ class TextPane extends Thing {
 window.TextPane = TextPane;
 
 function main () {
-    var Rand = Thing.classes.Rand;
+    var Rand = Thing.Rand;
     var aspectRatio = 1.25;
     var pixelWidth = 1000;  //6000;
     var pixelHeight = pixelWidth * aspectRatio;  //7500;
     var bgColor = Rand.randRGBstr();
-    var linesBox = Thing.classes.Box.make({
+    var linesBox = Thing.Box.make({
         w: pixelWidth,
         h: pixelHeight,
         overflow: 'hidden',
