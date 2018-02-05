@@ -334,7 +334,7 @@ function makeImageGrid(props = {}) {
 	  mixBlendMode: props.mixBlendMode,
 	})
 	.add(Thing.BGImg.make({
-    url: props.url,
+    src: props.url,
     size: Thing.Rand.randInt(0.5, 50) + '%',
     center: true,
     repeat: true,
@@ -551,8 +551,8 @@ $(function(){
   });
 
   stage.add([
-  	// Thing.BGImg.make({url: 'img/victorian_red_velvet_wallpaper.jpg', randomFacePart(), repeat: true, size: '30% 20%'}),
-  	Thing.BGImg.make({url: 'img/victorian_red_velvet_wallpaper.jpg', mixBlendMode: 'hard-light', repeat: true, size: '40% 30%'}),
+  	// Thing.BGImg.make({src: 'img/victorian_red_velvet_wallpaper.jpg', randomFacePart(), repeat: true, size: '30% 20%'}),
+  	Thing.BGImg.make({src: 'img/victorian_red_velvet_wallpaper.jpg', mixBlendMode: 'hard-light', repeat: true, size: '40% 30%'}),
   	Thing.make({background: 'radial-gradient(at 30% 25%, rgb(229, 255, 0) 20%, rgba(0, 10, 25, 0.97) 90%)', mixBlendMode: 'overlay', width: '100%', height: '100%'}),
     darkStripedColumn,
     famousFaceParts,

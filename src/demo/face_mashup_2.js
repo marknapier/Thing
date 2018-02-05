@@ -235,7 +235,7 @@ function makeFamousFace (props = {w:1000, h:1500}) {
   // middle background
   var middleEyes = Box.make({x:0, y:props.h*0.3, w: props.w, h: props.h*0.25, backgroundColor:'pink'});
   middleEyes.add(  Thing.BGImg.make({
-      url: 'img/faceparts/' + Rand.randItem(imgNamesEyesLeft),
+      src: 'img/faceparts/' + Rand.randItem(imgNamesEyesLeft),
       size: '10% 22%',
       center: true,
       repeat: true

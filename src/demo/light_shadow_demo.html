@@ -1,0 +1,349 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Composite Image Demo</title>
+    <link href="reset.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  let Rand = Thing.Rand;
+
+  function makeHeader (props) {
+    return Thing.Label.make($.extend({}, {
+      padding: '25px 0px 0px 10px',
+      fontSize: '32px',
+      fontWeight: 'bold',
+      position: 'relative',
+    }, props));
+  }
+
+  function makeLabel (props) {
+    return Thing.Label.make($.extend({
+      padding: '5px',
+      zIndex: 100,
+      width: '100%',
+      backgroundColor: 'rgba(255,255,255,1)',
+    }, props));
+  }
+
+  function makeDemoBox (props) {
+    return Thing.Box.make($.extend({
+        display: 'inline-block',
+        position: 'relative',
+        margin: '20px',
+        width: '300px',
+        height: '200px',
+        overflow: 'hidden',
+        border: '1px dotted #ccc',
+        backgroundColor: '#fff'
+      }, props));
+  }
+
+  function makeShadowContainer (props) {
+    var gridCSS = Thing.Pattern.makeGridPatternCSS({backgroundColor: '#ccc', color: '#aaa', size: 20});
+    var box = Thing.Box.make($.extend({
+      position: 'relative',
+      display: 'inline-block',
+      backgroundColor: 'transparent',
+      border: '1px solid #c99',
+      margin: '20px',
+      w: 400,
+      h: 400,
+    }, gridCSS, props));
+    return box;
+  }
+
+  function makeDemoBoxes() {
+    return [
+      makeHeader({text: "Mix-Blend-Mode Demo - highlight and shadow masks"}),
+
+      makeHeader({text: "Plain sample images, no blending.", fontSize: '18px'}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+      ]),
+
+      makeHeader({text: "Left side: the map image with no blending - Right side: map image blended into wallpaper", fontSize: '18px', marginBottom: '30px'}),
+
+      makeHeader({text: "Spotlight - soft-light"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          mixBlendMode: 'soft-light',
+          opacity: 0.7,
+        }),
+      ]),
+
+      makeHeader({text: "Hilite gradient - overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'radial-gradient(at 30% 30%, rgba(255, 252, 213, 0.9) 10%, rgba(0, 0, 0, 0) 100%)',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'radial-gradient(at 30% 30%, rgba(255, 252, 213, 0.9) 10%, rgba(0, 0, 0, 0) 100%)',
+          mixBlendMode: 'overlay',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Spotlight + Hilite - soft-light + overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+        Thing.BGImg.make({
+          url: 'radial-gradient(at 30% 30%, rgba(255, 252, 213, 0.9) 10%, rgba(0, 0, 0, 0) 100%)',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          mixBlendMode: 'soft-light',
+          opacity: 0.7,
+        }),
+        Thing.BGImg.make({
+          url: 'radial-gradient(at 30% 30%, rgba(255, 252, 213, 0.9) 10%, rgba(0, 0, 0, 0) 100%)',
+          mixBlendMode: 'overlay',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Shadow - overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/shadow_right_bottom_broad_black_1.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/shadow_right_bottom_broad_black_1.png")',
+          mixBlendMode: 'overlay',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Hilite - overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/hilte_left_top_broad_white_1.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/hilte_left_top_broad_white_1.png")',
+          mixBlendMode: 'overlay',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Hilite ellipse - overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/hilte_ellipse_top_white_1.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/hilte_ellipse_top_white_1.png")',
+          mixBlendMode: 'overlay',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Spotlight ellipse - overlay, 0.5 opacity"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/spotlight_ellipse_white_1.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight_ellipse_white_1.png")',
+          mixBlendMode: 'overlay',
+          opacity: 0.5,
+        }),
+      ]),
+
+      makeHeader({text: "Spotlight - soft light"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/spotlight_sq_cntr_white_1.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight_sq_cntr_white_1.png")',
+          mixBlendMode: 'soft-light',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Larger Hilite - overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/hilite_sq_to_edges_white_1.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/hilite_sq_to_edges_white_1.png")',
+          mixBlendMode: 'overlay',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Hilite - overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/hilte_sq_cntr_white_1.png")',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/hilte_sq_cntr_white_1.png")',
+          mixBlendMode: 'overlay',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeHeader({text: "Spotlight gradient - overlay"}),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'radial-gradient(at 30% 30%, rgb(255, 252, 213) 5%, rgb(255, 252, 213) 20%, rgb(150, 150, 150) 35%, rgb(0, 0, 0) 100%)',
+          mixBlendMode: 'normal',
+          opacity: 0.8,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'radial-gradient(at 30% 30%, rgb(255, 252, 213) 5%, rgb(255, 252, 213) 20%, rgb(150, 150, 150) 35%, rgb(0, 0, 0) 100%)',
+          mixBlendMode: 'overlay',
+          opacity: 0.6,
+        }),
+      ]),
+
+    ];
+  }
+
+  // Render demos
+  makeDemoBox({
+      width: '1050px',
+      height: 'auto',
+      border: 'none'
+  })
+  .add(makeDemoBoxes())
+  .render();
+
+  // Reference image link
+  Thing.Label.make({
+    position: 'relative',
+    margin: '10px',
+    text: '<a href="CompositeImg_demo_page.png" target="blank">Reference:<br><img src="CompositeImg_demo_page.png" width="100px"></a>',
+    html: true
+  }).render();
+
+});
+</script>
+
+  </body>
+</html>

@@ -82,7 +82,7 @@ function fillFloor () {
 
 function fillSky () {
   return Thing.BGImg.make({
-      url: 'img/clouds_on_light_blue.jpg',
+      src: 'img/clouds_on_light_blue.jpg',
       size: 'cover',
   });
 }

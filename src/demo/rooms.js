@@ -134,7 +134,7 @@ $(function () {
   legRoom.add(makeLump());
   legRoom.rotate({y: 25});
   legRoom.bottom.add(Thing.BGImg.make({
-    url:'img/persian_carpet_fine_red_1.png'
+    src:'img/persian_carpet_fine_red_1.png'
   }));
 
   var corridor = makeWrappedRoom({

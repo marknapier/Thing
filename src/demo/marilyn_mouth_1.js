@@ -115,42 +115,42 @@ $(function(){
       // Mouths
       makeColumn().add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: 'cover',
           center: false,
           repeat: false
       })).add(makeLabel({text: 'A: size=cover center=false repeat=false'})),
       makeColumn().add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: 'cover',
           center: true,
           repeat: false
       })).add(makeLabel({text: 'size=cover center=true repeat=false'})),
       // makeColumn().add(
       //   Thing.BGImg.make({
-      //     url: bgImage,
+      //     src: bgImage,
       //     size: '100% 50%',
       //     center: true,
       //     repeat: false
       // })).add(makeLabel({text: 'size=100/50 center=true repeat=false'})),
       makeColumn().add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: '12% 25%',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=50% center=true repeat=true'})),
       makeColumn().add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: 'contain',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=contain center=true repeat=true'})),
       makeColumn().add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: '100% 100%',
           center: false,
           repeat: false
@@ -195,28 +195,28 @@ $(function(){
       // Mouths
       makeColumn({opacity: 0.85}).add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: '50% 50%',
           center: false,
           repeat: false
       })).add(makeLabel({text: 'size=50% center=false repeat=false'})),
       makeColumn({opacity: 0.85}).add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: '50% 50%',
           center: true,
           repeat: false
       })).add(makeLabel({text: 'size=50% center=true repeat=false'})),
       makeColumn().add(
         Thing.BGImg.make({
-          url: bgImage,
+          src: bgImage,
           size: '15% 15%',
           center: true,
           repeat: true
       })).add(makeLabel({text: 'size=50% center=true repeat=true'})),
       // makeColumn().add(
       //   Thing.BGImg.make({
-      //     url: bgImage,
+      //     src: bgImage,
       //     size: '50% 50%',
       //     center: false,
       //     repeat: true

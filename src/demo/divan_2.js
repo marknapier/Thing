@@ -371,7 +371,7 @@ function makeSurface (props = {w:2500, h:2500}) {
   });
 
   // var textureImg = Thing.BGImg.make({
-  //   url: 'img/vintagewallpaper4_crop_cutout_1.png',
+  //   src: 'img/vintagewallpaper4_crop_cutout_1.png',
   //   size: '30% 50%',
   //   repeat: true,
   //   opacity: 0.1,
