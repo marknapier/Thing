@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Surface Texture Demo</title>
+    <link href="reset.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+<script src='jquery/jquery.min.js'></script>
+<script src='thing.js'></script>
+
+<script>
+$(function(){
+  let Rand = Thing.Rand;
+
+  function makeHeader (props) {
+    return Thing.Label.make($.extend({}, {
+      padding: '25px 0px 0px 10px',
+      fontSize: '32px',
+      fontWeight: 'bold',
+      position: 'relative',
+    }, props));
+  }
+
+  function makeLabel (props) {
+    return Thing.Label.make($.extend({
+      padding: '5px',
+      zIndex: 100,
+      width: '100%',
+      backgroundColor: 'rgba(255,255,255,1)',
+    }, props));
+  }
+
+  function makeDemoBox (props) {
+    return Thing.Box.make($.extend({
+        display: 'inline-block',
+        position: 'relative',
+        margin: '20px',
+        width: '300px',
+        height: '200px',
+        overflow: 'hidden',
+        border: '1px dotted #ccc',
+        backgroundColor: '#fff'
+      }, props));
+  }
+
+  function makeShadowContainer (props) {
+    var box = Thing.Box.make($.extend({
+      position: 'relative',
+      display: 'inline-block',
+      backgroundColor: 'transparent',
+      border: '1px solid #c99',
+      margin: '20px',
+      w: 400,
+      h: 400,
+    }, props));
+    return box;
+  }
+
+  function makeDemoBoxes() {
+    var gridCSS = Thing.Pattern.makeGridPatternCSS({backgroundColor: '#ccb', color: '#bba', size: 20});
+    
+    return [
+      makeHeader({text: "Surface Textures Demo"}),
+
+      // 
+
+      makeShadowContainer({backgroundColor: 'gray'}).add([
+        Thing.Pattern.make({
+          pattern: 'GraphPaper',
+          backgroundColor: '#ccb', 
+          color: '#bba', 
+          size: 20,
+        })
+        .addMask('radial-gradient(at 30% 30%, rgba(0, 0, 0, 0.9) 10%, rgba(0, 0, 0, 0) 100%)'),
+      ]),
+
+      makeShadowContainer({backgroundColor: 'gray'}).add([
+        Thing.Pattern.make({
+          pattern: 'Grid',
+          backgroundColor: '#ccb', 
+          color: '#b0b0a6', 
+          size: 10,
+        })
+        .addMask('radial-gradient(at 30% 30%, rgba(0, 0, 0, 0.9) 10%, rgba(0, 0, 0, 0) 100%)'),
+      ]),
+
+      //
+      
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.Pattern.make({
+          pattern: 'Grid',
+          backgroundColor: 'transparent', 
+          color: '#b0b0a6', 
+          size: 10,
+        })
+        .addMask('radial-gradient(at 30% 30%, rgba(0, 0, 0, 0.6) 10%, rgba(0, 0, 0, 0) 100%)'),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.Pattern.make({
+          pattern: 'Grid',
+          backgroundColor: 'transparent',
+          color: '#b0b0a6',
+          size: 4,
+        })
+        .addMask('radial-gradient(at 30% 30%, rgba(0, 0, 0, 0.94) 10%, rgba(0, 0, 0, 0.60) 100%)'),
+      ]),
+
+      //
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          repeat: 'repeat',
+          size: '15% 15%',
+          mixBlendMode: 'soft-light',
+          opacity: 0.4,
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          repeat: 'repeat',
+          size: '6% 6%',
+          mixBlendMode: 'soft-light',
+          opacity: 0.4,
+        }),
+      ]),
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+          repeat: 'repeat',
+          size: '20% 20%',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          repeat: 'repeat',
+          size: '11% 11%',
+          mixBlendMode: 'soft-light',
+          opacity: 0.4,
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          repeat: 'repeat',
+          size: '3% 3%',
+          mixBlendMode: 'soft-light',
+          opacity: 0.4,
+        }),
+      ]),
+
+      //
+
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+          repeat: 'repeat',
+          size: '57% 57%',
+          mixBlendMode: 'darken',
+          opacity: 1.0,
+        }),
+      ]),
+      
+      makeShadowContainer().add([
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+          repeat: 'repeat',
+          size: '7% 7%',
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+          repeat: 'repeat',
+          size: '17% 17%',
+          mixBlendMode: 'darken',
+          opacity: 1.0,
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/spotlight.png")',
+          mixBlendMode: 'soft-light',
+          opacity: 0.2,
+        }),
+      ]),
+
+    ];
+  }
+
+  // Render demos
+  makeDemoBox({
+      width: '1050px',
+      height: 'auto',
+      border: 'none'
+  })
+  .add(makeDemoBoxes())
+  .render();
+
+  // Reference image link
+  Thing.Label.make({
+    position: 'relative',
+    margin: '10px',
+    text: '<a href="CompositeImg_demo_page.png" target="blank">Reference:<br><img src="CompositeImg_demo_page.png" width="100px"></a>',
+    html: true
+  }).render();
+
+});
+</script>
+
+  </body>
+</html>
