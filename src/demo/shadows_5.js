@@ -199,8 +199,7 @@ $(function () {
   ]);
   background.render();
 
-  Thing.Page.setScale(pageParams.scale || 1);
-  Thing.Page.initEvents();
+  Thing.Page.setup();
 
   // for debugging
   window.BG = background;

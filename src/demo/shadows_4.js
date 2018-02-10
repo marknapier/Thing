@@ -19,20 +19,19 @@ function makeLump (props) {
   var imgs = imgNames.map( function (imgName) {
     return Thing.Img.make({
       src: 'img/' + imgName,
-      x: props.x + (Rand.randNormal() * (props.w * 0.1)),
-      y: Rand.randInt(0, props.y),
-      w: Rand.randInt(props.w * 0.8, props.w),
-      h: Rand.randInt(props.h * 0.8, props.h),
+      x: (Rand.randNormal() * (props.w * 0.1)),
+      y: Rand.randInt(props.h * 0.25, props.h * 0.6),
+      w: Rand.randFloat(0.7, 1.0) * props.w,
       opacity: 0.1 + (Rand.randFloat()*0.9),
       filter: 'blur(' +(Rand.randPow() * 20.0).toFixed(1)+ 'px)',
     });
   });
 
   return Thing.Box.make({
-    x: 0,
-    y: 500,
-    w:1000,
-    h:1000,
+    x: props.x,
+    y: props.y,
+    w: props.w,
+    h: props.h,
     zIndex: props && props.zIndex
   }).add(imgs);
 }
@@ -92,13 +91,14 @@ function makeWrappedRoom (props) {
   return wrapper;
 }
 
-function fillFloor () {
+function fillFloor (props) {
   return Meninas.makeFloorBleached({
       x: 0,
       y: 0,
       width: '100%',
       height: '100%',
-      rotate: {x: 0}
+      rotate: {x: 0},
+      backgroundSize: props && props.size,
     });
 }
 
@@ -119,17 +119,25 @@ function makeOverlayRoom (props) {
     w: props.w,
     d: CW * 0.28,
     perspective: (CW * 1.1) + 'px',
-    perspectiveOrigin: '-' + (CW * 0.33) + 'px ' + (CW * 0.45) + 'px',
+    // perspectiveOrigin: '-' + (CW * 0.33) + 'px ' + (CW * 0.45) + 'px',
     background: 'url(img/victorian_rose_pattern.jpg) 0 0 / 500px 750px',
   });
   R.room.left.css({backgroundColor: 'rgba(255,255,0,.3)'});
   R.room.right.css({backgroundColor: 'rgba(255,0,0,.3)'});
   R.room.right.add(makeLightSpot());
   R.room.top.css({backgroundColor: 'rgba(0,0,255,.3)'});
-  R.room.bottom.css({backgroundColor: 'rgba(0,255,0,.3)'});
+  // R.room.bottom.css({backgroundColor: 'rgba(0,255,0,.3)'});
+  R.room.bottom.add(fillFloor({size: CW * 0.03}));
   R.room.back.css({backgroundColor: '#112'});
-  R.room.rotate({y: 30});
-  R.room.add(makeLump({x:200, y: 200, w:500, h: 1000}));
+
+  // R.room.rotate({y: Thing.Rand.randInt(-10,10)});
+
+  R.room.add(makeLump({
+    x: 0,
+    y: 0,
+    w: Thing.Rand.randInt(CW * 0.1, CW * 0.25), 
+    h: 1000
+  }));
   return R;
 }
 
@@ -167,7 +175,7 @@ function makeRandomRooms (props) {
       x: xw.x,
       w: xw.w,
     });
-    overlayRoom.room.rotate({y: Rand.randInt(-90, 90)});
+    // overlayRoom.room.rotate({y: Rand.randInt(-90, 90)});
     overlayRoom.css({borderLeft: '5px solid red'});
     rooms.push(overlayRoom);
   });
@@ -175,18 +183,6 @@ function makeRandomRooms (props) {
 }
 
 $(function () {
-  var corridor = makeWrappedRoom({
-    x: CW * 0.819,
-    y: 0,
-    h: CH,
-    w: CW * 0.18,
-    d: CW * 0.18,
-    perspective: (CW/6) + 'px',
-    perspectiveOrigin: '-' + (CW / 2) + 'px ' + (CH / 2) + 'px',
-  });
-  corridor.room.right.css({backgroundImage: 'radial-gradient(at 60% 60%, rgba(184, 155, 176, 0.3) 10%, rgba(28, 17, 22, 0.46) 90%)'});
-  corridor.room.bottom.css({backgroundImage: 'radial-gradient(at 50% 65%, rgba(61, 54, 41, 0.3) 40%, rgba(28, 17, 22, 0.3) 140%)'});
-
   var overlayRoom = makeOverlayRoom({
     x: CW * 0.2,
     w: Rand.randInt(CW * 0.10, CW * 0.20),
@@ -213,7 +209,6 @@ $(function () {
   mainRoom.top.css({backgroundColor: 'rgba(0,0,255,.2)'});
   mainRoom.bottom.css({backgroundColor: 'rgba(0,255,0,.2)'});
   mainRoom.bottom.add(fillFloor());
-  mainRoom.back.add(corridor);
   mainRoom.add([
     overlayRoom,
     overlayRoom2,
@@ -233,13 +228,9 @@ $(function () {
     });
   background.add([
     mainRoom,
-    makeRandomRooms({x: CW*0.3, w: CW*0.65, h: CH, minW: CW/15, maxW: CW/2}),
+    makeRandomRooms({x: 0, w: CW, h: CH, minW: CW/15, maxW: CW/3}),
   ]);
   background.render();
 
-  Thing.Page.setScale(pageParams.scale || 1);
-  Thing.Page.initEvents();
-
-  // for debugging
-  window.BG = background;
+  Thing.Page.setup();
 });

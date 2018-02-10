@@ -80,6 +80,11 @@ class Page {
         return this.parseKeyvalString(window.location.search.slice(1));
     }
 
+    static setup() {
+        var pageParams = Thing.Page.getParams();
+        Page.setScale(pageParams.scale || 1);
+        Page.initEvents();
+    }
 }
 Thing.addClass(Page);
 

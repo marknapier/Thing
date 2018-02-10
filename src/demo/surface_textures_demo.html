@@ -139,25 +139,26 @@ $(function(){
         }),
       ]),
 
-      makeShadowContainer().add([
+      makeShadowContainer({backgroundColor: '#c32200'}).add([
         Thing.BGImg.make({
           url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
           repeat: 'repeat',
-          size: '20% 20%',
+          size: '6% 94%',
+          opacity: 0.6,
         }),
         Thing.BGImg.make({
           url: 'url("img/spotlight.png")',
           repeat: 'repeat',
           size: '11% 11%',
           mixBlendMode: 'soft-light',
-          opacity: 0.4,
+          opacity: 0.15,
         }),
         Thing.BGImg.make({
           url: 'url("img/spotlight.png")',
           repeat: 'repeat',
           size: '3% 3%',
-          mixBlendMode: 'soft-light',
-          opacity: 0.4,
+          mixBlendMode: 'overlay',
+          opacity: 0.15,
         }),
       ]),
 
@@ -176,23 +177,51 @@ $(function(){
         }),
       ]),
       
-      makeShadowContainer().add([
-        Thing.BGImg.make({
-          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
-          repeat: 'repeat',
-          size: '7% 7%',
-        }),
+      makeShadowContainer({backgroundColor: '#ff0'}).add([
         Thing.BGImg.make({
           url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
           repeat: 'repeat',
           size: '17% 17%',
+          opacity: 0.1,
+        }),
+        Thing.BGImg.make({
+          url: 'url("img/victorian_red_velvet_wallpaper.jpg")',
+          repeat: 'repeat',
+          size: '27% 27%',
           mixBlendMode: 'darken',
-          opacity: 1.0,
+          opacity: 0.2,
         }),
         Thing.BGImg.make({
           url: 'url("img/spotlight.png")',
           mixBlendMode: 'soft-light',
-          opacity: 0.2,
+          opacity: 0.12,
+        }),
+      ]),
+
+      // Make an outline around a shape
+
+      makeShadowContainer({backgroundColor: 'gray'}).add([
+        Thing.Pattern.make({
+          pattern: 'Grid',
+          backgroundColor: '#ccc', 
+          color: '#b0b0a6', 
+          size: 10,
+        }),
+        //
+        Thing.BGImg.make({
+          backgroundColor: '#900',
+        })
+        .addMask('url(img/leg_durer_right_1.png)'),
+        //
+        Thing.Pattern.make({
+          pattern: 'Grid',
+          backgroundColor: '#ccc', 
+          color: '#b0b0a6', 
+          size: 10,
+        })
+        .addMask({
+          image: 'url(img/leg_durer_right_1.png)',
+          size: '95% 95%',
         }),
       ]),
 
@@ -215,6 +244,21 @@ $(function(){
     text: '<a href="CompositeImg_demo_page.png" target="blank">Reference:<br><img src="CompositeImg_demo_page.png" width="100px"></a>',
     html: true
   }).render();
+
+
+/***
+
+<div class="Box" id="Box17" style="position: relative;display: inline-block;background-color: #c32200;border: 1px solid rgb(204, 153, 153);margin: 20px;width: 400px;height: 400px;">
+  <div class="BGImg" id="BGImg18" style="position: absolute;width: 100%;height: 100%;background-image: url(&quot;img/victorian_red_velvet_wallpaper.jpg&quot;);background-repeat: repeat;background-position: center center;background-size: 6% 94%;opacity: 0.615;"></div>
+  <div class="BGImg" id="BGImg19" style="position: absolute;width: 100%;height: 100%;mix-blend-mode: soft-light;opacity: 0.14;background-image: url(&quot;img/spotlight.png&quot;);background-repeat: repeat;background-position: center center;background-size: 11% 11%;"></div>
+  <div class="BGImg" id="BGImg20" style="position: absolute;width: 100%;height: 100%;mix-blend-mode: overlay;opacity: 0.14;background-image: url(&quot;img/spotlight.png&quot;);background-repeat: repeat;background-position: center center;background-size: 3% 3%;"></div></div>
+
+<div class="Box" id="Box24" style="position: relative;display: inline-block;background-color: yellow;border: 1px solid rgb(204, 153, 153);margin: 20px;width: 400px;height: 400px;">
+  <div class="BGImg" id="BGImg25" style="position: absolute;width: 100%;height: 100%;background-image: url(&quot;img/victorian_red_velvet_wallpaper.jpg&quot;);background-repeat: repeat;background-position: center center;background-size: 17% 17%;opacity: 0.1;"></div>
+  <div class="BGImg" id="BGImg26" style="position: absolute;width: 100%;height: 100%;mix-blend-mode: darken;opacity: 0.2;background-image: url(&quot;img/victorian_red_velvet_wallpaper.jpg&quot;);background-repeat: repeat;background-position: center center;background-size: 27% 27%;"></div>
+  <div class="BGImg" id="BGImg27" style="position: absolute;width: 100%;height: 100%;mix-blend-mode: soft-light;opacity: 0.12;background-image: url(&quot;img/spotlight.png&quot;);background-repeat: no-repeat;background-position: center center;background-size: cover;"></div></div>
+
+***/
 
 });
 </script>

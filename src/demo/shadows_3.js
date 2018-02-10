@@ -191,10 +191,6 @@ $(function () {
     makeMeninaSandwich({x: 3000, zIndex:Rand.randInt(10000,11000)}),
   ];
 
-  // $('body').css({overflow: 'scroll'});
-
-  Meninas.scaleDocument(1);
-
   backWall.add(lightSpot);
   background.add(circles);
 
@@ -203,6 +199,8 @@ $(function () {
   background.add(floor);
 
   background.render();
+
+  Thing.Page.setup();
 
   window.BG = background;
 });
