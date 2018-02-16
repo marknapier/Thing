@@ -178,6 +178,38 @@ function addWire(room) {
   return room;
 }
 
+function makePlane() {
+  return Thing.Box.make({
+    x: 700,
+    y: 0,
+    w: 1500,
+    h: CH,
+    perspective: '4000px',
+  })
+  .add(Thing.BGImg.make({
+    url: 'url(img/textures/wood_panelling.jpg)',
+    size: '100% 100%',
+  }));
+}
+
+function makeWireFrameRoom() {
+  var wireframeRoom = makeWireRoom({
+      x: CW * 0.3,
+      y: CH * 0.0215,
+      z: 0,
+      w: CW * 0.08,
+      h: CH * 0.959,
+      d: CW * 0.1,
+    });
+    wireframeRoom.add(makeMaskedLump().css(Thing.Pattern.makeSofaPatternCSS()));
+    wireframeRoom.back.add(randomPattern(transparentPatterns));
+    wireframeRoom.left.add(randomPattern(transparentPatterns));
+    wireframeRoom.right.add(randomPattern(transparentPatterns));
+    wireframeRoom.outright.add(randomPattern(transparentPatterns));
+    wireframeRoom.outfront.add(randomPattern(transparentPatterns));
+    return wireframeRoom;
+}
+
 $(function () {
   var legRoom = makeRoom({
     x: CW * 0.85,
@@ -210,20 +242,7 @@ $(function () {
   innerRoom.back.css({background: 'url(img/victorian_rose_pattern.jpg) 0px 0px / 500px 750px'});
   innerRoom.back.add(makeLightSpot());
 
-  var wireframeRoom = makeWireRoom({
-    x: CW * 0.3,
-    y: CH * 0.0215,
-    z: 0,
-    w: CW * 0.08,
-    h: CH * 0.959,
-    d: CW * 0.1,
-  });
-  wireframeRoom.add(makeMaskedLump().css(Thing.Pattern.makeSofaPatternCSS()));
-  wireframeRoom.back.add(randomPattern(transparentPatterns));
-  wireframeRoom.left.add(randomPattern(transparentPatterns));
-  wireframeRoom.right.add(randomPattern(transparentPatterns));
-  wireframeRoom.outright.add(randomPattern(transparentPatterns));
-  wireframeRoom.outfront.add(randomPattern(transparentPatterns));
+  var wireframeRoom = makeWireFrameRoom();
 
   var wireframeRoom2 = makeWireRoom({
     x: 0,
@@ -233,6 +252,16 @@ $(function () {
     h: CH * 0.950,
     d: CW * 0.1,
   });
+
+  var plane1 = makePlane();
+  plane1.add(makeWireRoom({
+    x: 0,
+    y: -CH * 0.2,
+    z: 0,
+    w: CW * 0.2,
+    h: CH * 1.2,
+    d: CW * 0.1,
+  }));
 
   var mainRoom = makeRoom({
     x: -CW * 0.22,
@@ -262,6 +291,7 @@ $(function () {
       perspective: '7000px',
     })
     .add(mainRoom)
+    .add(plane1)
     .render();
 
   Thing.Page.setup();
