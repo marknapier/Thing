@@ -24,15 +24,15 @@ $(function () {
     backgroundColor: 'rgb(124, 10, 0)',
   });
 
-  var rightWall = Thing.Img.make({
-      src: 'img/vintagewallpaper4_crop.png',
-      x: stageWidth,
-      y: 0,
-      w: stageDepth,
-      h: stageHeight,
-      rotate: {y:90},
-      opacity: 0.5
-    });
+  // var rightWall = Thing.Img.make({
+  //     src: 'img/vintagewallpaper4_crop.png',
+  //     x: stageWidth,
+  //     y: 0,
+  //     w: stageDepth,
+  //     h: stageHeight,
+  //     rotate: {y:90},
+  //     opacity: 0.5
+  //   });
 
   // Highlight on back wall
   var lightSpot = Thing.make({
@@ -48,20 +48,20 @@ $(function () {
   });
   backWall.add(lightSpot);
 
-  var wallpaper = Thing.Pattern.make({
-    pattern: 'nothing',
-    background: 'url(img/victorian_red_velvet_wallpaper.jpg)'
-  });
+  // var wallpaper = Thing.Pattern.make({
+  //   pattern: 'nothing',
+  //   background: 'url(img/victorian_red_velvet_wallpaper.jpg)'
+  // });
 
   // Room edge right side
-  var edge = Thing.Line.make({
-    x1: stageWidth,
-    y1: 0,
-    x2: stageWidth,
-    y2: stageHeight,
-    width: 20,
-    background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
-  });
+  // var edge = Thing.Line.make({
+  //   x1: stageWidth,
+  //   y1: 0,
+  //   x2: stageWidth,
+  //   y2: stageHeight,
+  //   width: 20,
+  //   background: 'linear-gradient(rgb(0, 40, 80) 0%, rgb(255, 128, 0) 100%)'
+  // });
 
   // Bleached wood floor
   var floor = Makers.makeFloorBleached({

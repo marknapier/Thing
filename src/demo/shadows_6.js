@@ -4,7 +4,7 @@ var Rand = Thing.Rand;
 
 var pageParams = Thing.Page.getParams();
 var aspectRatio = 0.620;
-var CW = pageParams.canvasWidth || 6000;  // canvas width
+var CW = pageParams.canvasWidth || 6000;  // canvas width   1.618  0.618
 var CH = CW * aspectRatio;
 var legImages = [
   'birth_of_venus_leg_left.png',
@@ -178,16 +178,16 @@ function addWire(room) {
   return room;
 }
 
-function makePlane() {
+function makePlane(props = {x:0, y:0, w:1200, h: 3200}) {
   return Thing.Box.make({
-    x: 700,
-    y: 0,
-    w: 1500,
-    h: CH,
+    x: props.x || 0,
+    y: props.y || 0,
+    w: props.w || 1200,
+    h: props.h || CH,
     perspective: '4000px',
   })
   .add(Thing.BGImg.make({
-    url: 'url(img/textures/wood_panelling.jpg)',
+    url: 'url(img/wood-panel-texture-oak.jpg)',
     size: '100% 100%',
   }));
 }
@@ -253,7 +253,7 @@ $(function () {
     d: CW * 0.1,
   });
 
-  var plane1 = makePlane();
+  var plane1 = makePlane({x: 0, w: 1200});
   plane1.add(makeWireRoom({
     x: 0,
     y: -CH * 0.2,
@@ -262,6 +262,21 @@ $(function () {
     h: CH * 1.2,
     d: CW * 0.1,
   }));
+
+  var plane2 = makePlane({x: 4800, w: 1200});
+  plane2.add(makeLump({
+    x: 0,
+    y: CH * 0.29,
+    w: CW * 0.2,
+    h: CH -(CH * 0.135),
+    imageNames: legImages,
+  }));
+
+  var couch = Thing.Img.make({
+    src: 'img/sofa_leather_overstuffed_t.png',
+    x: 2000,
+    y: 2000,
+  });
 
   var mainRoom = makeRoom({
     x: -CW * 0.22,
@@ -281,6 +296,7 @@ $(function () {
     innerRoom,
     legRoom.add(wireframeRoom2),
     wireframeRoom,
+    couch,
   ]);
 
   Meninas.makeBackground(CW, CH)
@@ -292,6 +308,7 @@ $(function () {
     })
     .add(mainRoom)
     .add(plane1)
+    .add(plane2)
     .render();
 
   Thing.Page.setup();

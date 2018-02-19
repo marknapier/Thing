@@ -265,6 +265,7 @@ class Thing {
     styles.transform = props.transform || (Thing.makeTransformCSS(props.rotate, props.scale, props.x, props.y, props.z, props.renderOnCenter, props.w, props.h)),
 
     // These are not true CSS properties so remove them
+    delete styles.id;
     delete styles.rotate;
     delete styles.scale;
     delete styles.size;
@@ -328,7 +329,7 @@ class Thing {
     var $element = $(html)
       .css(Thing.convertToCSS(props))
       .addClass(type || 'random')
-      .attr('id', (type || 'random') + (++elementCounter));
+      .attr('id', props.id || (type + (++elementCounter)));
     return $element;
   }
 

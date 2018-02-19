@@ -437,6 +437,9 @@ function makeSignature() {
 var stg;
 
 $(function () {
+  // Respond to page params and key events
+  Thing.Page.setScale(pageParams.scale || 1);
+  Thing.Page.initEvents();
   Thing.Rand.init(pageParams.randomSeed);
 
   // Floor
@@ -507,11 +510,4 @@ $(function () {
   makePointer(thigh, 'A');
 
   makeSignature().render();
-
-  // Respond to page params and key events
-  Thing.Page.setScale(pageParams.scale || 1);
-  Thing.Page.initEvents();
-
-  // for debugging
-  window.BG = background;
 });

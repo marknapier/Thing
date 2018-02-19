@@ -27,6 +27,16 @@ class Rand {
 		}
 	}
 
+	static randItems(arr, n=3) {
+		var items = [];
+		if (arr) {
+			for (var i=0; i < n; i++) {
+			  items.push(Rand.randItem(arr));
+			}
+		}
+		return items;
+	}
+
 	// Returns a random integer between min (included) and max (included)
 	// Using Math.round() will give you a non-uniform distribution!
 	static randInt(min, max) {
