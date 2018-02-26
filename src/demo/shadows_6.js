@@ -210,6 +210,30 @@ function makeWireFrameRoom() {
     return wireframeRoom;
 }
 
+function makePatternedCouch(props = {def: {}}) {
+  return Thing.Box.make({
+    x: props.x,
+    y: props.y,
+    w: props.w,
+    h: props.h,
+  })
+  .add([
+    Thing.BGImg.make({
+      url: props.def.url,
+    }),
+    Thing.Pattern.make({
+      pattern: props.def.pattern,
+      color: 'yellow',
+      size: Rand.randInt(20,250),
+      stretch: true,
+      mixBlendMode: props.def.mixBlendMode,
+    })
+  ])
+  .addMask({
+      image: props.def.url,
+  });
+}
+
 $(function () {
   var legRoom = makeRoom({
     x: CW * 0.85,
@@ -272,10 +296,50 @@ $(function () {
     imageNames: legImages,
   }));
 
-  var couch = Thing.Img.make({
-    src: 'img/sofa_leather_overstuffed_t.png',
+  var couchDefs = [
+    {
+      url: 'url(img/sofa_leather_overstuffed_t.png)',
+      mixBlendMode: 'overlay',
+      pattern: 'PlaidRed',
+    },
+    {
+      url: 'url(img/sofa_leather_overstuffed_t.png)',
+      mixBlendMode: 'color-dodge',
+      pattern: 'PlaidRed',
+    },
+    {
+      url: 'url(img/sofa_leather_overstuffed_t.png)',
+      mixBlendMode: 'color',
+      pattern: 'PlaidRed',
+    },
+    {
+      url: 'url(img/victorian_couch_white_t.png)',
+      mixBlendMode: 'darken',
+      pattern: 'PolkaDots',
+    },
+    {
+      url: 'url(img/victorian_couch_white_t.png)',
+      mixBlendMode: 'overlay',
+      pattern: 'PlaidRed',
+    },
+    {
+      url: 'url(img/sofa_3_victorian_sofa_t.png)',
+      mixBlendMode: 'color-burn',
+      pattern: 'PolkaDots',
+    },
+    {
+      url: 'url(img/sofa_3_victorian_sofa_t.png)',
+      mixBlendMode: 'soft-light',
+      pattern: 'PlaidRed',
+    },
+  ];
+
+  var couch = makePatternedCouch({
     x: 2000,
     y: 2000,
+    w: 3000,
+    h: 1200,
+    def: Thing.Rand.randItem(couchDefs),
   });
 
   var mainRoom = makeRoom({
