@@ -15,10 +15,12 @@ $(function(){
   var imgPath = 'img/trump/parts/';
 
   var imgNamesAll = [
+    "Flag_of_the_United_States.png",
     "american-flag_bg.jpg",
     "blue_bg.jpg",
     "cnn_blue_red_bg.jpg",
     "cnn_blue_red_f_bg.jpg",
+    "eagle_flag_bg.jpg",
     "eye_left_1.jpg",
     "eye_right_1.jpg",
     "eyes_1.jpg",
@@ -32,6 +34,7 @@ $(function(){
     "flag_hanging_gold_cord_bg.jpg",
     "flag_pin_1.jpg",
     "flag_stripes_bg.jpg",
+    "gold_leaf_bg.jpg",
     "hair_1.jpg",
     "hair_2.jpg",
     "hand_left_fist.jpg",
@@ -57,7 +60,7 @@ $(function(){
     "nose_1.jpg",
     "nose_2_pixelated.jpg",
     "pixelated_blue_bg.jpg",
-    "putin_on_tv_bg.jpg",
+    "putin_on_tv_bg.png",
     // "pixelated_face.jpg",
     "senate_columns_bg.jpg",
     "suit_full_frontal.jpg",
@@ -91,6 +94,11 @@ $(function(){
   var imgNamesHair = filterStrings(imgNamesAll, 'hair');
   var imgNamesHands = filterStrings(imgNamesAll, 'hand_');
   var imgNamesBackgrounds = filterStrings(imgNamesAll, '_bg');
+      imgNamesBackgrounds.concat([
+        'tie_3_bright_crop.jpg',
+        'Flag_of_the_United_States.png',
+        'hair_1.jpg',
+      ]);
   var imgNamesTies = filterStrings(imgNamesAll, 'tie_');
   var imgNamesLapelsLeft = filterStrings(imgNamesAll, 'lapel_left');
   var imgNamesLapelsRight = filterStrings(imgNamesAll, 'lapel_right');
@@ -203,44 +211,45 @@ $(function(){
   }
 
   function around(val, distance=540) {
-  	return val + (Thing.Rand.randNormal() * distance);
+    return val + (Thing.Rand.randNormal() * distance);
   }
 
   function makeMouthGrid(props) {
-    return Thing.CompositeImg.make({
+    return Thing.Box.make({
       x: props.x,
       y: props.y,
       w: props.w,
       h: props.h,
       backgroundColor: Thing.Rand.randItem(props.colors),
-      layers: [
-        {
-          image: 'url(' + imgPath + Thing.Rand.randItem(props.imgNames) + ')',
-          size: '20% 15%',
-          repeat: 'repeat',
-          blendMode: 'normal'
-        },
-        {
-          image: 'url(' + imgPath + Thing.Rand.randItem(props.imgNames) + ')', //diagonalstripes.backgroundImage,
-          size: '80% 60%',  //diagonalstripes.backgroundSize,
-          position: 'center',
-          blendMode: 'hard-light'
-        }
-      ],
-    });
+    })
+    .add([
+      Thing.BGImg.make({
+        url: 'url(' + imgPath + Thing.Rand.randItem(props.imgNames) + ')',
+        size: '20% 15%',
+        repeat: 'repeat',
+        mixBlendMode: 'normal'
+      }),
+      Thing.BGImg.make({
+        url: 'url(' + imgPath + Thing.Rand.randItem(props.imgNames) + ')',
+        size: '80% 60%',
+        position: 'center',
+        mixBlendMode: 'hard-light'
+      }),
+    ]);
   }
 
   function getRandImg(imageNames) {
     return imgPath + Thing.Rand.randItem(imageNames);
   }
 
-  function makeLayer(props) {
+  function makeLayer(props, dim = {}) {
     return Thing.Box.make({
       id: props.id,
-      x: props.x,
-      y: props.y,
-      w: props.w,
-      h: props.h,
+      x: dim.x || props.x,
+      y: dim.y || props.y,
+      w: dim.w || props.w,
+      h: dim.h || props.h,
+      opacity: props.opacity,
     })
     .add(Thing.BGImg.make({
       src: props.src,
@@ -250,6 +259,62 @@ $(function(){
     }));
   }
 
+  function makeHorizontalStripDimensions(props = {w:1000, h:3000}) {
+    var dim = {};
+    dim.x = Thing.Rand.randInt(props.w * 0.0, props.w * 0.1);
+    dim.y = Thing.Rand.randInt(props.h * 0.16, props.h * 0.3);
+    dim.w = Thing.Rand.randInt(props.w * 0.5, props.w * 1.2);
+    dim.h = Thing.Rand.randInt(props.h * 0.01, props.h * 0.1);
+    return dim;
+  }
+
+  function makeHorizontalRectDimensions(props = {w:1000, h:3000}) {
+    var dim = {};
+    dim.x = Thing.Rand.randInt(props.w * 0.0, props.w * 0.1);
+    dim.y = Thing.Rand.randInt(props.h * 0.0, props.h * 0.2);
+    dim.w = Thing.Rand.randInt(props.w * 0.3, props.w * 0.8);
+    dim.h = Thing.Rand.randInt(props.h * 0.1, props.h * 0.3);
+    return dim;
+  }
+
+  function makeTwitters(props = {}) {
+    return Thing.Rand.randItems(imgNamesPins, Thing.Rand.randInt(2,5)).map((imgName, index) => {
+      var size = Thing.Rand.randInt(props.w * 0.1, props.w * 0.5);
+      return makeLayer({
+        id: 'twitter' + index,
+        x: Thing.Rand.randInt(props.w * 0.0, props.w * 0.9),
+        y: Thing.Rand.randInt(props.h * 0.0, props.h * 0.4),
+        w: size,
+        h: size,
+        src: imgPath + imgName,
+        size: '100% 100%',
+        repeat: false,
+      }).addMask({
+        image: 'url(' + imgPath + 'twitter_logo_blue_t.png' + ')',
+        size: '150%',
+        repeat: 'repeat',
+      });
+    });
+  }
+
+  function makeTwitterField(props = {}) {
+    return makeLayer({
+      id: 'twitterfield',
+      x: Thing.Rand.randInt(props.w * -0.05, props.w * 0.1),
+      y: Thing.Rand.randInt(props.h * -0.05, props.h * 0.1),
+      w: Thing.Rand.randInt(props.w * 0.4, props.w * 1.5),
+      h: Thing.Rand.randInt(props.w * 0.85, props.w * 1.5),
+      src: imgPath + Thing.Rand.randItem(imgNamesBackgrounds),
+      size: 'cover',
+      repeat: true,
+      opacity: 0.3,
+    }).addMask({
+      image: 'url(' + imgPath + 'twitter_logo_blue_t.png' + ')',
+      size: Thing.Rand.randInt(2,15) + '%',
+      repeat: 'repeat',
+    });
+  }
+
   function makePowerSuitPortrait (props = {w:1000, h:1500}) {
     var powerColors = ['#ff0000', '#ffcc00', '#f09900', '#0000ff', '#ffffff', '#fff'];
     var reds = powerColors;  //[ '#f80', '#e60', '#fc1', '#fa3'];
@@ -257,7 +322,6 @@ $(function(){
     var overallBGColor = Rand.randItem(reds);
     var highlightFGColor = tinycolor(overallBGColor).brighten(10).lighten(10).toString();
     var highlightFGColor2 = tinycolor(overallBGColor).brighten(10).saturate(25).toString();
-    var smallJiggleSize = props.w * 0.035;
     var bigJiggleSize = props.w * 0.15;
 
     var bounds = Box.make({
@@ -295,27 +359,27 @@ $(function(){
       src: getRandImg(imgNamesLapelsLeft),
     });
 
-    // bottom half background
+    // mouths
     var bottomMouths = makeMouthGrid({
-      x: props.w * 0.05,
-      y: props.h * 0.3,
-      w: props.w * 0.9,
-      h: props.h * 0.3,
+      x: Thing.Rand.randInt(props.w * 0.0, props.w * 0.5),
+      y: Thing.Rand.randInt(props.h * 0.2, props.h * 0.35),
+      w: Thing.Rand.randInt(props.w * 0.4, props.w * 0.95),
+      h: Thing.Rand.randInt(props.h * 0.1, props.h * 0.4),
       colors: reds,
       imgNames: imgNamesMouths,
     }); 
 
     // mid backgrounds
     var midBGs = Thing.Rand.randItems(imgNamesBackgrounds, Thing.Rand.randInt(1,2)).map((imgName, index) => {
-      var leftside = Thing.Rand.randBoolean();
-      var topside = Thing.Rand.randBoolean();
+      var leftside = true; //Thing.Rand.randBoolean();
+      var topside = true; //Thing.Rand.randBoolean();
       return makeLayer({
         id: 'midbg' + index,
-        x: leftside ? Thing.Rand.randInt(props.w * -0.01, props.w * 0.01) : Thing.Rand.randInt(props.w * 0.4, props.w * 0.6),
-        y: topside ? Thing.Rand.randInt(props.h * -0.01, props.h * 0.01) : Thing.Rand.randInt(props.h * 0.5, props.h * 0.7),
-        w: Thing.Rand.randInt(props.w * 0.3, props.w * 0.6),
-        h: Thing.Rand.randInt(props.h * 0.5, props.w * 0.6),
-        size: Thing.Rand.randInt(50,120) + '% ' + Thing.Rand.randInt(60,120) + '%',
+        x: leftside ? 0 : Thing.Rand.randInt(props.w * 0.4, props.w * 0.6),
+        y: topside ? 0 : Thing.Rand.randInt(props.h * 0.5, props.h * 0.7),
+        w: Thing.Rand.randInt(props.w * 0.05, props.w * 0.45),
+        h: props.h,
+        size: 'cover',  //Thing.Rand.randInt(70,120) + '% ',
         src: imgPath + imgName,
       });
     });
@@ -349,35 +413,26 @@ $(function(){
     });
 
     // twitter imgs
-    var twitters = Thing.Rand.randItems(imgNamesPins, Thing.Rand.randInt(2,5)).map((imgName, index) => {
-      var size = Thing.Rand.randInt(props.w * 0.1, props.w * 0.5);
-      return makeLayer({
-        id: 'twitter' + index,
-        x: Thing.Rand.randInt(props.w * 0.0, props.w * 0.9),
-        y: Thing.Rand.randInt(props.h * 0.0, props.h * 0.4),
-        w: size,
-        h: size,
-        src: imgPath + imgName,
-        size: Thing.Rand.randInt(100,100) + '% ' + Thing.Rand.randInt(100,100) + '%',
-        repeat: 'repeat',
-      }).addMask({
-        image: 'url(' + imgPath + 'twitter_logo_blue_t.png' + ')',
-        size: '150%',
-        repeat: 'repeat',
-      });
-    });
+    var twitters = makeTwitters({w: props.w, h: props.h});
+
+    var twitterField = makeTwitterField({w: props.w, h: props.h});
 
     // eye imgs
     var eyes = makeLayer({
       id: 'eyes',
-      x: Thing.Rand.randInt(props.w * 0.0, props.w * 0.1),
-      y: Thing.Rand.randInt(props.h * 0.16, props.h * 0.3),
-      w: Thing.Rand.randInt(props.w * 0.5, props.w * 1.2),
-      h: Thing.Rand.randInt(props.h * 0.01, props.h * 0.1),
       src: getRandImg(imgNamesEyes),
       size: Thing.Rand.randInt(10,30) + '% ',
       repeat: 'repeat',
-    });
+    }, makeHorizontalStripDimensions({w: props.w, h: props.h}));
+
+    // hair
+    var hair = makeLayer({
+      id: 'hair',
+      src: getRandImg(imgNamesHair),
+      size: Thing.Rand.randInt(50, 180) + '% ',
+      repeat: 'repeat',
+      center: true,
+    }, makeHorizontalRectDimensions({w: props.w, h: props.h}));
 
     // hand imgs
     var hands = Thing.Rand.randItems(imgNamesHands, Thing.Rand.randInt(2,5)).map((imgName, index) => {
@@ -431,18 +486,11 @@ $(function(){
       id: 'mouth',
       x: around(centerX, bigJiggleSize),
       y: around(eyeY * 1.8, bigJiggleSize),
-      w: around(mouthW, bigJiggleSize),
-      h: around(mouthH, bigJiggleSize),
+      w: mouthW * Thing.Rand.randFloat(-0.8, 1.2),
+      h: mouthH * Thing.Rand.randFloat(-0.8, 1.2),
       backgroundColor: highlightFGColor,
       images: imgNamesMouths,
     });
-    var hair = Box.make({
-    	x: around(props.w * -0.05, bigJiggleSize),
-    	y: around(props.h * 0.05, bigJiggleSize),
-    	w: around(props.w * 0.7, bigJiggleSize),
-    	h: around(props.h * 0.6, bigJiggleSize),
-    });
-    var hairs = makeImagesForBox(imgNamesHair, hair.getDimensions(), {jiggle: smallJiggleSize, renderOnCenter: false});
 
     mouth.add(makeBorderBox(mouth, highlightFGColor2, borderWidth(props.w)));
     nose.add(makeBorderBox(nose, Rand.randItem(reds), borderWidth(props.w)));
@@ -459,25 +507,27 @@ $(function(){
     bounds.add(middleSuit);
     bounds.add(leftSuit);
     bounds.add(rightSuit);
+    bounds.add(twitterField);
     bounds.add(ties);
     bounds.add(hands);
     bounds.add(twitters);
+    bounds.add(hair);
     bounds.add(eyes);
     bounds.add(bottomMouths);
     bounds.add(mouth);
 
-    Thing.Img.onAllLoaded(function () {
-      hair
-        .addMask('url(' + hairs[0].src + ')')
-        .css({
-          backgroundImage: 'url(' + hairs[1].src + ')',
-          backgroundSize: '100px 100px',
-          width: hairs[0].w + 'px',
-          height: hairs[0].h + 'px',
-        })
-        ;
-    	bounds.render();
-    });
+    // Thing.Img.onAllLoaded(function () {
+    //   hair
+    //     .addMask('url(' + hairs[0].src + ')')
+    //     .css({
+    //       backgroundImage: 'url(' + hairs[1].src + ')',
+    //       backgroundSize: '100px 100px',
+    //       width: hairs[0].w + 'px',
+    //       height: hairs[0].h + 'px',
+    //     })
+    //     ;
+    //   bounds.render();
+    // });
 
     return bounds;
   }
