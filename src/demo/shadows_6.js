@@ -5,7 +5,7 @@ var Rand = Thing.Rand;
 var pageParams = Thing.Page.getParams();
 var aspectRatio = 0.620;
 var CW = pageParams.canvasWidth || 6000;  // canvas width   1.618  0.618
-var CH = CW * aspectRatio;
+var CH = CW * aspectRatio;   // 3720px
 var legImages = [
   'birth_of_venus_leg_left.png',
   'leg_eve_left_1.png',
@@ -180,6 +180,7 @@ function addWire(room) {
 
 function makePlane(props = {x:0, y:0, w:1200, h: 3200}) {
   return Thing.Box.make({
+    id: props.id,
     x: props.x || 0,
     y: props.y || 0,
     w: props.w || 1200,
@@ -214,12 +215,15 @@ function makePatternedCouch(props = {def: {}}) {
   return Thing.Box.make({
     x: props.x,
     y: props.y,
+    z: props.z,
     w: props.w,
     h: props.h,
   })
   .add([
     Thing.BGImg.make({
       url: props.def.url,
+      size: '100% 100%',
+      filter: 'contrast(130%)',
     }),
     Thing.Pattern.make({
       pattern: props.def.pattern,
@@ -234,9 +238,63 @@ function makePatternedCouch(props = {def: {}}) {
   });
 }
 
+function makeShadowSpot(props) {
+  return Thing.make({
+    id: 'shadowSpot',
+    x: props.x,
+    y: props.y,
+    z: props.z,
+    w: props.w,
+    h: props.h,
+    rotate: {x: 90},
+    background: 'radial-gradient(at 50% 50%, rgba(0, 0, 0, 0.5) 30%, transparent 70%)'
+  });
+}
+
+function makeBackground(props = {}) {
+  return Meninas.makeBackground(props.w, props.h)
+    .css({
+      backgroundColor: 'rgb(60, 47, 70)',
+      backgroundImage: 'url(img/clouds_on_light_blue.jpg)',
+      backgroundSize: 'cover',
+      perspective: '7000px',
+    })
+    // .add(Thing.BGImg.make({
+    //   src: 'img/shadow_right_bottom_broad_black_1.png',
+    //   mixBlendMode: 'overlay',
+    // }))
+    .add(Thing.BGImg.make({  // stripe texture
+      url: 'linear-gradient(90deg, rgba(255, 244, 56, 0.75) 4px, transparent 4px)', //img/white_door.png',
+      mixBlendMode: 'normal', // 'hard-light',
+      repeat: true,
+      size: '10px', //5% 20%',
+      opacity: 0.25,
+    }))
+    .add(Thing.make({  // shadow on wall
+      width: '120%',
+      height: '120%',
+      background: 'radial-gradient(at 30% 30%, transparent 30%, rgba(0,0,0,.7) 80%)',
+      mixBlendMode: 'darken',
+    }))
+    .add(Thing.make({  // highlight on wall
+      width: '100%',
+      height: '100%',
+      background: 'radial-gradient(at 40% 30%, rgba(255, 255, 235, .7) 10%, transparent 50%)',
+      mixBlendMode: 'normal',
+      opacity: 0.5,
+    }));
+
+    /***
+    <div class="BGImg" id="BGImg119" style="position: absolute;width: 100%;height: 100%;opacity: 0.025;background-image: linear-gradient(90deg, rgba(255, 244, 56, 0.75) 4px, transparent 4px);background-repeat: repeat;background-position: center center;background-size: 10px;"></div>
+    <div class="Thing" id="Thing120" style="width: 100%;height: 100%;background: radial-gradient(at 10% -10%, transparent 50%, rgba(0, 0, 0, 1) 95%);position: absolute;"></div>
+    <div class="Thing" id="Thing121" style="width: 100%;height: 100%;background: radial-gradient(at 45% 40%, rgb(255, 255, 255) 1%, transparent 50%);mix-blend-mode: overlay;opacity: 0.45;position: absolute;"></div>
+    <div class="Thing" id="Thing121" style="width: 100%;height: 100%;background: radial-gradient(at 40% 30%, rgba(255, 255, 255, 0.9) 1%, transparent 80%);mix-blend-mode: lighten;opacity: 0.35;position: absolute;"></div>
+    ***/
+}
+
 $(function () {
   var legRoom = makeRoom({
-    x: CW * 0.85,
+    x: CW * 0.05,
     y: CH * 0.0215,
     z: 0,
     w: CW * 0.2,
@@ -247,7 +305,7 @@ $(function () {
   legRoom.add(makeMaskedLump());
 
   var innerRoom = makeRoom({
-    x: CW * 0.5,
+    x: CW * 0.01,
     y: CH * 0.0215,
     z: 0,
     w: CW * 0.15,
@@ -277,7 +335,7 @@ $(function () {
     d: CW * 0.1,
   });
 
-  var plane1 = makePlane({x: 0, w: 1200});
+  var plane1 = makePlane({id: 'plane1', x: 0, w: 1200});
   plane1.add(makeWireRoom({
     x: 0,
     y: -CH * 0.2,
@@ -287,7 +345,7 @@ $(function () {
     d: CW * 0.1,
   }));
 
-  var plane2 = makePlane({x: 4800, w: 1200});
+  var plane2 = makePlane({id: 'plane2', x: 4800, w: 1200});
   plane2.add(makeLump({
     x: 0,
     y: CH * 0.29,
@@ -295,6 +353,23 @@ $(function () {
     h: CH -(CH * 0.135),
     imageNames: legImages,
   }));
+
+  var plant1 = Thing.Img.make({
+    id: 'plant1',
+    src: 'img/BananaPalm_t.png',
+    x: CW * 0.8833,
+    y: CH * 0.1150,
+    z: -CH * 0.2688,
+    w: CW * 0.3000,
+  });
+
+  var sceneHighlight = Thing.make({
+    width: '100%',
+    height: '100%',
+    // background: 'radial-gradient(at 40% 30%, rgba(255, 255, 25, 0.3) 30%, rgba(0, 0, 50, 0.5) 80%)',
+    background: 'radial-gradient(at 40% 30%, transparent 30%, rgba(0, 0, 50, 0.5) 80%)',
+    mixBlendMode: 'hard-light',
+  });
 
   var couchDefs = [
     {
@@ -335,21 +410,31 @@ $(function () {
   ];
 
   var couch = makePatternedCouch({
-    x: 2000,
-    y: 2000,
-    w: 3000,
-    h: 1200,
+    x: CW * 0.3833,
+    y: CH * 0.5645,
+    z: -CH * 0.2688,
+    w: CW * 0.6666,
+    h: CH * 0.4301,
     def: Thing.Rand.randItem(couchDefs),
+  });
+
+  var couchShadow = makeShadowSpot({
+    x: couch.x,
+    y: CH * 0.7809,
+    z: -CH * 0.3763,
+    w: couch.w,
+    h: couch.h,
   });
 
   var mainRoom = makeRoom({
     x: -CW * 0.22,
     y: 0,
-    d: CH * 0.9,
+    d: CH * 1.2,
     w: CW * 1.44,
     h: CH,
     perspectiveOrigin: (CW * 0.5) + 'px ' + (CH * 0.75) + 'px',  // origin is center of screen
   });
+
   mainRoom.back.css({backgroundColor: 'transparent'});
   mainRoom.left.css({backgroundColor: 'transparent'});
   mainRoom.right.css({backgroundColor: 'transparent'});
@@ -357,22 +442,23 @@ $(function () {
   mainRoom.bottom.css({backgroundColor: 'rgba(0,255,0,.2)'});
   mainRoom.bottom.add(fillFloor());
   mainRoom.add([
-    innerRoom,
-    legRoom.add(wireframeRoom2),
+    // innerRoom,
+    // legRoom.add(wireframeRoom2),
     wireframeRoom,
+    plant1,
+    couchShadow,
     couch,
   ]);
 
-  Meninas.makeBackground(CW, CH)
-    .css({
-      backgroundColor:'rgb(60, 47, 70)',
-      backgroundImage: 'url(img/clouds_on_light_blue.jpg)',
-      backgroundSize: 'cover',
-      perspective: '7000px',
-    })
+  legRoom.add(wireframeRoom2);
+  plane1.add(innerRoom);
+  plane2.add(legRoom);
+
+  makeBackground({w: CW, h: CH})
     .add(mainRoom)
     .add(plane1)
     .add(plane2)
+    // .add(sceneHighlight)
     .render();
 
   Thing.Page.setup();
