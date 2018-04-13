@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=525">
+	<title>FACY</title>
+
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.2.3/fabric.min.js" ></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="js/MainLoop.js"></script>
+
+	<!-- <script src="lib/fabric.all.min.js" ></script> -->
+	<!-- <script src="lib/jquery.min.js"></script> -->
+
+	<link href="css/psoup2018.css" rel="stylesheet">
+</head>
+
+<body>
+	<div id="canvas-wrapper">
+		<canvas id="c" style="width: 500px; height: 500px; border:1px solid black;" ></canvas>
+
+		<div id="controls">
+			<a href='#' id="btn_fill_black" class="fill"></a>
+			<a href='#' id="btn_fill_white" class="fill"></a>
+			<a href='#' id="btn_fill_gray" class="fill"></a>
+		</div>
+
+		<div id="fpsDisplay" style="position: absolute; top: 70px; left: 10px;"></div>
+	</div>
+
+	<script>
+		var glob = {
+			left: 100,
+			top: 100,
+			width: 100,
+			height: 100,
+			fill: 'black',
+			stroke: 'white',
+			strokeWidth: 0,
+			angle: 0,
+		};
+		var borderWidths = [0, 2, 5, 10];
+		var designID = null;
+		var userID = null;
+		var urlParams = getParams();
+
+		function bumpDefaultPos (g) {
+			g.left += 20;
+			g.top += 20;
+			if (g.left > 400) {
+				g.left = 50;
+				g.top = 50;
+			}
+		}
+
+		function makeTriangle (g) {
+			var triangle = new fabric.Triangle({
+			  width: g.width,
+			  height: g.height,
+			  left: g.left,
+			  top: g.top,
+			  fill: g.fill,
+			  stroke: g.stroke || undefined,
+			  strokeWidth: g.strokeWidth || 0,
+			  angle: g.angle,
+			});
+			return triangle;
+		}
+
+		function makeEllipse (g) {
+			var ellipse = new fabric.Ellipse({
+			  rx: g.width/2,
+			  ry: g.height/2,
+			  left: g.left,
+			  top: g.top,
+			  fill: g.fill,
+			  stroke: g.stroke || undefined,
+			  strokeWidth: g.strokeWidth || 0,
+			  angle: g.angle,
+			});
+			return ellipse;
+		}
+
+		function makeRectangle (g) {
+			var rect = new fabric.Rect({
+			  width: g.width,
+			  height: g.height,
+			  left: g.left,
+			  top: g.top,
+			  fill: g.fill,
+			  stroke: g.stroke || undefined,
+			  strokeWidth: g.strokeWidth || 0,
+			  angle: g.angle,
+			});
+			return rect;
+		}
+
+		function makeShape(options) {
+			if (options && options.type) {
+				var makers = {
+					ellipse: makeEllipse,
+					rect: makeRectangle,
+					triangle: makeTriangle
+				};
+				var type = options.type;
+				delete options.type;
+				return makers[type](options);
+			}
+		}
+
+		function getSelected (canvas) {
+			var group = canvas.getActiveGroup();
+			return group ? group : canvas.getActiveObject();
+		}
+
+		function doToSelected (canvas, func) {
+			var group = canvas.getActiveGroup();
+			var obj = canvas.getActiveObject();
+			if (group) {
+				group.forEachObject(func);
+			}
+			else if (obj) {
+				func(obj);
+			}
+			canvas.renderAll();
+		}
+
+		function doToAll (canvas, func) {
+			canvas.forEachObject(func);
+		}
+
+		function borderOff (obj) {
+			if (obj) {
+				obj.setStrokeWidth( 0 );
+				// obj.setStroke( null );
+			}
+		}
+
+		function borderOn (obj, widthNum) {
+			if (obj) {
+				obj.setStrokeWidth( borderWidths[widthNum] || 0 );
+				obj.setStroke( glob.stroke );
+			}
+		}
+
+		function remove (o) {
+			o.remove();
+		}
+
+		function getProperties (o) {
+			if (o) {
+				var w = o.type === 'ellipse' ? o.rx * 2 : o.width;
+				var h = o.type === 'ellipse' ? o.ry * 2 : o.height;
+
+				return {
+					type: o.type,
+					fill: o.fill,
+					stroke: o.stroke,
+					strokeWidth: o.strokeWidth,
+					left: o.left,
+					top: o.top,
+					width: w,
+					height: h,
+					angle: o.angle
+				};
+			}
+		}
+
+		function getDesign (canvas) {
+			var json = canvas.toJSON();
+			var design = {
+				version: '0.1',
+				canvas: {
+					bgcolor: json.background
+				},
+				objects: []
+			}
+
+			json.objects.forEach(function (obj) {
+				design.objects.push(getProperties(obj));
+			});
+
+			return design;
+		}
+
+		function setDesign (canvas, json) {
+			json.canvas.bgcolor && canvas.setBackgroundColor(json.canvas.bgcolor);
+
+			json.objects.forEach(function (objProperties) {
+				var shape = makeShape(objProperties);
+				canvas.add(shape);
+			});
+		}
+
+		function shiftPosition (objProps) {
+			objProps && (objProps.left = objProps.left + 20);
+			return objProps;
+		}
+
+		function selectButton (el, group) {
+			$('#controls .' + group).removeClass('selected');
+			$(el).addClass('selected');
+		}
+
+		function selectedObjects (canvas) {
+			return canvas.getObjects().filter(function (obj) { return obj.active; })
+		}
+
+		function selectedObjectIndexes (canvas) {
+			return canvas.getObjects()
+								.filter(function (obj, i) { return obj.active; })
+								.map(function (obj) { return canvas.getObjects().indexOf(obj); });
+		}
+
+		function makeInterface (canvas, g) {
+			$('body').on('keydown', function (e) {
+				var key = e.keyCode || e.charCode;
+				if (key == 8 || key == 46) {
+					$('#btn_delete').trigger('click');
+				}
+			});
+
+			// Shapes
+			$('#btn_triangle').on('click', function (e) {
+				canvas.add(makeTriangle(g));
+				bumpDefaultPos(g);
+			});
+
+			$('#btn_ellipse').on('click', function (e) {
+				canvas.add(makeEllipse(g));
+				bumpDefaultPos(g);
+			});
+
+			$('#btn_rectangle').on('click', function (e) {
+				canvas.add(makeRectangle(g));
+				bumpDefaultPos(g);
+			});
+
+			// Fill colors
+			$('#btn_fill_white').on('click', function (e) {
+				selectButton(e.target, 'fill');
+				getSelected(canvas) && getSelected(canvas).setFill('white');
+				glob.fill = 'white';
+				canvas.renderAll();
+				e.preventDefault();
+			});
+
+			$('#btn_fill_black').on('click', function (e) {
+				selectButton(e.target, 'fill');
+				getSelected(canvas) && getSelected(canvas).setFill('black');
+				glob.fill = 'black';
+				canvas.renderAll();
+				e.preventDefault();
+			});
+
+			$('#btn_fill_gray').on('click', function (e) {
+				selectButton(e.target, 'fill');
+				getSelected(canvas) && getSelected(canvas).setFill('gray');
+				glob.fill = 'gray';
+				canvas.renderAll();
+				e.preventDefault();
+			});
+
+			// Border colors
+			$('#btn_stroke_white').on('click', function (e) {
+				selectButton(e.target, 'stroke');
+				getSelected(canvas) && getSelected(canvas).setStroke('white');
+				glob.stroke = 'white';
+				canvas.renderAll();
+				e.preventDefault();
+			});
+
+			$('#btn_stroke_black').on('click', function (e) {
+				selectButton(e.target, 'stroke');
+				getSelected(canvas) && getSelected(canvas).setStroke('black');
+				glob.stroke = 'black';
+				canvas.renderAll();
+				e.preventDefault();
+			});
+
+			$('#btn_stroke_gray ').on('click', function (e) {
+				selectButton(e.target, 'stroke');
+				getSelected(canvas) && getSelected(canvas).setStroke('gray');
+				glob.stroke = 'gray';
+				canvas.renderAll();
+				e.preventDefault();
+			});
+
+			// Object actions
+			$('#btn_push').on('click', function (e) {
+				var sel = getSelected(canvas);
+				if (!sel.objects) {
+					sel.sendBackwards();
+				}
+			});
+
+			$('#btn_pull').on('click', function (e) {
+				var sel = getSelected(canvas);
+				if (!sel.objects) {
+					sel.bringForward();
+				}
+			});
+
+			$('#btn_border_0').on('click', function (e) {
+				selectButton(e.target, 'border');
+				doToSelected(canvas, borderOff);
+				glob.strokeWidth = 0;
+				glob.stroke = null;
+			});
+
+			$('#btn_border_1').on('click', function (e) {
+				selectButton(e.target, 'border');
+				doToSelected(canvas, function (obj) {borderOn(obj, 1)} );
+				glob.strokeWidth = borderWidths[1];
+			});
+
+			$('#btn_border_2').on('click', function (e) {
+				selectButton(e.target, 'border');
+				doToSelected(canvas, function (obj) {borderOn(obj, 2)} );
+				glob.strokeWidth = borderWidths[2];
+			});
+
+			$('#btn_border_3').on('click', function (e) {
+				selectButton(e.target, 'border');
+				doToSelected(canvas, function (obj) {borderOn(obj, 3)} );
+				glob.strokeWidth = borderWidths[3];
+			});
+
+			// Canvas actions
+			$('#btn_clear').on('click', function (e) {
+				designID = 'f' + makeRandomString();
+				canvas.clear();
+			});
+
+			setupInterface(g, null);
+		}
+
+		function setupInterface (g, activeObject) {
+			var colorBtn = $('#btn_fill_' + g.fill);
+			selectButton(colorBtn, 'fill');
+
+			var borderBtn = $('#btn_border_' + borderWidths.indexOf(g.strokeWidth));
+			selectButton(borderBtn, 'border');
+
+			var strokeBtn = $('#btn_stroke_' + g.stroke);
+			selectButton(strokeBtn, 'stroke');
+
+			var objectBtns = $('#controls .object');
+			objectBtns.removeClass('disabled');
+			if (!activeObject) {
+				objectBtns.addClass('disabled');
+			}
+		}
+
+		function makeRandomString () {
+			return Math.random().toString(36).substring(2);
+		}
+
+		function disable (a) {
+			console.log(a);
+			$(a).addClass('clicked');
+		}
+
+		function makeImageLink(url) {
+			return '<a href="' + url + '" onclick="disable(this)" download="facy.png">Download image</a>';
+		}
+
+		function injectHTML($element, html) {
+			$element.empty().append(html);
+		}
+
+		//=================
+
+		function setCookie(name, value, expirationDate) {
+			if (!expirationDate) {
+				var days = 3650;
+				expirationDate = new Date();
+				expirationDate.setTime(expirationDate.getTime() + (days * 24 * 60 * 60 * 1000));
+			}
+			const expires = expirationDate && expirationDate.toGMTString ? `;expires=${expirationDate.toGMTString()}` : '';
+			document.cookie = `${name}=${value}${expires};path=`;
+		}
+
+		function getCookie(name) {
+			const cookies = document.cookie.split(/\s?;\s?/);
+			const cookieJar = {};
+
+			cookies.forEach((cookie) => {
+				const pair = cookie.split('=');
+				cookieJar[pair.shift()] = pair.join('=');
+			});
+
+			return cookieJar[name];
+		}
+
+		function parseKeyvalString(str, delimiter = '&', associativeOperator = '=') {
+		    const result = {};
+		    const decodedStr = str ? decodeURIComponent(str) : null;
+
+		    if (decodedStr) {
+		        const keyvals = decodedStr.split(delimiter);
+		        keyvals.forEach((kv) => {
+		            const keyval = kv.split(associativeOperator);
+		            if (keyval.length >= 2) {
+		                const key = keyval.shift();
+		                if (key) {
+		                    const val = keyval.join('=');
+		                    result[key.trim()] = val.trim();
+		                }
+		            }
+		        });
+		    }
+
+		    return result;
+		}
+
+		function getParams() {
+		    return parseKeyvalString(window.location.search.slice(1));
+		}
+
+		//=================
+
+		$(function () {
+			// Make the fabric canvas
+			var canvas = new fabric.Canvas('c', {
+				preserveObjectStacking: true,
+				backgroundColor: 'pink',
+			});
+			canvas.setHeight(500);
+			canvas.setWidth(500);
+
+			makeInterface(canvas, glob);
+
+			// Customize the resize controls for all objects, 
+			// and turn off objectCaching (it conflicts with resize behavior)
+			fabric.Object.prototype.set({
+				cornerSize: 25,
+				transparentCorners: true,
+				cornerColor: '#70a1ff',
+				borderColor: '#70a1ff',
+				objectCaching: false,
+			});
+
+			window.fcanvas = canvas;
+
+			// load design if one was passed on url
+			if (urlParams.d) {
+				$.getJSON('stickies/' + urlParams.d + '.json', function (json) {
+					if (json) {
+						setDesign(canvas, json);
+					}
+				});
+			}
+			else {
+				// load design from cookie
+				var jsonStr = getCookie('facy1');
+				if (jsonStr) {
+					var json = JSON.parse(jsonStr);
+					setDesign(canvas, json);
+				}
+			}
+
+			// Make sure we have a user id
+			userID = getCookie('facyUID');
+			if (!userID) {
+				setCookie('facyUID', 'u' + makeRandomString());
+				userID = getCookie('facyUID');
+				if (!userID) {
+					alert('No Cookie, No Facy');
+				}
+			}
+
+			//============================================================
+
+			function changePosition(obj, v) {
+			    // obj.set({left:v, rx:50, ry:50});
+			    if (v > 0) {
+			    	obj.set({rx:v, ry:v, originX: 'center', originY: 'center'});
+			    	canvas.renderAll();
+			    	canvas.calcOffset();
+			    }
+			}
+
+			var obj = makeEllipse({
+				left: 250,
+				top: 250,
+				rx: 10,
+				ry: 10,
+				fill: 'rgba(0,0,0,0)',
+				stroke: 'rgba(0,0,0,0.8)',
+				strokeWidth: 2,
+				angle: 0,
+				originX: 'center',
+				originY: 'center',
+			});
+
+			canvas.add(obj);
+			changePosition(obj, 10);
+
+			//============================================================
+
+			var fpsDisplay = document.getElementById('fpsDisplay');
+			var boxPos = 10;
+			var boxLastPos = 10;
+			var boxVelocity = 0.08;
+			var limit = 200;
+			// var timestep = 1000 / 30;
+
+			function update(delta) {
+			    boxLastPos = boxPos;
+			    boxPos += boxVelocity * delta;
+			    // Switch directions if we go too far
+			    if (boxPos >= limit || boxPos <= 0) boxVelocity = -boxVelocity;
+			}
+
+			function draw(interp) {
+			    changePosition(obj, (boxLastPos + (boxPos - boxLastPos) * interp));
+			    fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
+			}
+
+			// MainLoop.setSimulationTimestep(timestep);
+			MainLoop.setDraw(draw);
+			MainLoop.setUpdate(update);
+			MainLoop.start();
+
+			//============================================================
+		});
+	</script>
+
+</body>
+</html>

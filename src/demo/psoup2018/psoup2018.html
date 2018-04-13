@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+      #myCanvas {
+        transform: scale(1);
+        transform-origin: 0 0;
+      }
+    </style>
+    <script src="js/tinycolor/tinycolor.js"></script>
+    <script src="js/Sound.js"></script>
+    <script src="js/MainLoop.js"></script>
+    <script src="js/pulsar.js"></script>
+  </head>
+
+  <body>
+    <canvas id="myCanvas" width="1200" height="800"></canvas>
+    <div id="fpsDisplay" style="position: absolute; top: 70px; left: 10px;"></div>
+
+    <script>
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+      var centerX = canvas.width / 3;
+      var centerY = canvas.height / 3;
+      var radius = 200;
+
+      //============================================================
+
+      var fpsDisplay = document.getElementById('fpsDisplay');
+      var timestep = 1000 / 30;
+
+      function updateAll(delta) {
+        pulsars.forEach(function (p) {
+          p.update(delta);
+        });
+      }
+
+      function drawAll(interp) {
+        pulsars.forEach(function (p) {
+          p.draw(interp);
+        });
+        fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
+      }
+
+      function handleClick(x, y) {
+        console.log(x,y);
+        var scale = 1 / 1;
+        pulsars.push(new Pulsar({
+          context: context,
+          colorFactory: huesgreen,
+          x: x * scale, 
+          y: y * scale,
+          velocity: 0.003,
+        }));
+      }
+
+      var alpha = 0.1;
+      var huesmediumblue  = new ColorFactory({cFrom: [80,255,255,alpha],  cTo: [100,80,160,alpha]});
+      var huesgreen       = new ColorFactory({cFrom: [200,255,10,0.9],    cTo: [80,200,100,0.95]});
+      var hueswhiteblue   = new ColorFactory({cFrom: [250,250,205,alpha], cTo: [0,100,255,0.95]});
+      var huesred         = new ColorFactory({cFrom: [240,0,0,0.9],       cTo: [90,100,160,alpha]});
+      var huesorangeblue  = new ColorFactory({cFrom: [255,100,0,alpha],   cTo: [100,200,255,alpha]});
+      var huesyellow      = new ColorFactory({cFrom: [255,255,10,alpha],  cTo: [250,200,150,alpha]});
+      var huesviolet      = new ColorFactory({cFrom: [255,255,230,alpha], cTo: [80,80,220,alpha]});
+      var huesdarkblue    = new ColorFactory({cFrom: [0,0,3,0.1],         cTo: [0,0,50,0.1]});
+      var hueslightcyan   = new ColorFactory({cFrom: [255,250,200,alpha], cTo: [80,200,225,alpha]});
+      var huesaqua        = new ColorFactory({cFrom: [0,153,102,0.8],   cTo: [11,76,61,0.7]});
+
+      clearCanvas('#FF0');
+      window.cnv = canvas;
+
+      var pulsars = [];
+
+      pulsars.push(new Pulsar({
+        context: context,
+        colorFactory: hueswhiteblue,
+        x: 300,
+        y: 500,
+        velocity: 0.002,
+      }));
+
+      pulsars.push(new Pulsar({
+        context: context,
+        colorFactory: huesred,
+        x: 350,
+        y: 500,
+        velocity: 0.0025,
+      }));
+
+      pulsars.push(new Pulsar({
+        context: context,
+        colorFactory: hueswhiteblue,
+        x: 500,
+        y: 500,
+        velocity: 0.003,
+      }));
+
+      pulsars.push(new Pulsar({
+        context: context,
+        colorFactory: huesdarkblue,
+        x: 550,
+        y: 500,
+        velocity: 0.001,
+      }));
+
+      pulsars.push(new PulsarSolid({
+        context: context,
+        colorFactory: huesdarkblue,
+        x: 800,
+        y: 600,
+        maxR: 300,
+        velocity: 0.03,
+      }));
+
+      pulsars.push(new Pulsar({
+        context: context,
+        colorFactory: huesred,
+        x: 100,
+        y: 300,
+        velocity: 0.0035,
+        maxR: 50,
+      }));
+
+      pulsars.push(new Pulsar({
+        context: context,
+        colorFactory: huesyellow,
+        x: 300,
+        y: 300,
+        velocity: 0.002,
+        maxR: 200,
+      }));
+
+      pulsars.push(new Pulsar({
+        context: context,
+        colorFactory: huesyellow,
+        x: 500,
+        y: 300,
+        velocity: 0.0018,
+        maxR: 200,
+      }));
+
+      pulsars.push(new PulsarSolid({
+        context: context,
+        colorFactory: huesred,
+        x: 750,
+        y: 300,
+        velocity: 0.002,
+        maxR: 80,
+      }));
+
+      pulsars.push(new Slider({
+        context: context,
+        // color: '#00006622',
+        colorFactory: huesred,
+        x: 550,
+        y: 200,
+        velocity: 0.001,
+        maxX: 900,
+        r: radius,
+      }));
+
+      pulsars.push(new Slider({
+        context: context,
+        // color: '#00996699',
+        colorFactory: huesaqua,
+        x: 150,
+        y: 200,
+        maxX: 800,
+        r: radius,
+        velocity: 0.01,
+      }));
+
+
+      MainLoop.setSimulationTimestep(timestep);
+      MainLoop.setDraw(drawAll);
+      MainLoop.setUpdate(updateAll);
+      MainLoop.start();
+
+      canvas.addEventListener('click', function (e) {
+        handleClick(e.pageX, e.pageY);
+      })
+      canvas.addEventListener('touchstart', function (e) {
+        handleClick(e.pageX, e.pageY);
+      })
+      //============================================================
+
+    </script>
+  </body>
+</html>
