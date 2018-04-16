@@ -80,21 +80,21 @@
 
       window.cnv = canvas;
 
-      var cfBlue = new ColorFactory({cFrom: [80,255,255,0.92], cTo: [100,80,160,0.2]});
+      var cfBlue = new ColorFactory({colorFrom: [80,255,255,0.92], colorTo: [100,80,160,0.2]});
       var fpsDisplay = document.getElementById('fpsDisplay');
       var b1 = {
         color: '#ffff0022',
         boxPos: 100,
         boxLastPos: 100,
         boxVelocity: 0.02,
-        limit: 500,        
+        limit: 500,
       }
       var b2 = {
         color: '#00660033',
         boxPos: 120,
         boxLastPos: 120,
         boxVelocity: 0.025,
-        limit: 500,        
+        limit: 500,
       }
       var timestep = 1000 / 30;
 
@@ -135,7 +135,7 @@
         pulsars.push(new Pulsar({
           context: context,
           colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),  // [51, 153, 0, 0.2]
-          x: x * scale, 
+          x: x * scale,
           y: y * scale,
         }));
       }

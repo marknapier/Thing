@@ -52,23 +52,23 @@
         pulsars.push(new Pulsar({
           context: context,
           colorFactory: huesgreen,
-          x: x * scale, 
+          x: x * scale,
           y: y * scale,
           velocity: 0.003,
         }));
       }
 
       var alpha = 0.1;
-      var huesmediumblue  = new ColorFactory({cFrom: [80,255,255,alpha],  cTo: [100,80,160,alpha]});
-      var huesgreen       = new ColorFactory({cFrom: [200,255,10,0.9],    cTo: [80,200,100,0.95]});
-      var hueswhiteblue   = new ColorFactory({cFrom: [250,250,205,alpha], cTo: [0,100,255,0.95]});
-      var huesred         = new ColorFactory({cFrom: [240,0,0,0.9],       cTo: [90,100,160,alpha]});
-      var huesorangeblue  = new ColorFactory({cFrom: [255,100,0,alpha],   cTo: [100,200,255,alpha]});
-      var huesyellow      = new ColorFactory({cFrom: [255,255,10,alpha],  cTo: [250,200,150,alpha]});
-      var huesviolet      = new ColorFactory({cFrom: [255,255,230,alpha], cTo: [80,80,220,alpha]});
-      var huesdarkblue    = new ColorFactory({cFrom: [0,0,3,0.1],         cTo: [0,0,50,0.1]});
-      var hueslightcyan   = new ColorFactory({cFrom: [255,250,200,alpha], cTo: [80,200,225,alpha]});
-      var huesaqua        = new ColorFactory({cFrom: [0,153,102,0.8],   cTo: [11,76,61,0.7]});
+      var huesmediumblue  = new ColorFactory({colorFrom: [80,255,255,alpha],  colorTo: [100,80,160,alpha]});
+      var huesgreen       = new ColorFactory({colorFrom: [200,255,10,0.9],    colorTo: [80,200,100,0.95]});
+      var hueswhiteblue   = new ColorFactory({colorFrom: [250,250,205,alpha], colorTo: [0,100,255,0.95]});
+      var huesred         = new ColorFactory({colorFrom: [240,0,0,0.9],       colorTo: [90,100,160,alpha]});
+      var huesorangeblue  = new ColorFactory({colorFrom: [255,100,0,alpha],   colorTo: [100,200,255,alpha]});
+      var huesyellow      = new ColorFactory({colorFrom: [255,255,10,alpha],  colorTo: [250,200,150,alpha]});
+      var huesviolet      = new ColorFactory({colorFrom: [255,255,230,alpha], colorTo: [80,80,220,alpha]});
+      var huesdarkblue    = new ColorFactory({colorFrom: [0,0,3,0.1],         colorTo: [0,0,50,0.1]});
+      var hueslightcyan   = new ColorFactory({colorFrom: [255,250,200,alpha], colorTo: [80,200,225,alpha]});
+      var huesaqua        = new ColorFactory({colorFrom: [0,153,102,0.8],   colorTo: [11,76,61,0.7]});
 
       clearCanvas('#FF0');
       window.cnv = canvas;

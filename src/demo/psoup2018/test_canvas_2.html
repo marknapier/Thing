@@ -10,14 +10,31 @@
         transform: scale(1);
         transform-origin: 0 0;
       }
+      .canvas-wrapper {
+        padding: 5px;
+      }
+      .color-button {
+        display: inline;
+        padding: 15px;
+        margin: 10px;
+        background-color: #ff0;
+        border: 1px solid transparent;
+      }
+      .color-button:hover {
+        cursor: pointer;
+        border: 1px solid blue;
+      }
     </style>
     <script src="js/Sound.js"></script>
     <script src="js/MainLoop.js"></script>
     <script src="js/tinycolor/tinycolor.js"></script>
+    <script src="js/pulsar.js"></script>
   </head>
 
   <body>
-    <canvas id="myCanvas" width="1200" height="800"></canvas>
+    <div class='canvas-wrapper'>
+      <canvas id="myCanvas" width="1200" height="800"></canvas>
+    </div>
     <!-- <canvas id="myCanvas" width="6000" height="4000"></canvas> -->
     <div id="fpsDisplay" style="position: absolute; top: 70px; left: 10px;"></div>
     <img id="canvasCopy" style="width:50px; height:50px; border: 1px solid gray;" onclick="copyCanvas()">
@@ -30,191 +47,116 @@
       var centerY = canvas.height / 3;
       var radius = 200;
 
+      var pulsarConfigs = [
+        {
+          context: context,
+          colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),
+          x: 200,
+          y: 100,
+        },
+        {
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 153, 0, 0.2]}),
+          x: 400,
+          y: 200,
+          velocity: .03,
+        },
+        {
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 0, 0, 0.06667]}),
+          x: 300,
+          y: 300,
+          velocity: .02,
+        },
+        {
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 0, 102, 0.1333]}),
+          x: 450,
+          y: 300,
+          velocity: .025,
+          maxR: 200,
+        },
+        {
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 153, 0, 0.8]}),
+          x: 450,
+          y: 300,
+          velocity: .018,
+          maxR: 200,
+        },
+        {
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 153, 102, 0.9333]}),
+          x: 450,
+          y: 300,
+          velocity: .018,
+          maxR: 200,
+        }
+      ];
+
+      var currentPen = pulsarConfigs[0];
+
       function copyCanvas() {
         var dataURL = canvas.toDataURL();
         document.getElementById('canvasCopy').src = dataURL;
       }
 
-      function drawCircle(context, x, y, r, color) {
-        r = (r < 0) ? 0 : r;
-        context.beginPath();
-        context.arc(x, y, r, 0, 2 * Math.PI, false);
-        context.fillStyle = '#00000000';
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = color;
-        context.stroke();
-      }
-
-      function drawCircleFilled(context, x, y, r, color) {
-        r = (r < 0) ? 0 : r;
-        context.beginPath();
-        context.arc(x, y, r, 0, 2 * Math.PI, false);
-        context.fillStyle = color;
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = color;
-        context.stroke();
-      }
-
-      context.rect(0, 0, canvas.width, canvas.height);
-      context.fillStyle = 'yellow';
-      context.fill();
-
-      context.beginPath();
-      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-      context.fillStyle = 'green';
-      context.fill();
-      context.lineWidth = 2;
-      context.strokeStyle = '#003300bb';
-      context.stroke();
-
-      context.beginPath();
-      context.arc(centerX-50, centerY+50, radius, 0, 2 * Math.PI, false);
-      context.fillStyle = '#660000bb';
-      context.fill();
-      context.lineWidth = 2;
-      context.strokeStyle = '#006600bb';
-      context.stroke();
+      clearCanvas('yellow');
 
       window.cnv = canvas;
 
-      //============================================================
-      class ColorFactory {
-        //80,255,255, 100,80,160, 255
-        constructor(props = {cFrom: [0,0,0,1], cTo: [255,255,255,1]}) {
-          this.colorFrom = props.cFrom.slice(0);
-          this.colorTo = props.cTo.slice(0);
-        }
-
-        getColor(position = 1) { // 0-1
-          var newColor = [];
-          newColor[0] = this.colorFrom[0] + Math.round((this.colorTo[0]-this.colorFrom[0]) * position);
-          newColor[1] = this.colorFrom[1] + Math.round((this.colorTo[1]-this.colorFrom[1]) * position);
-          newColor[2] = this.colorFrom[2] + Math.round((this.colorTo[2]-this.colorFrom[2]) * position);
-          newColor[3] = this.colorFrom[3] + ((this.colorTo[3]-this.colorFrom[3]) * position);
-          return newColor;
-        }
-      }
-
-      var cfBlue = new ColorFactory({cFrom: [80,255,255,0.92], cTo: [100,80,160,0.2]});
-
-      class Pulsar {
-        constructor(props = {}) {
-          this.color = props.color || '#ffff0022';
-          this.context = props.context;
-          this.x = props.x || 0;
-          this.y = props.y || 0;
-          this.r = props.r || 0;
-          this.lastr = props.r || 0;
-          this.maxR = props.maxR || 250;
-          this.velocity = props.velocity || 0.02;
-        }
-
-        update(delta) {
-          this.lastr = this.r;
-          this.r += this.velocity * delta;
-          if (this.r >= this.maxR || this.r <= 0) {
-            this.velocity = -this.velocity;
-          }
-        }
-
-        draw(interp) {
-          var color = cfBlue.getColor(this.r / this.maxR);
-          var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
-          drawCircle(
-            this.context,
-            this.x,
-            this.y,
-            (this.lastr + (this.r - this.lastr) * interp),
-            this.color
-            // hex
-          );
-        }
-      }
-
-      class PulsarSolid extends Pulsar {
-        draw(interp) {
-          drawCircleFilled(
-            this.context,
-            this.x,
-            this.y,
-            (this.lastr + (this.r - this.lastr) * interp),
-            this.color
-          );
-        }
-      }
-
-      class Slider {
-        constructor(props = {}) {
-          this.color = props.color || '#ffff0022';
-          this.context = props.context;
-          this.x = props.x || 0;
-          this.y = props.y || 0;
-          this.r = props.r || 100;
-          this.lastx = props.x || 0;
-          this.minX = props.x || 0;
-          this.maxX = props.maxX || 500;
-          this.velocity = props.velocity || 0.02;
-        }
-
-        update(delta) {
-          this.lastx = this.x;
-          this.x += this.velocity * delta;
-          if (this.x >= this.maxX || this.x <= this.minX) {
-            this.velocity = -this.velocity;
-          }
-        }
-
-        draw(interp) {
-          drawCircle(
-            this.context,
-            (this.lastx + (this.x - this.lastx) * interp),
-            this.y,
-            this.r,
-            this.color
-          );
-        }
-      }
-
+      var cfBlue = new ColorFactory({colorFrom: [80,255,255,0.92], colorTo: [100,80,160,0.2]});
       var fpsDisplay = document.getElementById('fpsDisplay');
       var b1 = {
         color: '#ffff0022',
         boxPos: 100,
         boxLastPos: 100,
         boxVelocity: 0.02,
-        limit: 500,        
+        limit: 500,
       }
       var b2 = {
         color: '#00660033',
         boxPos: 120,
         boxLastPos: 120,
         boxVelocity: 0.025,
-        limit: 500,        
+        limit: 500,
       }
       var timestep = 1000 / 30;
 
+      var loopLog = [];
+      var frameCount = 0;
+
       function update(delta) {
-          b1.boxLastPos = b1.boxPos;
-          b1.boxPos += b1.boxVelocity * delta;
-          if (b1.boxPos >= b1.limit || b1.boxPos <= 100) b1.boxVelocity = -b1.boxVelocity;
+        loopLog && loopLog.push({
+          frameCount,
+          delta,
+        });
+        frameCount++;
+        if (loopLog && frameCount > 120) {
+          console.log(JSON.stringify(loopLog, null, 4));
+          loopLog = null;
+        }
 
-          b2.boxLastPos = b2.boxPos;
-          b2.boxPos += b2.boxVelocity * delta;
-          if (b2.boxPos >= b2.limit || b2.boxPos <= 100) b2.boxVelocity = -b2.boxVelocity;
+        // b1.boxLastPos = b1.boxPos;
+        // b1.boxPos += b1.boxVelocity * delta;
+        // if (b1.boxPos >= b1.limit || b1.boxPos <= 100) b1.boxVelocity = -b1.boxVelocity;
 
-          updateAll(delta);
-          // P1.update(delta);
-          // P2.update(delta);
+        // b2.boxLastPos = b2.boxPos;
+        // b2.boxPos += b2.boxVelocity * delta;
+        // if (b2.boxPos >= b2.limit || b2.boxPos <= 100) b2.boxVelocity = -b2.boxVelocity;
+
+        updateAll(delta);
       }
 
       function draw(interp) {
-          drawCircle(context, (b1.boxLastPos + (b1.boxPos - b1.boxLastPos) * interp), centerY+100, radius, b1.color);
-          drawCircle(context, 2*(b2.boxLastPos + (b2.boxPos - b2.boxLastPos) * interp), centerY+100, radius, b2.color);
-          drawAll(interp);
-          // P1.draw(interp);
-          // P2.draw(interp);
-          fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
+        loopLog && loopLog.push({
+          frameCount,
+          interp,
+        });
+        // drawCircle(context, (b1.boxLastPos + (b1.boxPos - b1.boxLastPos) * interp), centerY+100, radius, b1.color);
+        // drawCircle(context, 2*(b2.boxLastPos + (b2.boxPos - b2.boxLastPos) * interp), centerY+100, radius, b2.color);
+        drawAll(interp);
+        fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
       }
 
       function updateAll(delta) {
@@ -230,28 +172,26 @@
       }
 
       function handleClick(x, y) {
-        console.log(x,y);
         var scale = 1 / 1;   // 1 over canvas scale factor
-        pulsars.push(new Pulsar({
-          context: context,
-          color: '#33990033',
-          x: x * scale, 
-          y: y * scale,
-        }));
+        var _class = {Pulsar, PulsarSolid, Slider}[currentPen.type || 'Pulsar'];
+        currentPen.x = x;
+        currentPen.y = y;
+        currentPen.context = context;
+        pulsars.push(new _class(currentPen));
       }
 
       var pulsars = [];
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#33990033',
+        colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),
         x: 200,
         y: 100,
       }));
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#ff990033',
+        colorFactory: new ColorFactory({color: [255, 153, 0, 0.2]}),
         x: 400,
         y: 200,
         velocity: .03,
@@ -259,7 +199,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#ff000011',
+        colorFactory: new ColorFactory({color: [255, 0, 0, 0.06667]}),
         x: 300,
         y: 300,
         velocity: .02,
@@ -267,7 +207,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#6600ff33',
+        colorFactory: new ColorFactory({color: [102, 0, 255, 0.2]}),
         x: 500,
         y: 200,
         velocity: .018,
@@ -275,7 +215,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#009966ee',
+        colorFactory: new ColorFactory({color: [0, 153, 102, 0.9333]}),
         x: 450,
         y: 300,
         velocity: .025,
@@ -283,7 +223,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#00006622',
+        colorFactory: new ColorFactory({color: [0, 0, 102, 0.1333]}),
         x: 550,
         y: 200,
         velocity: .001,
@@ -291,7 +231,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#33990033',
+        colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),
         x: 200,
         y: 100,
         maxR: 200,
@@ -299,7 +239,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#ff9900cc',
+        colorFactory: new ColorFactory({color: [255, 153, 0, 0.8]}),
         x: 400,
         y: 200,
         velocity: .05,
@@ -308,7 +248,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#ff000011',
+        colorFactory: new ColorFactory({color: [255, 0, 0, 0.0667]}),
         x: 300,
         y: 300,
         velocity: .02,
@@ -317,7 +257,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#6600ff33',
+        colorFactory: new ColorFactory({color: [102, 0, 255, 0.2]}),
         x: 500,
         y: 200,
         velocity: .018,
@@ -326,7 +266,7 @@
 
       pulsars.push(new Pulsar({
         context: context,
-        color: '#009966ee',
+        colorFactory: new ColorFactory({color: [0, 153, 102, 0.9333]}),
         x: 450,
         y: 300,
         velocity: .025,
@@ -335,7 +275,7 @@
 
       pulsars.push(new PulsarSolid({
         context: context,
-        color: '#ff006622',
+        colorFactory: new ColorFactory({color: [255, 0, 102, 0.1333]}),
         x: 650,
         y: 200,
         velocity: .002,
@@ -344,24 +284,23 @@
 
       pulsars.push(new Slider({
         context: context,
-        color: '#00006622',
+        colorFactory: new ColorFactory({color: [0, 0, 102, 0.1333]}),
         x: 550,
         y: 200,
-        velocity: .001,
+        velocity: .3,
         maxX: 900,
         r: radius,
       }));
 
       pulsars.push(new Slider({
         context: context,
-        color: '#00996699',
+        colorFactory: new ColorFactory({color: [0, 153, 102, 0.6]}),
         x: 150,
         y: 200,
         maxX: 800,
         r: radius,
         velocity: .1,
       }));
-
 
       MainLoop.setSimulationTimestep(timestep);
       MainLoop.setDraw(draw);
@@ -374,7 +313,30 @@
       canvas.addEventListener('touchstart', function (e) {
         handleClick(e.pageX, e.pageY);
       })
+
+      addButtons(pulsarConfigs);
       //============================================================
+
+      function rgbHex(rgbaArray) {
+        return tinycolor({r:rgbaArray[0], g:rgbaArray[1], b:rgbaArray[2], a:1.0}).toHex8String();
+      }
+
+      function setPen(pulsarConfig) {
+        console.log('setPen()', pulsarConfig);
+        currentPen = pulsarConfig;
+      }
+
+      function addButtons(configs) {
+        configs.forEach(function (config) {
+          var div = document.createElement('div');
+          div.className = ('color-button');
+          div.style.backgroundColor = rgbHex(config.colorFactory.getColor());
+          div.addEventListener('click', (function (c) {
+                      return function (e) { setPen(c); };
+                    })(config));
+          document.body.append(div);
+        })
+      }
 
     </script>
   </body>

@@ -5,7 +5,7 @@ function drawCircle(context, x, y, r, color) {
   context.arc(x, y, r, 0, 2 * Math.PI, false);
   context.fillStyle = '#00000000';
   context.fill();
-  context.lineWidth = 1;
+  context.lineWidth = 2;
   context.strokeStyle = color;
   context.stroke();
 }
@@ -30,13 +30,13 @@ function clearCanvas(color) {
 //============================================================
 
 class ColorFactory {
-  constructor(props = {cFrom: [0,0,0,1], cTo: [255,255,255,1]}) {
+  constructor(props = {colorFrom: [0,0,0,1], colorTo: [255,255,255,1]}) {
     if (props.color) {
-      props.cFrom = props.color;
-      props.cTo = props.color;
+      props.colorFrom = props.color;
+      props.colorTo = props.color;
     }
-    this.colorFrom = props.cFrom.slice(0);
-    this.colorTo = props.cTo.slice(0);
+    this.colorFrom = props.colorFrom.slice(0);
+    this.colorTo = props.colorTo.slice(0);
   }
 
   getColor(position = 1) { // 0-1
@@ -56,6 +56,11 @@ class ColorFactory {
       }
     }
     return gradient;
+  }
+
+  getColorHex(position) {
+    var color = this.getColor(position);
+    return tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
   }
 }
 
@@ -97,7 +102,7 @@ class Pulsar {
         this.context,
         this.x,
         this.y,
-        (this.lastr + (this.r - this.lastr) * interp) * 1.5,
+        (this.lastr + (this.r - this.lastr) * interp), // * 1.5,
         hex
       );
     // }
