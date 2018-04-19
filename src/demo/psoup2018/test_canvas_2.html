@@ -42,55 +42,79 @@
     <script>
       // prozac green:  Graphic Designers Pantone: 2253 C,   Hex: #bde9c9,   RGB: rgb(189, 233, 201)
       var canvas = document.getElementById('myCanvas');
+      var fpsDisplay = document.getElementById('fpsDisplay');
       var context = canvas.getContext('2d');
-      var centerX = canvas.width / 3;
       var centerY = canvas.height / 3;
       var radius = 200;
+      var timestep = 1000 / 30;
+      var loopLog = [];
+      var frameCount = 0;
 
       var pulsarConfigs = [
         {
           context: context,
           colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),
-          x: 200,
-          y: 100,
         },
         {
           context: context,
           colorFactory: new ColorFactory({color: [255, 153, 0, 0.2]}),
-          x: 400,
-          y: 200,
-          velocity: .03,
+          velocity: .013,
         },
         {
           context: context,
           colorFactory: new ColorFactory({color: [255, 0, 0, 0.06667]}),
-          x: 300,
-          y: 300,
           velocity: .02,
         },
         {
+          type: 'Slider',
           context: context,
           colorFactory: new ColorFactory({color: [0, 0, 102, 0.1333]}),
-          x: 450,
-          y: 300,
-          velocity: .025,
-          maxR: 200,
+          velocity: .003,
+          maxX: 900,
+          r: radius,
         },
         {
           context: context,
           colorFactory: new ColorFactory({color: [255, 153, 0, 0.8]}),
-          x: 450,
-          y: 300,
-          velocity: .018,
-          maxR: 200,
+          velocity: .05,
+          maxR: 50,
         },
         {
           context: context,
           colorFactory: new ColorFactory({color: [0, 153, 102, 0.9333]}),
-          x: 450,
-          y: 300,
-          velocity: .018,
+          velocity: 0.025,
           maxR: 200,
+        },
+        {
+          type: 'PulsarSolid',
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 0, 102, 0.05]}),
+          velocity: .002,
+          maxR: 80,
+        },
+        {
+          type: 'Slider',
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 255, 0, 0.1333]}),
+          velocity: 0.02,
+          maxX: 900,
+          r: radius,
+        },
+        {
+          type: 'Slider',
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 102, 0, 0.2]}),
+          maxX: 800,
+          r: radius,
+          velocity: 0.025,
+        },
+        {
+          type: 'Slider',
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 153, 102, 0.6]}),
+          maxX: 800,
+          r: radius,
+          velocity: .02,
         }
       ];
 
@@ -100,31 +124,6 @@
         var dataURL = canvas.toDataURL();
         document.getElementById('canvasCopy').src = dataURL;
       }
-
-      clearCanvas('yellow');
-
-      window.cnv = canvas;
-
-      var cfBlue = new ColorFactory({colorFrom: [80,255,255,0.92], colorTo: [100,80,160,0.2]});
-      var fpsDisplay = document.getElementById('fpsDisplay');
-      var b1 = {
-        color: '#ffff0022',
-        boxPos: 100,
-        boxLastPos: 100,
-        boxVelocity: 0.02,
-        limit: 500,
-      }
-      var b2 = {
-        color: '#00660033',
-        boxPos: 120,
-        boxLastPos: 120,
-        boxVelocity: 0.025,
-        limit: 500,
-      }
-      var timestep = 1000 / 30;
-
-      var loopLog = [];
-      var frameCount = 0;
 
       function update(delta) {
         loopLog && loopLog.push({
@@ -137,14 +136,6 @@
           loopLog = null;
         }
 
-        // b1.boxLastPos = b1.boxPos;
-        // b1.boxPos += b1.boxVelocity * delta;
-        // if (b1.boxPos >= b1.limit || b1.boxPos <= 100) b1.boxVelocity = -b1.boxVelocity;
-
-        // b2.boxLastPos = b2.boxPos;
-        // b2.boxPos += b2.boxVelocity * delta;
-        // if (b2.boxPos >= b2.limit || b2.boxPos <= 100) b2.boxVelocity = -b2.boxVelocity;
-
         updateAll(delta);
       }
 
@@ -153,8 +144,6 @@
           frameCount,
           interp,
         });
-        // drawCircle(context, (b1.boxLastPos + (b1.boxPos - b1.boxLastPos) * interp), centerY+100, radius, b1.color);
-        // drawCircle(context, 2*(b2.boxLastPos + (b2.boxPos - b2.boxLastPos) * interp), centerY+100, radius, b2.color);
         drawAll(interp);
         fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
       }
@@ -182,125 +171,7 @@
 
       var pulsars = [];
 
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),
-        x: 200,
-        y: 100,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [255, 153, 0, 0.2]}),
-        x: 400,
-        y: 200,
-        velocity: .03,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [255, 0, 0, 0.06667]}),
-        x: 300,
-        y: 300,
-        velocity: .02,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [102, 0, 255, 0.2]}),
-        x: 500,
-        y: 200,
-        velocity: .018,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [0, 153, 102, 0.9333]}),
-        x: 450,
-        y: 300,
-        velocity: .025,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [0, 0, 102, 0.1333]}),
-        x: 550,
-        y: 200,
-        velocity: .001,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),
-        x: 200,
-        y: 100,
-        maxR: 200,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [255, 153, 0, 0.8]}),
-        x: 400,
-        y: 200,
-        velocity: .05,
-        maxR: 50,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [255, 0, 0, 0.0667]}),
-        x: 300,
-        y: 300,
-        velocity: .02,
-        maxR: 200,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [102, 0, 255, 0.2]}),
-        x: 500,
-        y: 200,
-        velocity: .018,
-        maxR: 200,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: new ColorFactory({color: [0, 153, 102, 0.9333]}),
-        x: 450,
-        y: 300,
-        velocity: .025,
-        maxR: 200,
-      }));
-
-      pulsars.push(new PulsarSolid({
-        context: context,
-        colorFactory: new ColorFactory({color: [255, 0, 102, 0.1333]}),
-        x: 650,
-        y: 200,
-        velocity: .002,
-        maxR: 80,
-      }));
-
-      pulsars.push(new Slider({
-        context: context,
-        colorFactory: new ColorFactory({color: [0, 0, 102, 0.1333]}),
-        x: 550,
-        y: 200,
-        velocity: .3,
-        maxX: 900,
-        r: radius,
-      }));
-
-      pulsars.push(new Slider({
-        context: context,
-        colorFactory: new ColorFactory({color: [0, 153, 102, 0.6]}),
-        x: 150,
-        y: 200,
-        maxX: 800,
-        r: radius,
-        velocity: .1,
-      }));
+      clearCanvas('yellow');
 
       MainLoop.setSimulationTimestep(timestep);
       MainLoop.setDraw(draw);
