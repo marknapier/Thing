@@ -27,8 +27,18 @@ class Img extends Thing {
   onLoad (img) {
     this.loaded = true;
     this.aspectRatio = img.height / img.width;  // aspect ratio of original image
-    this.w = this.w || img.width;
-    this.h = this.h || (this.w * this.aspectRatio);
+    // if neither height nor width are provided, use native dimensions
+    // if width is provided, recalc height based on aspectRatio
+    // if height is provided, recalc width based on aspectRatio
+    if (this.w || (!this.w && !this.h)) {
+        this.w = this.w || img.width;
+        this.h = this.h || (this.w * this.aspectRatio);
+    }
+    else {
+        this.h = this.h;
+        this.w = (this.h * (1/this.aspectRatio));
+        window.console.log('img loaded', this.h, this.aspectRatio, (1/this.aspectRatio), this.w);
+    }
     // set the image as the div's background
     this.css({
         width: this.w,

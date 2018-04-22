@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GUN</title>
+    <link href="../reset.css" rel="stylesheet">
+    <style type="text/css">
+      div {
+        transition: transform 3s, mix-blend-mode 3s, opacity 3s;
+      }
+
+      /* Portrait */
+      @media only screen 
+        and (min-device-width: 320px) 
+        and (max-device-width: 480px)
+        and (-webkit-min-device-pixel-ratio: 2)
+        and (orientation: portrait) {
+          body > div.Box {
+            margin-top: 100px;
+          }
+      }
+
+      /* Landscape */
+      @media only screen 
+        and (min-device-width: 320px) 
+        and (max-device-width: 480px)
+        and (-webkit-min-device-pixel-ratio: 2)
+        and (orientation: landscape) {
+          body > div.Box {
+            margin-top: 100px;
+          }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+    <!-- <script src='jquery/jquery-1.9.1.js'></script> -->
+    <script src='../jquery/jquery.min.js'></script>
+    <script src='../tinycolor/tinycolor.js'></script>
+    <script src='../thing.js'></script>
+    <script src='gun.js'></script>
+
+  </body>
+</html>
