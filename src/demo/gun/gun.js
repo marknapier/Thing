@@ -48,7 +48,8 @@ $(function () {
         y: 0,
         w: props.w,
         h: props.h,
-        opacity: index > (numImages - 2) ? 0.2 + (Rand.randFloat()*0.3) : 0.4 + (Rand.randFloat()*0.4),
+        opacity: 1.0 * (1.0 - (index/numImages)),
+        // opacity: index > (numImages - 2) ? 0.2 + (Rand.randFloat()*0.3) : 0.4 + (Rand.randFloat()*0.4),
         mixBlendMode: Thing.Rand.randItem(['difference', 'overlay', 'color-burn', 'color-dodge', 'lighten', 'darken']),
         // filter: index > 1 ? 'drop-shadow(rgb(255, 255, 20) 10px 10px 8px)' : undefined,
       });
@@ -86,11 +87,11 @@ $(function () {
     Thing.Rand.init(pageParams.randomSeed);
 
     var imageBunch = makeImageBunchMasked();
-    var spacer = (window.innerHeight - CH) / 2;
 
     // put this color on body - it won't be factored into image blend modes
     document.body.style.backgroundColor = '#ff7c00';  // #12ef5c
     document.body.style.backgroundImage = 'linear-gradient(10deg, rgba(255, 55, 0, 0.16) 87%, rgba(250, 245, 0, 0.16) 100%)';
+    // document.body.style.width = '3600px';
 
     Thing.Box.make({
       position: 'relative',

@@ -35,6 +35,7 @@
     <div class='canvas-wrapper'>
       <canvas id="myCanvas" width="1200" height="800"></canvas>
     </div>
+    <canvas id="patternCanvas" width="200" height="200"></canvas>
     <!-- <canvas id="myCanvas" width="6000" height="4000"></canvas> -->
     <div id="fpsDisplay" style="position: absolute; top: 70px; left: 10px;"></div>
     <img id="canvasCopy" style="width:50px; height:50px; border: 1px solid gray;" onclick="copyCanvas()">
@@ -42,8 +43,10 @@
     <script>
       // prozac green:  Graphic Designers Pantone: 2253 C,   Hex: #bde9c9,   RGB: rgb(189, 233, 201)
       var canvas = document.getElementById('myCanvas');
+      var canvasP = document.getElementById('patternCanvas');
       var fpsDisplay = document.getElementById('fpsDisplay');
       var context = canvas.getContext('2d');
+      var contextP = canvasP.getContext('2d');
       var centerY = canvas.height / 3;
       var radius = 200;
       var timestep = 1000 / 30;
@@ -119,6 +122,21 @@
       ];
 
       var currentPen = pulsarConfigs[0];
+      var pattern = null;
+      var pulsars = [];
+      // var M = new DOMMatrix();
+
+      function makePatternThang() {
+        // var imageObj = new Image();
+        // imageObj.onload = function() {
+        //   pattern = context.createPattern(imageObj, 'repeat');
+        // };
+        // // imageObj.src = 'https://www.html5canvastutorials.com/demos/assets/wood-pattern.png';
+        // imageObj.src = 'https://img00.deviantart.net/1c4b/i/2013/164/6/8/hexagonal_cube_pattern_thingie_by_black_light_studio-d68vloo.png';
+        // drawCircleFilled(contextP, 100, 100, 80, 'red');
+        drawCircleFilled(contextP, 100, 100, 80, ['magenta','blue','green','yellow','black'][Math.floor(Math.random()*5)]);
+        pattern = context.createPattern(canvasP, 'repeat');
+      }
 
       function copyCanvas() {
         var dataURL = canvas.toDataURL();
@@ -154,10 +172,24 @@
         });
       }
 
+      var degrees = 0.1;
+
       function drawAll(interp) {
         pulsars.forEach(function (p) {
           p.draw(interp);
         });
+
+/*
+        // draw to pattern canvas
+        // degrees += 0.001;
+        // degrees = degrees > 360 ? 0 : degrees;
+        clearCanvas(contextP, canvasP.width, canvasP.height, 'yellow');
+        contextP.translate(50, 50);
+        contextP.rotate((Math.PI / 180) * degrees);
+        contextP.translate(-50, -50);
+        drawCircleFilled(contextP, 100, 100, 120, ['magenta','orange','hotpink','pink','red'][Math.floor(Math.random()*5)]);
+        pattern = context.createPattern(canvasP, 'repeat');
+*/
       }
 
       function handleClick(x, y) {
@@ -168,25 +200,6 @@
         currentPen.context = context;
         pulsars.push(new _class(currentPen));
       }
-
-      var pulsars = [];
-
-      clearCanvas('yellow');
-
-      MainLoop.setSimulationTimestep(timestep);
-      MainLoop.setDraw(draw);
-      MainLoop.setUpdate(update);
-      MainLoop.start();
-
-      canvas.addEventListener('click', function (e) {
-        handleClick(e.pageX, e.pageY);
-      })
-      canvas.addEventListener('touchstart', function (e) {
-        handleClick(e.pageX, e.pageY);
-      })
-
-      addButtons(pulsarConfigs);
-      //============================================================
 
       function rgbHex(rgbaArray) {
         return tinycolor({r:rgbaArray[0], g:rgbaArray[1], b:rgbaArray[2], a:1.0}).toHex8String();
@@ -208,6 +221,26 @@
           document.body.append(div);
         })
       }
+
+      //============================================================
+
+      makePatternThang();
+
+      clearCanvas(context, canvas.width, canvas.height, 'yellow');
+
+      MainLoop.setSimulationTimestep(timestep);
+      MainLoop.setDraw(draw);
+      MainLoop.setUpdate(update);
+      MainLoop.start();
+
+      canvas.addEventListener('click', function (e) {
+        handleClick(e.pageX, e.pageY);
+      })
+      canvas.addEventListener('touchstart', function (e) {
+        handleClick(e.pageX, e.pageY);
+      })
+
+      addButtons(pulsarConfigs);
 
     </script>
   </body>

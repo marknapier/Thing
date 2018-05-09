@@ -7,6 +7,7 @@ function drawCircle(context, x, y, r, color) {
   context.fill();
   context.lineWidth = 2;
   context.strokeStyle = color;
+  // context.strokeStyle = pattern;
   context.stroke();
 }
 
@@ -18,13 +19,17 @@ function drawCircleFilled(context, x, y, r, color) {
   context.fill();
   context.lineWidth = 1;
   context.strokeStyle = color;
+  // context.strokeStyle = pattern;
   context.stroke();
 }
 
-function clearCanvas(color) {
-  context.rect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = color;
-  context.fill();
+function clearCanvas(ctx, w, h, color) {
+  ctx.save();
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+  // ctx.fill();
 }
 
 //============================================================
@@ -89,6 +94,9 @@ class Pulsar {
   draw(interp) {
     var color = this.colorFactory.getColor(this.r / this.maxR);
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
+
+    // mega-kludgey - pattern is created in main script
+    // this.context.strokeStyle = pattern;
 
     // if (!this.skip) {
     //   this.skip = (Math.random() > 0.996) ? Math.floor(Math.random()*15) : 0;
