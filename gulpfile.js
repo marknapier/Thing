@@ -8,6 +8,7 @@ var prefix = require('gulp-autoprefixer');
 var minifyCSS = require('gulp-minify-css');
 var jshint = require('gulp-jshint');
 var newer = require('gulp-newer');
+var print = require('gulp-print').default;
 
 // get modules for browserify in gulp
 var browserify = require('browserify');
@@ -114,6 +115,25 @@ gulp.task('publish',  ['browserify', 'demo'], function() {
    gulp.src('./dist/**/*')
    .pipe(newer('../htdocs/Thing'))
    .pipe(gulp.dest('../htdocs/Thing'));
+});
+
+// Backup/restore images (helps manage repo size - store images separately from code)
+
+gulp.task('img-save', function() {
+  gulp.src('./src/demo/gun/img/**',  {base: './src/'})
+  .pipe(print())
+  .pipe(gulp.dest('../Thing_images'));
+});
+
+gulp.task('img-restore', function() {
+  gulp.src('../Thing_images/**',  {base: '../Thing_images/'})
+  .pipe(print())
+  .pipe(gulp.dest('./src'));
+});
+
+gulp.task('img-clean', function() {
+  gulp.src('./src/demo/gun/img/**',  {base: './src/'})
+  .pipe(clean({force: true}));
 });
 
 ////////////////
