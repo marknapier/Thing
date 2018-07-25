@@ -180,14 +180,16 @@ $(function(){
   }
 
   function makeGradientMask() {
-    var demobox = makeDemoBox({
+    var demobox = Thing.Box.make({
+      display: 'block',
       backgroundColor: '#69ffff',
       overflow:'hidden',
-      borderColor: '#ccc',
       position: 'relative',
       width: '820px',
       height: '320px',
-      padding: '10px'
+      padding: '10px',
+      margin: '20px',
+      border: '2px dashed #ccc'
     });
     var b = Thing.Box.make({
       w:800,
@@ -207,7 +209,14 @@ $(function(){
   }
 
   function makePatternMask() {
-    var b = Thing.Box.make({w:200, h:580, backgroundColor:'#0c7436'});
+    var b = Thing.Box.make({
+      w:200,
+      h:580,
+      margin: '20px',
+      backgroundColor:'#0c7436',
+      position: 'relative',
+      display: 'inline-block',
+    });
     var p = Thing.Pattern.make({
       pattern:'none',
       backgroundSize: '50px 50px, 50px 50px',
@@ -227,8 +236,11 @@ $(function(){
     var b = Thing.Box.make({
       w: 230,
       h: 575,
+      margin: '20px',
       backgroundColor: '#0c7436',
-      left: '400px'
+      position: 'relative',
+      display: 'inline-block',
+      // left: '400px'
     });
     b.add(Thing.Pattern.make({
       pattern:'none',
@@ -248,7 +260,10 @@ $(function(){
     var b = Thing.Box.make({
       w: 200,
       h: 580,
-      left: '800px'
+      margin: '20px',
+      position: 'relative',
+      display: 'inline-block',
+      // left: '800px'
     });
     b.add(Thing.Pattern.make({
       pattern:'none',
@@ -265,6 +280,31 @@ $(function(){
     return b;
   }
 
+  // center images and push to bottom of container box
+  function centerImagesInBox(imgs) {
+    var b = Thing.Box.make({
+      w: 500,
+      h: 500,
+      margin: '20px',
+      border: '1px solid green',
+      overflow: 'hidden',
+    });
+
+    function makeCenteredImage(imgJS) {
+      var thingImg = Thing.Img.make({
+        src: imgJS.src,
+        h: Thing.Rand.randInt(150, 700),
+        onImgLoaded: function (thingImg) {
+          thingImg.translateTo( (b.w / 2) - (thingImg.w / 2), b.h - thingImg.h);
+        },
+      });
+      return thingImg;
+    }
+
+    b.add( imgs.map(makeCenteredImage) );
+    return b;
+  }
+
   //---------------------------------------------------------
 
   makeBoxOfArrows();
@@ -274,14 +314,23 @@ $(function(){
   FB.each( box => { box.add(makeTenLines()) } );
   FB.render();
 
-  makeGradientMask().render()
+  makeGradientMask().render();
 
-  makePatternMask().render()
-  makeImageMask().render()
-  makeImageShadow().render()
+  makePatternMask().render();
+  makeImageMask().render();
+  makeImageShadow().render();
 
-  window.FB = FB;
-  window.Img = Img;
+  Thing.Page.loadImages([
+      'img/banana_tree_2_t.png',
+      'img/BananaPalm_t.png',
+      'img/aquarium_flowering_t.png',
+      'img/aquarium_plastic_leaves_t.png',
+    ], 
+    function (imgs) {
+      centerImagesInBox(imgs).render();
+    }
+  );
+
 });
 </script>
 

@@ -363,13 +363,13 @@ $(function () {
     w: CW * 0.3000,
   });
 
-  var sceneHighlight = Thing.make({
-    width: '100%',
-    height: '100%',
-    // background: 'radial-gradient(at 40% 30%, rgba(255, 255, 25, 0.3) 30%, rgba(0, 0, 50, 0.5) 80%)',
-    background: 'radial-gradient(at 40% 30%, transparent 30%, rgba(0, 0, 50, 0.5) 80%)',
-    mixBlendMode: 'hard-light',
-  });
+  // var sceneHighlight = Thing.make({
+  //   width: '100%',
+  //   height: '100%',
+  //   // background: 'radial-gradient(at 40% 30%, rgba(255, 255, 25, 0.3) 30%, rgba(0, 0, 50, 0.5) 80%)',
+  //   background: 'radial-gradient(at 40% 30%, transparent 30%, rgba(0, 0, 50, 0.5) 80%)',
+  //   mixBlendMode: 'hard-light',
+  // });
 
   var couchDefs = [
     {
