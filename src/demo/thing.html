@@ -283,6 +283,7 @@ $(function(){
   // center images and push to bottom of container box
   function centerImagesInBox(imgs) {
     var b = Thing.Box.make({
+      position: 'relative',
       w: 500,
       h: 500,
       margin: '20px',
@@ -290,19 +291,71 @@ $(function(){
       overflow: 'hidden',
     });
 
-    function makeCenteredImage(imgJS) {
-      var thingImg = Thing.Img.make({
-        src: imgJS.src,
-        h: Thing.Rand.randInt(150, 700),
-        onImgLoaded: function (thingImg) {
-          thingImg.translateTo( (b.w / 2) - (thingImg.w / 2), b.h - thingImg.h);
-        },
-      });
-      return thingImg;
-    }
+    imgs.forEach(function (i) { 
+      i.setHeight( Thing.Rand.randInt(150, 650));
+      i.translateTo((b.w / 2) - (i.w / 2), b.h - i.h); 
+    });
 
-    b.add( imgs.map(makeCenteredImage) );
+    b.add( imgs );
     return b;
+  }
+
+  // show images in a line and push to bottom of container box
+  function lineupImagesInBox(imgs) {
+    var b = Thing.Box.make({
+      position: 'relative',
+      w: 800,
+      h: 450,
+      margin: '20px',
+      border: '1px solid green',
+      overflow: 'hidden',
+    });
+
+    var x = 0;
+
+    imgs.forEach(function (i) { 
+      i.setHeight( Thing.Rand.randInt(150, 450));
+      i.translateTo(x, (b.h - i.h) - 2);
+      x += i.w;
+    });
+
+    b.add( imgs );
+    return b;
+  }
+
+  // show images in a line and push to bottom of container box
+  function arrangeImagesInBox(imgs) {
+    var b = Thing.Box.make({
+      position: 'relative',
+      w: 600,
+      h: 500,
+      margin: '20px',
+      border: '1px solid magenta',
+      overflow: 'hidden',
+    });
+
+    imgs.forEach(function (i) {
+      var xy = arrangeAround(i, 300, 400);
+      i.translateTo(xy[0], xy[1]);
+    });
+
+    b.add( imgs );
+    return b;
+  }
+
+  function arrangeAround(thing, posx, posy) {
+    var x, y;
+    switch (thing.props.halign) {
+      case 'left': x = posx; break;
+      case 'center': x = posx - (thing.w / 2); break;
+      case 'right': x = posx - thing.w; break;
+    }
+    switch (thing.props.valign) {
+      case 'top': y = posy; break;
+      case 'middle': y = posy - (thing.h / 2); break;
+      case 'bottom': y = posy - thing.h; break;
+    }
+    return [x, y];
   }
 
   //---------------------------------------------------------
@@ -320,7 +373,8 @@ $(function(){
   makeImageMask().render();
   makeImageShadow().render();
 
-  Thing.Page.loadImages([
+  // make a bouquet (load and center a batch of images)
+  Thing.Img.loadImages([
       'img/banana_tree_2_t.png',
       'img/BananaPalm_t.png',
       'img/aquarium_flowering_t.png',
@@ -328,6 +382,30 @@ $(function(){
     ], 
     function (imgs) {
       centerImagesInBox(imgs).render();
+    }
+  );
+
+  // make a lineup
+  Thing.Img.loadImages([
+      { src: 'img/banana_tree_2_t.png', border: '1px solid #e66' },
+      { src: 'img/BananaPalm_t.png', border: '1px dotted #555' },
+      { src: 'img/aquarium_flowering_t.png', border: '1px solid #00d' },
+      { src: 'img/aquarium_plastic_leaves_t.png', border: '1px dashed #339' },
+    ], 
+    function (imgs) {
+      lineupImagesInBox(imgs).render();
+    }
+  );
+
+  // align left-right edges
+  Thing.Img.loadImages([
+      { src: 'img/banana_tree_2_t.png', border: '1px solid #e66', halign: 'left', valign: 'bottom', w: 150 },
+      { src: 'img/BananaPalm_t.png', border: '1px dotted #555', halign: 'center', valign: 'bottom', w: 150 },
+      { src: 'img/aquarium_flowering_t.png', border: '1px solid #00d', halign: 'center', valign: 'bottom', w: 150 },
+      { src: 'img/aquarium_plastic_leaves_t.png', border: '1px dashed #339', halign: 'right', valign: 'bottom', w: 150 },
+    ], 
+    function (imgs) {
+      arrangeImagesInBox(imgs).render();
     }
   );
 

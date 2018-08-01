@@ -85,28 +85,6 @@ class Page {
         Page.setScale(pageParams.scale || 1);
         Page.initEvents();
     }
-
-    static getImage(url) {
-        return new Promise(function(resolve, reject){
-            var img = new Image();
-            img.onload = function() {
-                resolve(img);
-            };
-            img.onerror = function() {
-                reject(img);
-            };
-            img.src = url;
-        });
-    }
-
-    static loadImages(imagePaths, callback) {
-        var promises = imagePaths.map(Page.getImage);
-        Promise.all(promises)
-        .then(callback)
-        .catch(function(urls) {
-            Thing.msg("Page.loadImages: Error fetching some images: " + urls);
-        });       
-    }
 }
 Thing.addClass(Page);
 

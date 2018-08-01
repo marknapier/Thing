@@ -20,8 +20,12 @@ class Img extends Thing {
     // track the image load
     pageImgQueue.add(this);
 
-    // load the image
-    loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
+    // load the image, or skip if javascript img is provided
+    if (props.img) {
+        this.onLoad(props.img);
+    } else {
+        loadImage(props.src, this.onLoad.bind(this), this.onError.bind(this));
+    }
   }
 
   onLoad (img) {
@@ -57,7 +61,7 @@ class Img extends Thing {
   onError (img) {
     Thing.msg('Img.onError: Failed to load ' + img.src);
     this.loaded = true;
-    this.width = this.height = 0;
+    this.w = this.h = 0;
     this.aspectRatio = 1;
     pageImgQueue.remove(this);
     // exec callback if any
@@ -65,11 +69,21 @@ class Img extends Thing {
   }
 
   setWidth (w) {
-    this.width = w;
-    this.height = w * this.aspectRatio;
+    this.w = w;
+    this.h = w * this.aspectRatio;
     this.css({
-        width: this.width,
-        height: this.height
+        width: this.w,
+        height: this.h
+    });
+    return this;
+  }
+
+  setHeight (h) {
+    this.h = h;
+    this.w = h * (1/this.aspectRatio);
+    this.css({
+        width: this.w,
+        height: this.h
     });
     return this;
   }
@@ -97,6 +111,36 @@ class Img extends Thing {
         };
         q.add(Img.make(props));
     });
+  }
+
+  // expecting an object param like: { src: 'http;//path.to/image' }
+  // string param will be converted into object with src property
+  static getImage(imgConfigOrUrl) {
+      var imgConfig = (typeof imgConfigOrUrl === 'string') ? {src: imgConfigOrUrl} : imgConfigOrUrl;
+      return new Promise(function(resolve, reject) {
+          var img = new Image();
+          img.onload = function() {
+              resolve(imgConfig);
+          };
+          img.onerror = function() {
+              reject(imgConfig);
+          };
+          imgConfig.img = img;
+          img.src = imgConfig.src;
+      });
+  }
+
+  static loadImages(imagePaths, callback) {
+      var promises = imagePaths.map(Img.getImage);
+      Promise.all(promises)
+      .then(function (imgsJSON) {
+          // convert javascript img objects to Thing Img objects
+          var thingImgs = imgsJSON.map(function (imgJSON) { return Thing.Img.make(imgJSON); });
+          callback(thingImgs);
+      })
+      .catch(function(urls) {
+          Thing.msg("Img.loadImages: Error fetching some images: " + urls);
+      });       
   }
 }
 
