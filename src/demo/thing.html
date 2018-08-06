@@ -335,7 +335,7 @@ $(function(){
     });
 
     imgs.forEach(function (i) {
-      var xy = arrangeAround(i, 300, 400);
+      var xy = arrangeAround(i, 300, 250);
       i.translateTo(xy[0], xy[1]);
     });
 
@@ -399,10 +399,14 @@ $(function(){
 
   // align left-right edges
   Thing.Img.loadImages([
-      { src: 'img/banana_tree_2_t.png', border: '1px solid #e66', halign: 'left', valign: 'bottom', w: 150 },
-      { src: 'img/BananaPalm_t.png', border: '1px dotted #555', halign: 'center', valign: 'bottom', w: 150 },
-      { src: 'img/aquarium_flowering_t.png', border: '1px solid #00d', halign: 'center', valign: 'bottom', w: 150 },
-      { src: 'img/aquarium_plastic_leaves_t.png', border: '1px dashed #339', halign: 'right', valign: 'bottom', w: 150 },
+      { src: 'img/banana_tree_2_t.png', border: '1px solid #e66',
+          halign: 'left', valign: 'bottom', w: Thing.Rand.randInt(150, 300) },
+      { src: 'img/BananaPalm_t.png', border: '1px dotted #555',
+          halign: 'right', valign: 'bottom', w: Thing.Rand.randInt(150, 300) },
+      { src: 'img/aquarium_flowering_t.png', border: '1px solid #00d',
+          halign: 'left', valign: 'top', w: Thing.Rand.randInt(150, 300) },
+      { src: 'img/aquarium_plastic_leaves_t.png', border: '1px dashed #339',
+          halign: 'right', valign: 'top', w: Thing.Rand.randInt(150, 300) },
     ], 
     function (imgs) {
       arrangeImagesInBox(imgs).render();
