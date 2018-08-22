@@ -115,4 +115,22 @@ describe('A Thing', function () {
 		expect(t.getTranslation()).toEqual({x:500, y:600, z:700});
 		t.unRender();
 	});
+	it('sets the html element id', function () {
+		let t = Thing.make({id: 'asdf', w:200});
+		t.render();
+		expect(document.getElementById('asdf').style.width).toEqual('200px');
+		t.unRender();
+	});
+	it('sets CSS transform scale() when numeric scale property is provided', function () {
+		let t = Thing.make({id: 'asdf', scale: 2.2});
+		t.render();
+		expect(document.getElementById('asdf').style.transform).toContain('scale(2.2)');
+		t.unRender();
+	});
+	it('sets CSS transform scale3d() when {x,y,z} scale property is provided', function () {
+		let t = Thing.make({id: 'asdf', scale: {x: 0.5, y: 1.0, z: 1.5} });
+		t.render();
+		expect(document.getElementById('asdf').style.transform).toContain('scale3d(0.5, 1, 1.5)');
+		t.unRender();
+	});
 });

@@ -227,6 +227,7 @@ $(function () {
 
   // put all the legs into one box
   var legContainer = Thing.Box.make({
+    id: 'legContainer',
     x: 100,
     y: 100,
     w: legContainerWidth,

@@ -25,7 +25,7 @@ class Thing {
 
     this.renderOnCenter = props.renderOnCenter || false;
     this.rotation = props.rotate || null;
-    this.scaleFactor = props.scale || 1;
+    this.scaleFactor = props.scale || null;
 
     // position is the given x,y,z or 0,0,0 (this becomes CSS translate3d())
     this.x = props.x || 0;
@@ -174,9 +174,9 @@ class Thing {
   }
 
   translateTo (x, y, z) {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.z = z || 0;
+    this.x = x || this.x || 0;
+    this.y = y || this.y || 0;
+    this.z = z || this.z || 0;
     this.transform();
     return this;
   }
@@ -308,7 +308,20 @@ class Thing {
   }
 
   static makeScaleCSS (scale) {
-    return (scale === undefined || scale === null) ? '' : 'scale('+scale+') ';
+    var css = '';
+    if (scale !== undefined && scale !== null) {
+      if (typeof scale === 'object') {
+        css = 'scale3d(' +
+            (scale.x === undefined ? '1' : scale.x) + ',' +
+            (scale.y === undefined ? '1' : scale.y) + ',' +
+            (scale.z === undefined ? '1' : scale.z) +
+            ')';
+      }
+      else {
+        css = 'scale('+scale+') ';
+      }
+    }
+    return css;
   }
 
   // NOTE: translation coords are relative to the element's position in the document flow.
