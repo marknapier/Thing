@@ -1,4 +1,5 @@
 var Thing = require('../Thing/Thing.js');
+var Rand = require('../Rand/Rand.js');
 
 class Page {
     static download(data, filename, type) {
@@ -82,6 +83,7 @@ class Page {
 
     static setup() {
         var pageParams = Thing.Page.getParams();
+        Rand.init(pageParams.randomSeed);
         Page.setScale(pageParams.scale || 1);
         Page.initEvents();
     }

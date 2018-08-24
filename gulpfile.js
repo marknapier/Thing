@@ -120,7 +120,7 @@ gulp.task('publish',  ['browserify', 'demo'], function() {
 // Backup/restore images (helps manage repo size - store images separately from code)
 
 gulp.task('img-save', function() {
-  gulp.src('./src/demo/gun/img/**',  {base: './src/'})
+  gulp.src('./src/demo/**/*.{png,gif,jpg}',  {base: './src/'})
   .pipe(print())
   .pipe(gulp.dest('../Thing_images'));
 });

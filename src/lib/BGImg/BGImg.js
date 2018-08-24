@@ -16,7 +16,12 @@ class BGImg extends Thing {
     this.setDefaultProps(props);
     this.type = 'BGImg';
     this.$element = Thing.makeElement(this.html(), this.props, this.type);
+    this.set(props);
+  }
+
+  set (props) {
     this.$element.css(BGImg.makeBGImgCSS(props));
+    return this;
   }
 
   static makeBGImgCSS (props) {
