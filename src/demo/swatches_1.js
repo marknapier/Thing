@@ -8,7 +8,7 @@ $(function(){
   var Box = Thing.Box;
 
   var pageParams = Thing.Page.getParams();
-  var aspectRatio = 1.28;   // 0.78  1.28
+  var aspectRatio = 1.36;
   var idealWidth = 3600;
   var CW = pageParams.canvasWidth || idealWidth;
   var CH = CW * aspectRatio;
@@ -25,10 +25,6 @@ $(function(){
     "eye_right_1.jpg",
     "eyes_1.jpg",
     "eyes_pixelated.jpg",
-    "eye_left_pixelated_1.png",
-    "eye_right_pixelated_1.png",
-    "eye_left_sideye_1.png",
-    "eye_right_sideye_1.png",
     // "face_full_pixelated.jpg",
     "face_left_half.jpg",
     "face_right_half_1.jpg",
@@ -242,49 +238,11 @@ $(function(){
     ]);
   }
 
-  function randomArray(array = [], howmany = 10) {
-    var a = [];
-    for (var i=0; i < howmany; i++) {
-      a.push(Thing.Rand.randItem(array));
-    }
-    return a;
-  }
-
   function makeFan(props) {
     Thing.Img.loadImages(props.images, function (imgs) {
-      imgs.forEach(function (img) {
-        img.translateTo(props.x, props.y, props.z);
-        props.container.add(img);
-      });
-      props.container.render();
+      props.container.add(imgs).render();
     });
-  }
 
-  function makeImgArray(props = {imgNames: []}) {
-    return props.imgNames.map((imgName, index) => {
-      return Thing.Img.make({
-        src: imgPath + imgName,
-        w: props.w,
-        position: 'relative',
-      });
-    });
-  }
-
-  function makeImgArrayScroll(props) {
-    var eyeImgs = makeImgArray({
-      imgNames: props.imgNames,
-      w: props.w,
-    });
-    var eyeImgBox = Thing.Box.make($.extend({
-      overflowX: 'hidden',
-      overflowY: 'scroll',
-    }, props)).add(eyeImgs);
-
-    setTimeout(function () {
-      eyeImgBox.$element.scrollTop(props.h * Thing.Rand.randInt(1, 5));
-    }, 1000);
-
-    return eyeImgBox;
   }
 
   function getRandImg(imageNames) {
@@ -296,7 +254,6 @@ $(function(){
       id: props.id,
       x: dim.x || props.x,
       y: dim.y || props.y,
-      z: props.z,
       w: dim.w || props.w,
       h: dim.h || props.h,
       opacity: props.opacity,
@@ -365,141 +322,6 @@ $(function(){
     });
   }
 
-  function makeSwatchesBlueTwitter(props) {
-    var bg0 = Thing.BGImg.make({
-      src: 'img/trump/parts/lapel_right_full_t.png',
-      size: '100% 100%',
-      center: true,
-      repeat: false,
-    });
-
-    var bg1 = Thing.BGImg.make({
-      src: 'img/trump/swatches/navy_blue_cloth_9502-3.jpg',
-      size: '50% 50%',
-      center: true,
-      repeat: true,
-      opacity: 0.5,
-    });
-
-    var bg2 = Thing.BGImg.make({
-      src: 'img/trump/parts/gold_leaf_bg.jpg',
-      size: '10% 10%',
-      repeat: true,
-    }).addMask({
-      image: 'url(img/trump/twit_logo_blue_t.png)',
-      repeat: 'repeat',
-      size: '10% 5%',
-    });
-
-    var box = Thing.Box.make({
-      margin: '20px',
-      x: props.x,
-      y: props.y,
-      z: props.z,
-      w: props.w,
-      h: props.h,
-      border: '2px solid red',
-      mask: {image: 'url(img/trump/parts/lapel_right_full_t.png)'},
-    }).add([bg0, bg2]);
-
-    return box;
-  }
-
-  function makeLines() {
-    return [
-      // midline vertical
-      Thing.Line.make({
-        x: CW * 0.5,
-        y: 0,
-        x2: CW * 0.5,
-        y2: CH,
-        z: 1000,
-        lineWidth: CW * 0.002,
-        color: '#0f0',
-      }),
-      // top quarter
-      Thing.Label.make({
-        fontSize: '24px',
-        color: '#0f0',
-        text: '25% CH=' + CH,
-        x: CW * 0.5,
-        y: CH * 0.25,
-        z: 1000,
-      }),
-      // bottom
-      Thing.Label.make({
-        fontSize: '24px',
-        color: '#0f0',
-        text: '100% CH=' + CH,
-        x: CW * 0.5,
-        y: CH * 1.0,
-        z: 1000,
-      }),
-
-      Thing.Line.make({
-        x: 0,
-        y: CH * 0.25,
-        x2: CW,
-        y2: CH * 0.25,
-        z: 1000,
-        lineWidth: CW * 0.002,
-        color: '#0ff',
-      }),
-      // top third
-      Thing.Line.make({
-        x: 0,
-        y: CH * 0.33333,
-        x2: CW,
-        y2: CH * 0.33333,
-        z: 1000,
-        lineWidth: CW * 0.002,
-        color: '#0f0',
-      }),
-      // bottom third
-      Thing.Line.make({
-        x: 0,
-        y: CH * 0.66666,
-        x2: CW,
-        y2: CH * 0.66666,
-        z: 1000,
-        lineWidth: CW * 0.002,
-        color: '#0f0',
-      }),
-    ];
-  }
-
-  function makeGrayFrame(props = {w: 100, h: 100, lineWidth: 8}) {
-    var lineWidth = props.lineWidth || 8;
-    var borderW = lineWidth / 2;
-
-    var inny = Thing.Box.make({
-      w: props.w,
-      h: props.h,
-      // backgroundColor: 'red',
-      borderTop: borderW + 'px solid #555',
-      borderRight: borderW + 'px solid #bbb',
-      borderBottom: borderW + 'px solid #fff',
-      borderLeft: borderW + 'px solid #777',
-    });
-
-    var outty = Thing.Box.make({
-      id: props.id || 'grayframe',
-      x: props.x,
-      y: props.y,
-      z: props.z,
-      w: props.w + lineWidth,
-      h: props.h + lineWidth,
-      borderTop: borderW + 'px solid #fff',
-      borderRight: borderW + 'px solid #777',
-      borderBottom: borderW + 'px solid #555',
-      borderLeft: borderW + 'px solid #ccc',
-    });
-
-    outty.add(inny);
-
-    return outty;
-  }
-
   function makePowerSuitPortrait (props = {w:1000, h:1500}) {
     var powerColors = ['#ff0000', '#ffcc00', '#f09900', '#0000ff', '#ffffff', '#fff'];
     var reds = powerColors;  //[ '#f80', '#e60', '#fc1', '#fa3'];
@@ -516,30 +338,29 @@ $(function(){
       w: props.w,
       h: props.h,
       backgroundColor: overallBGColor,
-      transformStyle: 'preserve-3d',
     });
 
     // middle background
     var middleSuit = Thing.Img.make({
       id: 'fullsuit',
       x: jiggle(props.w * 0.1, bigJiggleSize),
-      y: jiggle(props.h * 0.01, bigJiggleSize),
+      y: jiggle(props.h * 0.4, bigJiggleSize),
       w: jiggle(props.w * 0.8, bigJiggleSize),
       h: jiggle(props.h * 0.6, bigJiggleSize),
       src: getRandImg(imgNamesSuits),
     });
     var rightSuit = Thing.Img.make({
       id: 'rightsuit',
-      x: Thing.Rand.randInt(props.w * -0.2, props.w * 0.2),
-      y: jiggle(props.h * -0.1, bigJiggleSize),
+      x: Thing.Rand.randInt(props.w * 0.0, props.w * 0.2),
+      y: jiggle(props.h * 0.5, bigJiggleSize),
       w: Thing.Rand.randInt(props.w * 0.2, props.w * 0.4),
       h: jiggle(props.h * 0.5, bigJiggleSize),
       src: getRandImg(imgNamesLapelsRight),
     });
     var leftSuit = Thing.Img.make({
       id: 'leftsuit',
-      x: Thing.Rand.randInt(props.w * 0.1, props.w * 0.3),
-      y: jiggle(props.h * 0.1, bigJiggleSize),
+      x: Thing.Rand.randInt(props.w * 0.7, props.w * 0.85),
+      y: jiggle(props.h * 0.5, bigJiggleSize),
       w: Thing.Rand.randInt(props.w * 0.2, props.w * 0.4),
       h: jiggle(props.h * 0.5, bigJiggleSize),
       src: getRandImg(imgNamesLapelsLeft),
@@ -549,9 +370,8 @@ $(function(){
     var bottomMouths = makeMouthGrid({
       x: Thing.Rand.randInt(props.w * 0.0, props.w * 0.5),
       y: Thing.Rand.randInt(props.h * 0.2, props.h * 0.35),
-      z: 200,
-      w: Thing.Rand.randInt(props.w * 0.3, props.w * 0.65),
-      h: Thing.Rand.randInt(props.h * 0.1, props.h * 0.3),
+      w: Thing.Rand.randInt(props.w * 0.4, props.w * 0.95),
+      h: Thing.Rand.randInt(props.h * 0.1, props.h * 0.4),
       colors: reds,
       imgNames: imgNamesMouths,
     }); 
@@ -619,13 +439,7 @@ $(function(){
       size: Thing.Rand.randInt(50, 180) + '% ',
       repeat: 'repeat',
       center: true,
-      z: 500,
-    }, {
-      x: Thing.Rand.randInt(props.w * 0.1, props.w * 0.4),
-      y: Thing.Rand.randInt(props.h * 0.01, props.h * 0.1),
-      w: props.w * 0.4, 
-      h: props.h * 0.2,
-    });
+    }, makeHorizontalRectDimensions({w: props.w, h: props.h}));
 
     // hand imgs
     var hands = Thing.Rand.randItems(imgNamesHands, Thing.Rand.randInt(2,5)).map((imgName, index) => {
@@ -679,7 +493,6 @@ $(function(){
       id: 'mouth',
       x: around(centerX, bigJiggleSize),
       y: around(eyeY * 1.8, bigJiggleSize),
-      z: 500,
       w: mouthW * Thing.Rand.randFloat(-0.8, 1.2),
       h: mouthH * Thing.Rand.randFloat(-0.8, 1.2),
       backgroundColor: highlightFGColor,
@@ -698,56 +511,17 @@ $(function(){
     }));
     bounds.add(midBGs);
     bounds.add(scatter);
-    //
+    bounds.add(middleSuit);
+    bounds.add(leftSuit);
+    bounds.add(rightSuit);
     bounds.add(twitterField);
     bounds.add(ties);
     bounds.add(hands);
     bounds.add(twitters);
     bounds.add(hair);
     bounds.add(eyes);
-    //
-    bounds.add(makeGrayFrame({
-      id: 'suit',
-      x: jiggle(props.w * 0.2, bigJiggleSize),
-      y: jiggle(props.h * 0.3, bigJiggleSize),
-      z: 100,
-      w: Thing.Rand.randInt(props.w * 0.2, props.w * 0.6),
-      h: jiggle(props.h * 0.5, bigJiggleSize),
-    }).add([
-      middleSuit,
-      leftSuit,
-      rightSuit,
-    ]));
-    //
     bounds.add(bottomMouths);
-
-    bounds.add(makeLines());
-
     bounds.add(mouth);
-    // eyes right
-    bounds.add(makeImgArrayScroll({
-      imgNames: randomArray(imgNamesEyes, 10),
-      x: CW * 0.35,
-      y: CH * 0.12,
-      w: CW * 0.1,
-      h: CH * 0.2,
-    }));
-    // eyes left
-    bounds.add(makeImgArrayScroll({
-      imgNames: randomArray(imgNamesEyes, 10),
-      x: CW * 0.45,
-      y: CH * 0.12,
-      w: CW * 0.1,
-      h: CH * 0.2,
-    }));
-    bounds.add(makeSwatchesBlueTwitter({
-      x: CW * 0.1,
-      y: CH * 0.4,
-      w: CW * 0.4,
-      h: CH * 0.4,
-      z: 50,
-    })),
-    // bounds.add(makeGrayFrame()),
 
     // Thing.Img.onAllLoaded(function () {
     //   hair
@@ -769,48 +543,169 @@ $(function(){
         imgPath + 'hand_right_open_t.png',
       ], 
       container: bounds,
-      x: CW * 0.5,
-      y: CH * 0.5,
-      z: 100,
     });
 
     return bounds;
   }
 
+  function makeSwatches1() {
+    var bg1 = Thing.BGImg.make({
+      src: 'img/trump/swatches/blue_cloth_D7.jpg',
+      size: '50% 50%',
+      center: true,
+      repeat: true,
+    });
+
+    var bg2 = Thing.BGImg.make({
+      src: 'img/trump/parts/gold_leaf_bg.jpg',
+    }).addMask({
+      image: 'url(img/trump/twit_logo_blue_t.png)',
+      repeat: 'repeat',
+      size: '20% 20%',
+    });
+
+    var box = Thing.Box.make({
+      position: 'relative',
+      margin: '20px',
+      w: 500,
+      h: 500,
+      border: '2px solid red',
+    }).add([bg1, bg2]);
+
+    return box;
+  }
+
+  function makeSwatches2() {
+    var bg1 = Thing.BGImg.make({
+      src: 'img/trump/parts/gold_leaf_bg.jpg',
+      size: '50% 50%',
+      center: true,
+      repeat: true,
+    });
+
+    var bg2 = Thing.BGImg.make({
+      src: 'img/trump/parts/gold_leaf_bg.jpg',
+    }).addMask({
+      image: 'url(img/trump/twit_logo_blue_t.png)',
+      repeat: 'repeat',
+      size: '20% 20%',
+    });
+
+    var box = Thing.Box.make({
+      position: 'relative',
+      margin: '20px',
+      w: 500,
+      h: 500,
+      border: '2px solid red',
+    }).add([bg1, bg2]);
+
+    return box;
+  }
+
+  function makeSwatches3() {
+    var bg1 = Thing.BGImg.make({
+      src: 'img/trump/swatches/gray_pinstripe_cloth_79214-1.jpg',
+      size: '50% 50%',
+      center: true,
+      repeat: true,
+    });
+
+    var bg2 = Thing.BGImg.make({
+      src: 'img/trump/swatches/blue_cloth_D7.jpg',
+    }).addMask({
+      image: 'url(img/trump/twit_logo_blue_t.png)',
+      repeat: 'repeat',
+      size: '20% 20%',
+    });
+
+    var box = Thing.Box.make({
+      position: 'relative',
+      margin: '20px',
+      w: 500,
+      h: 500,
+      border: '2px solid red',
+    }).add([bg1, bg2]);
+
+    return box;
+  }
+
+  function makeSwatches4() {
+    var bg1 = Thing.BGImg.make({
+      src: 'img/trump/swatches/navy_blue_cloth_9502-3.jpg',
+      size: '50% 50%',
+      center: true,
+      repeat: true,
+    });
+
+    var bg2 = Thing.BGImg.make({
+      src: 'img/trump/swatches/blue_cloth_D7.jpg',
+      size: '10% 10%',
+      repeat: true,
+    }).addMask({
+      image: 'url(img/trump/twit_logo_blue_t.png)',
+      repeat: 'repeat',
+      size: '20% 20%',
+    });
+
+    var box = Thing.Box.make({
+      position: 'relative',
+      margin: '20px',
+      w: 500,
+      h: 500,
+      border: '2px solid red',
+    }).add([bg1, bg2]);
+
+    return box;
+  }
+
+  function makeSwatches5() {
+    var bg1 = Thing.BGImg.make({
+      src: 'img/trump/swatches/burgundy_tie_cloth.jpg',
+      size: '50% 50%',
+      center: true,
+      repeat: true,
+    });
+
+    var bg2 = Thing.BGImg.make({
+      src: 'img/trump/swatches/red_silk_tie_2.png',
+      size: '10% 10%',
+      repeat: true,
+    }).addMask({
+      image: 'url(img/trump/twit_logo_blue_t.png)',
+      repeat: 'repeat',
+      size: '20% 20%',
+    });
+
+    var box = Thing.Box.make({
+      position: 'relative',
+      margin: '20px',
+      w: 500,
+      h: 500,
+      border: '2px solid red',
+    }).add([bg1, bg2]);
+
+    return box;
+  }
+
   //====================================================================//
 
   function main() {
-    // Respond to page params and key events
-    // Thing.Page.setScale(pageParams.scale || 1);
-    // Thing.Page.initEvents();
-    // Thing.Rand.init(pageParams.randomSeed);
-
-    //1534963894508
-
-
     Thing.Page.setup();
 
-    var powerSuitPortrait = makePowerSuitPortrait({
-      id: 'powersuit',
-      x: 0,
-      y: 0,
-      w: CW,
-      h: CH,
-    });
-
     var stage = Thing.Box.make({
-      id: 'stage',
       x: 0,
       y: 0,
       w: CW,
       h: CH,
       overflow: 'hidden',
-      // perspective: '4000px',
-      transformStyle: 'preserve-3d',
     });
 
     stage.add([
-      powerSuitPortrait,
+      makeSwatches1(),
+      makeSwatches2(),
+      makeSwatches3(),
+      makeSwatches4(),
+      makeSwatches5(),
     ]);
 
     stage.render();    

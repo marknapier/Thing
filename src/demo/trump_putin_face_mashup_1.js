@@ -6,6 +6,53 @@ var CW = pageParams.canvasWidth || 6000;
 var CH = CW * aspectRatio;
 var imgPath = 'img/trump/parts/';
 
+// image names
+var hair = [
+  'trump_hair_1.png',
+  'putin_forehead_1.png',
+];
+var eye = [
+  'eye_left_1.jpg',
+  'eye_right_1.jpg',
+  'putin_eye_right_1.png',
+  'putin_eye_left_1.png',
+  'putin_mouth_square_1.png',
+  'mouth_open_1.jpg',
+  'mouth_open_pixelated.jpg',
+];
+var mouth = [
+  'mouth_closed_1.jpg',
+  'mouth_closed_2.jpg',
+  'mouth_open_1.jpg',
+  'mouth_open_pixelated.jpg',
+  'mouth_smile_1.jpg',
+  'putin_mouth_1.png',
+  'putin_mouth_2.png',
+];
+var flag = [
+  'Flag_of_the_United_States.png',
+  'USA_flag_starfield.png',
+  'USA_flag_stripes.png',
+  'russian_flag.png'
+];
+
+// image names for each layout section
+var imageNamesForSection = {
+  bg1: flag,
+  bg2: flag,
+  bg3: flag,
+  forehead: hair,
+  eye1: eye,
+  eye2: eye,
+  eye3: eye,
+  eye4: eye,
+  mouth: mouth,
+};
+
+function rand(arr) {
+  return Thing.Rand.randItem(arr);
+}
+
 function makeBackground(props = {}) {
   return Thing.Box.make($.extend({
         w: props.w,
@@ -13,140 +60,6 @@ function makeBackground(props = {}) {
         backgroundColor: 'rgb(220, 40, 30)',
         overflow: 'hidden',
     }, props));
-}
-
-// In order to flip and rotate an image we need to wrap it in a parent div
-// so we can separate rotation from the flip transformations.
-// Rotation goes on the parent element and can have it's own transform-origin.
-// Flip transformation (scaleX = -1) goes on the child img element.
-function makeImageFlipper(img) {
-  // pub rotation, transformOrigin and positioning on parent wrapper
-  var b = Thing.Box.make({
-    x: img.x,
-    y: img.y,
-    z: img.z,
-    w: img.w,
-    h: img.h,
-    rotate: img.rotation,
-    transformOrigin: img.props.transformOrigin,
-    halign: img.props.halign,
-    valign: img.props.valign,
-    // border: '2px solid red',
-  });
-
-  // Clone the image but remove rotation, transformOrigin and positioning
-  var imgProps = img.props;
-  imgProps.rotate = undefined;
-  imgProps.transformOrigin = undefined;
-  imgProps.x = imgProps.y = imgProps.z = 0;
-  imgProps.position = 'relative';
-  var newImg = Thing.Img.make(imgProps);
-
-  // put img into parent wrapper
-  b.add(newImg);
-  return b;
-}
-
-function arrangeAround(thing, posx, posy) {
-  var x, y;
-  switch (thing.props.halign) {
-    case 'left': x = posx; break;
-    case 'center': x = posx - (thing.w / 2); break;
-    case 'right': x = posx - thing.w; break;
-  }
-  switch (thing.props.valign) {
-    case 'top': y = posy; break;
-    case 'middle': y = posy - (thing.h / 2); break;
-    case 'bottom': y = posy - thing.h; break;
-  }
-  return [x, y];
-}
-
-// // show images in a line and push to bottom of container box
-// function arrangeImagesInBox(imgs, props) {
-//   var b = Thing.Box.make($.extend({
-//     position: 'relative',
-//     // overflow: 'hidden',
-//     transformStyle: 'preserve-3d',
-//   }, props));
-//   var finalImgs = [];
-//   var z = 0;
-
-//   imgs.forEach(function (i) {
-//     if (i.props.scale) {
-//       i = makeImageFlipper(i);
-//     }
-//     var xy = arrangeAround(i, props.w * 0.5, Thing.Rand.randInt(props.h * 0.95, props.h * 0.95));
-//     z += 10;
-//     i.translateTo(xy[0], xy[1], z);
-//     finalImgs.push(i);
-//   });
-
-//   b.add( finalImgs );
-//   return b;
-// }
-
-// function makeMaskedLeaf(props) {
-//   var leaf = Thing.make({
-//     w: props.w || 500, 
-//     h: props.h || 500, 
-//     x: props.x || 0, 
-//     y: props.y || 0,
-//     mask: `url(${props.maskUrl})`,
-//     background: `url(${props.bgUrl})`,
-//     halign: props.halign || 'left',
-//     // scale: {x: -1},
-//   });
-//   var xy = arrangeAround(leaf, CW * 0.5, Thing.Rand.randInt(CH * 0.95, CH * 0.95));
-//   leaf
-//     .translateTo(xy[0], xy[1], 0)
-//     .css({transformOrigin: '0% 100%'})
-//     .rotateTo({z: Thing.Rand.randInt(-130, 45)});
-//   return leaf;
-// }
-
-function makeImageNamesArray() {
-  return [
-    {
-      src: imgPath + 'Flag_of_the_United_States.png',
-    },
-    {
-      src: imgPath + 'russian_flag.png',
-    },
-    {
-      src: imgPath + 'putin_mouth_1.png',
-    },
-    {
-      src: imgPath + 'putin_eye_right_1.png',
-    },
-    {
-      src: imgPath + 'mouth_closed_1.jpg',
-    },
-    {
-      src: imgPath + 'eye_left_1.jpg',
-    },
-    {
-      src: imgPath + 'eye_right_1.jpg',
-    },
-    {
-      src: imgPath + 'mouth_open_1.jpg',
-    },
-    {
-      src: imgPath + 'mouth_smile_1.jpg',
-    },
-    {
-      src: imgPath + 'twit_logo_blue_t.png',
-    },
-  ];
-}
-
-function makeBGImg(props) {
-  return Thing.BGImg.make( $.extend({
-      src: imgPath + 'twit_logo_blue_t.png',
-      size: 'cover',
-      center: false,
-      repeat: false,
-  }, props));
 }
 
 function makeLayout(props) {
@@ -232,11 +145,84 @@ function makeLayout(props) {
   return containers;
 }
 
+function makeBGImg(props) {
+  return Thing.BGImg.make( $.extend({
+      src: imgPath + 'twit_logo_blue_t.png',
+      size: 'cover', //'100% 100%',
+      center: false,
+      repeat: false,
+      transition: 'opacity 1s ease-in-out',
+      opacity: 0,
+  }, props));
+}
+
+function setImage(layoutSection, imageName) {
+  var oldBGImg = layoutSection.items[0];
+  var newBGImg = makeBGImg({
+    src: imgPath + imageName,
+  });
+
+  // add the new img to dom (opacity is 0 by default)
+  layoutSection.add(newBGImg);
+  newBGImg.render();
+
+  // Allow time for dom to catch up then change img opacity
+  setTimeout(function () {
+    newBGImg.$element.css({opacity: 1});
+  }, 100);
+  return oldBGImg;
+}
+
+function makeImageNamesArray() {
+  return [
+    { src: imgPath + 'Flag_of_the_United_States.png', },
+    { src: imgPath + 'USA_flag_starfield.png', },
+    { src: imgPath + 'USA_flag_stripes.png', },
+    { src: imgPath + 'russian_flag.png', },
+    { src: imgPath + 'putin_mouth_1.png', },
+    { src: imgPath + 'putin_eye_right_1.png', },
+    { src: imgPath + 'putin_forehead_1.png', },
+    { src: imgPath + 'mouth_closed_1.jpg', },
+    { src: imgPath + 'mouth_closed_2.jpg', },
+    { src: imgPath + 'eye_left_1.jpg', },
+    { src: imgPath + 'eye_right_1.jpg', },
+    { src: imgPath + 'mouth_open_1.jpg', },
+    { src: imgPath + 'mouth_smile_1.jpg', },
+    { src: imgPath + 'trump_hair_1.png', },
+    { src: imgPath + 'twit_logo_blue_t.png', },
+  ];
+}
+
 function arrange(layout, imgs) {
-  layout.bg1.items[0].set({src: imgPath + 'Flag_of_the_United_States.png'});
-  layout.bg2.items[0].set({src: imgPath + 'russian_flag.png'});
-  layout.forehead.items[0].set({src: imgPath + 'mouth_closed_1.jpg'});
-  layout.eye1.items[0].set({src: imgPath + 'putin_eye_right_1.png'});
+  setImage(layout.bg1, rand(flag));
+  setImage(layout.bg2, rand(flag));
+  setImage(layout.bg3, rand(flag));
+  setImage(layout.forehead, rand(hair));
+  setImage(layout.eye1, rand(eye));
+  setImage(layout.eye2, rand(eye));
+  setImage(layout.eye3, rand(eye));
+  setImage(layout.eye4, rand(eye));
+  setImage(layout.mouth, rand(mouth));
+}
+
+function updateFace(layout, imgs) {
+  var sectionName = rand(['forehead', 'eye1', 'eye2', 'eye3', 'eye4', 'mouth']);
+  var oldImg = setImage(layout[sectionName], rand(imageNamesForSection[sectionName]));
+
+  // remove the old image in one second
+  setTimeout(function () {
+    layout[sectionName].remove(oldImg);
+  }, 1000);
+}
+
+function updateFlag(layout, imgs) {
+  var sectionName = rand(['bg1', 'bg3']);
+  var oldImg = setImage(layout[sectionName], rand(imageNamesForSection[sectionName]));
+
+  // remove the old image in one second
+  setTimeout(function () {
+    layout[sectionName].remove(oldImg);
+  }, 1000);
 }
 
 $(function () {
@@ -244,16 +230,16 @@ $(function () {
 
   var layout = makeLayout({w: CW, h: CH});
 
-  layout.bg.add(makeBGImg());
-  layout.bg1.add(makeBGImg());
-  layout.bg2.add(makeBGImg());
-  layout.bg3.add(makeBGImg());
-  layout.forehead.add(makeBGImg({size: '100% 100%'}));
-  layout.eye1.add(makeBGImg({size: '100% 100%'}));
-  layout.eye2.add(makeBGImg({size: '100% 100%'}));
-  layout.eye3.add(makeBGImg({size: '100% 100%'}));
-  layout.eye4.add(makeBGImg({size: '100% 100%'}));
-  layout.mouth.add(makeBGImg({size: '100% 100%'}));
+  // layout.bg.add(makeBGImg());
+  // layout.bg1.add(makeBGImg());
+  // layout.bg2.add(makeBGImg());
+  // layout.bg3.add(makeBGImg());
+  // layout.forehead.add(makeBGImg());
+  // layout.eye1.add(makeBGImg());
+  // layout.eye2.add(makeBGImg());
+  // layout.eye3.add(makeBGImg());
+  // layout.eye4.add(makeBGImg());
+  // layout.mouth.add(makeBGImg());
 
   Object.keys(layout).forEach(function (k) {
     bg.add(layout[k]);
@@ -263,6 +249,12 @@ $(function () {
 
   Thing.Img.loadImages(makeImageNamesArray(), function (imgs) {
     arrange(layout, imgs);
+    setInterval(function () {
+      updateFace(layout, null);
+    }, 1200);
+    setInterval(function () {
+      updateFlag(layout, null);
+    }, 12000);
   });
 
   Thing.Page.setup();
