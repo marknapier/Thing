@@ -29,7 +29,7 @@ class BGImg extends Thing {
     return {
       backgroundImage: url,
       backgroundRepeat: props.repeat ? 'repeat' : 'no-repeat',
-      backgroundPosition: props.center ? 'center' : '0 0',
+      backgroundPosition: props.backgroundPosition || (props.center ? 'center' : '0 0'),
       backgroundSize: props.size
     };
   }
