@@ -21,9 +21,18 @@ class Rand {
 		return MTRand.random();
 	}
 
+	// return a random element from an array
 	static randItem(arr) {
 		if (arr && arr.length > 0) {
 			return arr[ Rand.randInt(0, arr.length-1) ];
+		}
+	}
+
+	// return a random element from an array, and remove it from array
+	static pickItem(arr) {
+		if (arr && arr.length > 0) {
+			var index = Rand.randInt(0, arr.length-1);
+			return arr.splice(index,1)[0];
 		}
 	}
 
@@ -40,8 +49,8 @@ class Rand {
 	// Returns a random integer between min (included) and max (included)
 	// Using Math.round() will give you a non-uniform distribution!
 	static randInt(min, max) {
-		min = Math.ceil(min||0);
-		max = Math.floor(max||1);
+		min = Math.ceil(min || 0);
+		max = Math.floor(max === undefined ? 1 : max);
 		return Math.floor(Rand.random() * (max - min + 1)) + min;
 	}
 

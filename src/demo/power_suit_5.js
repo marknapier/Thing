@@ -28,6 +28,109 @@ $(function(){
   var CH = CW * aspectRatio;
   var imgPath = 'img/trump/parts/';
 
+  var tweets = [  
+    {
+      "text":"“8X more new manufacturing jobs now than with Obama.” @FoxNews  @cvpayne",
+      "created_at":"Tue Oct 16 13:08:24 +0000 2018",
+      "id_str":"1052184484941049857"
+    },
+    {
+      "text":"“Op-Ed praises Trump Administrations efforts at the Border.” @FoxNews  The  Washington Examiner States, “Finally, the government has taken steps to stop releasing unaccompanied minors to criminals and traffickers.” This was done by the Obama Administration!",
+      "created_at":"Tue Oct 16 12:55:38 +0000 2018",
+      "id_str":"1052181272137801728"
+    },
+    {
+      "text":"“We can’t secure the Border because of the Democrats historic level of Obstruction. The Presidents fed up with this. His agenda is working. The economy is growing at twice the rate it did under Obama. We’ve nominated and confirmed 68 Federal Judges, 26 Court of Appeals Judges....",
+      "created_at":"Thu Sep 20 11:32:58 +0000 2018",
+      "id_str":"1042738383720726528"
+    },
+    {
+      "text":"“A lot of small &amp; medium size enterprises are registering very good profit, sometimes record profits-there stocks are doing very well, low income workers are getting big raises. There are an awful lot of good things going on that weren’t during Pres. Obama’s Watch.” Peter Morici",
+      "created_at":"Mon Sep 17 10:01:30 +0000 2018",
+      "id_str":"1041628201435521024"
+    },
+    {
+      "text":"Consumer Sentiment hit its highest level in 17 years this year. Sentiment fell 11% in 2015, an Obama year, and rose 16% since the Election, #TrumpTime!",
+      "created_at":"Mon Sep 17 01:06:27 +0000 2018",
+      "id_str":"1041493551446675456"
+    },
+    {
+      "text":"Exclusive -- Donald Trump Jr. to Obama: My Dad Fixed the Economy You Could Not https://t.co/HXuSBGFmf2 via @BreitbartNews",
+      "created_at":"Sun Sep 16 02:27:07 +0000 2018",
+      "id_str":"1041151464046043137"
+    },
+    {
+      "text":"When President Obama said that he has been to “57 States,” very little mention in Fake News Media. Can you imagine if I said that...story of the year! @IngrahamAngle",
+      "created_at":"Sat Sep 15 03:08:11 +0000 2018",
+      "id_str":"1040799409670377472"
+    },
+    {
+      "text":"“President Trump would need a magic wand to get to 4% GDP,” stated President Obama. I guess I have a magic wand, 4.2%, and we will do MUCH better than this! We have just begun.",
+      "created_at":"Mon Sep 10 14:42:34 +0000 2018",
+      "id_str":"1039162221492928513"
+    },
+    {
+      "text":"“Barack Obama talked a lot about hope, but Donald Trump delivered the American Dream. All the economic indicators, what’s happening overseas, Donald Trump has proven to be far more successful than Barack Obama. President Trump is delivering the American Dream.” Jason Chaffetz",
+      "created_at":"Sun Sep 09 13:32:04 +0000 2018",
+      "id_str":"1038782091629088768"
+    },
+    {
+      "text":"“Barrack Obama talked a lot about hope, but Donald Trump delivered the American Dream. All the economic indicators, what’s happening overseas, Donald Trump has proven to be far more successful than Barrack Obama. President Trump is delivering the American Dream.” Jason Chaffetz",
+      "created_at":"Sun Sep 09 13:10:27 +0000 2018",
+      "id_str":"1038776649171578880"
+    },
+    {
+      "text":"Two long running, Obama era, investigations of  two very popular Republican Congressmen were brought to a well publicized charge, just ahead of the Mid-Terms, by the Jeff Sessions Justice Department. Two easy wins now in doubt because there is not enough time. Good job Jeff......",
+      "created_at":"Mon Sep 03 18:25:25 +0000 2018",
+      "id_str":"1036681588573130752"
+    },
+    {
+      "text":"“You have a Fake Dossier, gathered by Steele, paid by the Clinton team to get information on Trump. The Dossier is Fake, nothing in it has been verified. It then filters into our American court system in order to spy on Barrack Obama and Hillary Clinton’s political opponent......",
+      "created_at":"Sat Sep 01 13:19:20 +0000 2018",
+      "id_str":"1035879783547199488"
+    },
+    {
+      "text":".@Rasmussen_Poll just came out at 48% approval rate despite the constant and intense Fake News. Higher than Election Day and higher than President Obama. Rasmussen was one of the most accurate Election Day polls!",
+      "created_at":"Sat Sep 01 02:25:38 +0000 2018",
+      "id_str":"1035715271418413056"
+    },
+    {
+      "text":"“The Obama people did something that’s never been done...They spied on a rival presidential campaign. Would it be OK if Trump did it next? I am losing faith that our system is on the level. I’m beginning to think it is rotten &amp; corrupt. Scary stuff Obama did.” @TuckerCarlson  DOJ",
+      "created_at":"Wed Aug 29 12:12:38 +0000 2018",
+      "id_str":"1034775835004358656"
+    },
+    {
+      "text":"“Mainstream Media tries to rewrite history to credit Obama for Trump accomplishments. Since President Trump took office, the economy is booming. The stronger the economy gets, the more desperate his critics are. O had weakest recovery since Great Depression.” @WashTimes",
+      "created_at":"Sun Aug 26 22:01:33 +0000 2018",
+      "id_str":"1033836873473568768"
+    },
+    {
+      "text":"Michael Cohen plead guilty to two counts of campaign finance violations that are not a crime. President Obama had a big campaign finance violation and it was easily settled!",
+      "created_at":"Wed Aug 22 13:37:34 +0000 2018",
+      "id_str":"1032260490439864320"
+    },
+    {
+      "text":"Fake News, of which there is soooo much (this time the very tired New Yorker) falsely reported that I was going to take the extraordinary step of denying Intelligence Briefings to President Obama. Never discussed or thought of!",
+      "created_at":"Tue Aug 21 11:10:49 +0000 2018",
+      "id_str":"1031861173149413376"
+    },
+    {
+      "text":"Presidential Approval numbers are very good - strong economy, military and just about everything else. Better numbers than Obama at this point, by far. We are winning on just about every front and for that reason there will not be a Blue Wave, but there might be a Red Wave!",
+      "created_at":"Sun Aug 05 20:01:17 +0000 2018",
+      "id_str":"1026196465696350208"
+    },
+    {
+      "text":"..Because of Tariffs we will be able to start paying down large amounts of the $21 Trillion in debt that has been accumulated, much by the Obama Administration, while at the same time reducing taxes for our people. At minimum, we will make much better Trade Deals for our country!",
+      "created_at":"Sun Aug 05 12:06:25 +0000 2018",
+      "id_str":"1026076959980302336"
+    },
+    {
+      "text":"....Also, why is Mueller only appointing Angry Dems, some of whom have worked for Crooked Hillary, others, including himself, have worked for Obama....And why isn’t Mueller looking at all of the criminal activity &amp; real Russian Collusion on the Democrats side-Podesta, Dossier?",
+      "created_at":"Sun Jul 29 20:20:39 +0000 2018",
+      "id_str":"1023664624259014656"
+    },
+  ];
+
   var allItems = [
       { item:"Flag_of_the_United_States.png", attribs:['bg', 'flag', 'blue', 'red', 'accent'] },
       { item:"american-flag_bg.jpg", attribs:['bg', 'pin', 'flag', 'blue', 'red', 'accent'] },
@@ -107,7 +210,7 @@ $(function(){
       { item:"melania_blue_dress_1.png", attribs:['accent', 'blue'] },
       { item:"american_flag_on_stand_t.png", attribs:['bg', 'accent', 'red'] },
       { item:"kim-jong-un-with-missile.png", attribs:['bg', 'accent', 'blue'] },
-      { item:"oval_office.png", attribs:['accent', 'yellow'] },
+      { item:"oval_office.png", attribs:['bg', 'yellow'] },
       { item:'blue_with_light_edge.png', attribs:['bg', 'blue'] },
       { item:'USA_flag_starfield_seamless.png', attribs:['bg', 'pin', 'flag', 'blue'] },
       { item:'USA_flag_stripes.png', attribs:['bg', 'flag', 'red', 'accent'] },
@@ -263,6 +366,45 @@ $(function(){
     return (canvasWidth * 0.0016) * (Rand.randBoolean(45) ? 4 : 1);
   }
 
+  function makeTextCascade(props) {
+    var x = props.x;
+    var y = props.y;
+    var z = props.z;
+    var count = 1;
+    var offx = props.w * 0.014;
+    var offy = props.h * 0.0217;
+    var labels = props.texts.map(text => {
+      var l = Thing.Label.make({
+        id: props.id + '-' + count,
+        fontSize: (props.w * 0.016) + 'px',
+        color: '#0f0',
+        text: text,
+        x: x,
+        y: y,
+        z: z,
+        w: (props.w * 0.1),
+      });
+      x += offx;
+      y += offy;
+      z += 1;
+      count += 1;
+      return l;
+    });
+    return labels;
+  }
+
+  function makeTweetCascade(props) {
+    return makeTextCascade({
+      id: 'tweets',
+      texts: props.tweets.map(tweet => JSON.stringify(tweet)),
+      x: props.w * 0.55,
+      y: props.h * 0.25,
+      z: props.z,
+      w: props.w,
+      h: props.h,
+    });
+  }
+  
   // function makePolkaDots (props = {x:0, y:0, w:1000, h:500, colors: []}) {
   //   var r = Rand.randInt(10, 50);
   //   var s = Rand.randInt(50, 500);
@@ -439,21 +581,21 @@ $(function(){
     // build the twit flock
     return imageSet.map((imgName, index) => {
       var jiggledSize = around(imageSize, imageSize * 0.6);
-      return Thing.Box.make({// make a container
+      return Thing.Box.make({  // make a container
         id: 'twitter' + index,
         x: around(x, jiggleAmount),
-        y: around(y, jiggleAmount),
+        y: jiggle(y, jiggleAmount),
         z: around(props.z, 50),
         w: jiggledSize,
         h: jiggledSize,
       })
-      .add(Thing.Img.make({// put a twit image underneath...
+      .add(Thing.Img.make({  // put a twit image underneath...
         src: imgPath + 'twit_logo_blue_crop_t.png',
         w: jiggledSize,
         filter: 'drop-shadow(#00006677 0px 0px ' + Math.round(props.w * 0.0013) + 'px)', // with a slight blue outline
       }))
       .add(
-        Thing.BGImg.make({ // put a background pattern masked in a twit image on top
+        Thing.BGImg.make({   // put a background pattern masked in a twit image on top
           src: imgPath + imgName,
           repeat: false,
           size: '100% 100%',
@@ -503,47 +645,47 @@ $(function(){
     });
   }
 
-  // function makeSwatchesBlueTwitter(props) {
-  //   var bg0 = Thing.BGImg.make({
-  //     src: imgPath + 'lapel_right_full_t.png',
-  //     size: '100% 100%',
-  //     center: true,
-  //     repeat: false,
-  //   });
+  function makeSwatchesBlueTwitter(props) {
+    var bg0 = Thing.BGImg.make({
+      src: imgPath + 'lapel_right_full_t.png',
+      size: '100% 100%',
+      center: true,
+      repeat: false,
+    });
 
-  //   // var bg1 = Thing.BGImg.make({
-  //   //   src: 'img/trump/swatches/navy_blue_cloth_9502-3.jpg',
-  //   //   size: '50% 50%',
-  //   //   center: true,
-  //   //   repeat: true,
-  //   //   opacity: 0.5,
-  //   // });
+    // var bg1 = Thing.BGImg.make({
+    //   src: 'img/trump/swatches/navy_blue_cloth_9502-3.jpg',
+    //   size: '50% 50%',
+    //   center: true,
+    //   repeat: true,
+    //   opacity: 0.5,
+    // });
 
-  //   var bg2 = Thing.BGImg.make({
-  //     src: imgPath + Thing.Rand.randItem(['gold_leaf_bg_bright.png', 'pure-silk-navy-red-repp-tie_1.png']),
-  //     size: '5% 5%',
-  //     repeat: true,
-  //     opacity: 0.8,
-  //   }).addMask({
-  //     image: 'url(' + imgPath + 'twit_logo_blue_t.png)',
-  //     repeat: 'repeat',
-  //     size: '10% 5%',
-  //   });
+    var bg2 = Thing.BGImg.make({
+      src: imgPath + Thing.Rand.randItem(['gold_leaf_bg_bright.png', 'pure-silk-navy-red-repp-tie_1.png']),
+      size: '5% 5%',
+      repeat: true,
+      opacity: 0.8,
+    }).addMask({
+      image: 'url(' + imgPath + 'twit_logo_blue_t.png)',
+      repeat: 'repeat',
+      size: '10% 5%',
+    });
 
-  //   var box = Thing.Box.make({
-  //     id: 'suit-patterned',
-  //     margin: '20px',
-  //     x: props.x,
-  //     y: props.y,
-  //     z: props.z,
-  //     w: props.w,
-  //     h: props.h,
-  //     border: (CW * Thing.Rand.randFloat(0.013, 0.025)) + 'px solid #00ff37',
-  //     mask: {image: 'url(' + imgPath + 'lapel_right_full_t.png)'},
-  //   }).add([bg0, bg2]);
+    var box = Thing.Box.make({
+      id: 'suit-patterned',
+      margin: '20px',
+      x: props.x,
+      y: props.y,
+      z: props.z,
+      w: props.w,
+      h: props.h,
+      border: (CW * Thing.Rand.randFloat(0.013, 0.025)) + 'px solid #00ff37',
+      mask: {image: 'url(' + imgPath + 'lapel_right_full_t.png)'},
+    }).add([bg0, bg2]);
 
-  //   return box;
-  // }
+    return box;
+  }
 
   function makeLines(props) {
     return [
@@ -1005,7 +1147,7 @@ $(function(){
   }
 
   function makeSuitStuff(props) {
-    // var bigJiggleSize = props.w * 0.15;
+    var bigJiggleSize = props.w * 0.15;
     var suitJiggleSize = props.w * Thing.Rand.randFloat(0.05, 0.15);
     var suitAreaW = Math.round(props.w * Thing.Rand.randFloat(0.3, 1.0)); // overal width of all suit stuff
     var suitAreaX = Math.round((props.w - suitAreaW) * Thing.Rand.randFloat(0.3, 0.6));
@@ -1024,13 +1166,13 @@ $(function(){
       lineWidth: Math.round(suitAreaW * 0.00533333),
     }).add(makeSuitParts({w: suitWidth, h: suitHeight})));
     
-    // bounds.add(makeSwatchesBlueTwitter({
-    //   x: jiggle(suitAreaX, suitJiggleSize),
-    //   y: jiggle(suitAreaY, suitJiggleSize),
-    //   w: jiggle(suitAreaW * 0.4, bigJiggleSize),
-    //   h: jiggle(suitHeight, suitJiggleSize),
-    //   z: Thing.Rand.pickItem(zpos),
-    // }));
+    var swatchesBlueTwitter = makeSwatchesBlueTwitter({
+      x: jiggle(suitAreaX, suitJiggleSize),
+      y: jiggle(suitAreaY, suitJiggleSize),
+      w: jiggle(suitAreaW * 0.4, bigJiggleSize),
+      h: jiggle(suitHeight, suitJiggleSize),
+      z: Thing.Rand.pickItem(zpos),
+    });
 
     var bigSuitW = suitAreaW; // * Thing.Rand.randFloat(0.5, 0.9);
     var bigSuit = makeBigSuit({
@@ -1067,7 +1209,7 @@ $(function(){
 
     var ties = makeBunchOfTies($.extend({}, props, {z: Thing.Rand.pickItem(zpos)}));
 
-    return [grayFrame, bigSuit, markerText, markerLine, ties];
+    return [grayFrame, bigSuit, markerText, markerLine, ties, swatchesBlueTwitter];
   }
   
   // function makeBigSuitORIG(props) {
@@ -1138,7 +1280,7 @@ $(function(){
 
     // twitter imgs
     var twitterField = makeTwitterField({w: props.w, h: props.h});
-    var twitters = makeTwitters({w: props.w, h: props.h, z: 300});
+    var twitters = makeTwitters({w: props.w, h: props.h, z: 210});
 
     // mouths
     var bottomMouths = makeMouthGrid({
@@ -1270,7 +1412,7 @@ $(function(){
     bounds.add(makeScatterImages($.extend({}, props, {z: baseFaceZ})));
     bounds.add(twitters);
     bounds.add(makeBubbleArrow(
-      twitters[0].x - ((props.w * 0.2) * (twitters[0].x < props.w / 2 ? -1 : 1)), twitters[0].y - (props.w * 0.1), 
+      twitters[0].x - ((props.w * 0.15) * (twitters[0].x < props.w / 2 ? -1 : 1)), twitters[0].y - (props.w * 0.1), 
       twitters[0].x, twitters[0].y, 
       '#0f0', 
       '' + twitters.length, 
@@ -1287,7 +1429,7 @@ $(function(){
     bounds.add(nose);
     bounds.add(bottomMouths);
     bounds.add(mouth);
-    bounds.add(makeImgArrayScroll({// scrolling eyes right side
+    bounds.add(makeImgArrayScroll({  // scrolling eyes right side
       id: 'eyes-right-scroll',
       imgNames: randomArray(imgNamesEyes, 10),
       x: props.w * 0.35,
@@ -1296,7 +1438,7 @@ $(function(){
       w: props.w * 0.1,
       h: props.h * 0.2,
     }));
-    bounds.add(makeImgArrayScroll({// scrolling eyes left side
+    bounds.add(makeImgArrayScroll({  // scrolling eyes left side
       id: 'eyes-left-scroll',
       imgNames: randomArray(imgNamesEyes, 10),
       x: props.w * 0.45,
@@ -1382,6 +1524,8 @@ $(function(){
     }));
 
     bounds.add(makeMelania({w: props.w, h: props.h}));
+
+    bounds.add(makeTweetCascade({tweets: tweets, w: props.w, h: props.h, z: 1000}));
 
     // Guide lines
 
