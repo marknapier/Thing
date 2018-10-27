@@ -193,7 +193,7 @@ function makeImageNamesArray() {
   ];
 }
 
-function arrange(layout, imgs) {
+function arrange(layout) {
   setImage(layout.bg1, rand(flag));
   setImage(layout.bg2, rand(flag));
   setImage(layout.bg3, rand(flag));
@@ -205,7 +205,7 @@ function arrange(layout, imgs) {
   setImage(layout.mouth, rand(mouth));
 }
 
-function updateFace(layout, imgs) {
+function updateFace(layout) {
   var sectionName = rand(['forehead', 'eye1', 'eye2', 'eye3', 'eye4', 'mouth']);
   var oldImg = setImage(layout[sectionName], rand(imageNamesForSection[sectionName]));
 
@@ -215,7 +215,7 @@ function updateFace(layout, imgs) {
   }, 1000);
 }
 
-function updateFlag(layout, imgs) {
+function updateFlag(layout) {
   var sectionName = rand(['bg1', 'bg3']);
   var oldImg = setImage(layout[sectionName], rand(imageNamesForSection[sectionName]));
 

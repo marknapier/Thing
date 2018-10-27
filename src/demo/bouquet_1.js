@@ -1,50 +1,49 @@
 var Thing = window.Thing;
-var Rand = Thing.Rand;
 
 var pageParams = Thing.Page.getParams();
 var aspectRatio = 1;
 var CW = pageParams.canvasWidth || 6000;
 var CH = CW * aspectRatio;
 
-function makeRoom (props) {
-  var r = Thing.Room.make($.extend({
-    x: 1000,
-    y:  120,
-    w: 1000,
-    h: 2625,
-    d: 1000,
-    showOuter: false,
-    overflow: 'hidden'
-  }, props));
+// function makeRoom (props) {
+//   var r = Thing.Room.make($.extend({
+//     x: 1000,
+//     y:  120,
+//     w: 1000,
+//     h: 2625,
+//     d: 1000,
+//     showOuter: false,
+//     overflow: 'hidden'
+//   }, props));
 
-  r.back.css({backgroundColor: '#000'});
-  r.right.css({backgroundColor: '#333'});
-  r.left.css({backgroundColor: '#333'});
-  r.top.css({backgroundColor: '#111'});
-  r.bottom.css({backgroundColor: '#222'});
-  return r;
-}
+//   r.back.css({backgroundColor: '#000'});
+//   r.right.css({backgroundColor: '#333'});
+//   r.left.css({backgroundColor: '#333'});
+//   r.top.css({backgroundColor: '#111'});
+//   r.bottom.css({backgroundColor: '#222'});
+//   return r;
+// }
 
-function makeLightSpot () {
-  return Thing.make({
-    width: '100%',
-    height: '100%',
-    background: 'radial-gradient(at 40% 30%, rgba(255, 255, 255, 0.3) 10%, rgba(94, 72, 82, 0.54) 90%)'
-  });
-}
+// function makeLightSpot () {
+//   return Thing.make({
+//     width: '100%',
+//     height: '100%',
+//     background: 'radial-gradient(at 40% 30%, rgba(255, 255, 255, 0.3) 10%, rgba(94, 72, 82, 0.54) 90%)'
+//   });
+// }
 
-function makeShadowSpot(props) {
-  return Thing.make({
-    id: 'shadowSpot',
-    x: props.x,
-    y: props.y,
-    z: props.z,
-    w: props.w,
-    h: props.h,
-    rotate: {x: 90},
-    background: 'radial-gradient(at 50% 50%, rgba(0, 0, 0, 0.5) 30%, transparent 70%)'
-  });
-}
+// function makeShadowSpot(props) {
+//   return Thing.make({
+//     id: 'shadowSpot',
+//     x: props.x,
+//     y: props.y,
+//     z: props.z,
+//     w: props.w,
+//     h: props.h,
+//     rotate: {x: 90},
+//     background: 'radial-gradient(at 50% 50%, rgba(0, 0, 0, 0.5) 30%, transparent 70%)'
+//   });
+// }
 
 function makeBackground(props = {}) {
   return Thing.Box.make($.extend({

@@ -1,5 +1,15 @@
 var Thing = require('../Thing/Thing.js');
 
+function compareZ(a, b) {
+  if (a.z < b.z) {
+    return -1;
+  }
+  if (a.z > b.z) {
+    return 1;
+  }
+  return 0;
+}
+
 class Box extends Thing {
   init (props = {}) {
   	this.setDefaultProps(props);
@@ -67,6 +77,10 @@ class Box extends Thing {
   each (func) {
     func && this.items.forEach(func);
     return this;
+  }
+
+  sortZ () {
+    this.items.sort(compareZ);
   }
 }
 Thing.addClass(Box);

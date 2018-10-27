@@ -84,4 +84,16 @@ describe('Box', function () {
 		expect(b.getElementBounds()).toEqual({x:100, y:200, w:250, h:250, bottom:450, right:350});
 		b.unRender();
 	});
+	it('can sort the things inside it by their Z depth', function () {
+		let b = Thing.classes.Box.make();
+		let t1 = Thing.make({id: 'A', z: 100});
+		let t2 = Thing.make({id: 'B', z: 200});
+		let t3 = Thing.make({id: 'C', z: 300});
+		b.add([t3, t2, t1]);
+		expect(b.items[0].z).toBe(300);
+		expect(b.items[2].z).toBe(100);
+		b.sortZ();
+		expect(b.items[0].z).toBe(100);
+		expect(b.items[2].z).toBe(300);
+	});
 });

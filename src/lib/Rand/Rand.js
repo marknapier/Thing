@@ -60,8 +60,8 @@ class Rand {
 	}
 
 	// return true some percentage of the time (defaults to 50%)
-	static randBoolean(threshold) {
-		return Rand.randInt(1,100) < (threshold===undefined ? 50 : threshold);
+	static randBoolean(threshold=50) {
+		return Rand.randInt(1,100) < threshold;
 	}
 
 	// random integer within maxDistance of target (distributed in a bell curve around target)
