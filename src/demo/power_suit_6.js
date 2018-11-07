@@ -1525,6 +1525,19 @@ $(function(){
     return Thing.Rand.randBoolean(33) ? 'saturate(1.3) brightness(1.3)' : undefined;
   }
   
+  function makeSig(props) {
+    return Thing.Label.make({
+      x: props.w - (props.w * 0.175),
+      y: props.h - (props.h * 0.0104),
+      z: 20000,
+      id: 'sig',
+      fontSize: Math.round(props.w * 0.01) + 'px',
+      color: '#33ff33',
+      text: 'napier power_suit_6 ' + Thing.Rand.getSeed(),
+      textShadow: 'rgb(11, 39, 0) 2px 2px 4px',
+    });
+  }
+
   /*
     Z order:
 
@@ -1823,6 +1836,8 @@ $(function(){
 
     bounds.add(makeLines({w: props.w, h: props.h, z: Thing.Rand.randItem([10000, 3000, 1000, 100])}));
 
+    bounds.add(makeSig(props));
+
     bounds.sortZ();
 
     return bounds;
@@ -1869,6 +1884,9 @@ $(function(){
         oldPowerSuit = null;
       }, 4000);
     }
+
+    // expose to parent win
+    window.refreshPortrait = refreshPortrait;
 
     var powerSuitPortrait = makePowerSuitPortrait({
       id: 'powersuit-' + portraitCount,
