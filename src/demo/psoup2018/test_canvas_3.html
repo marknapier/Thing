@@ -1,0 +1,372 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #000;
+        margin: 0px;
+        padding: 0px;
+      }
+      .container {
+        width: 1340px;
+        margin: 0 auto;
+      }
+      #myCanvas {
+        transform: scale(1);
+        transform-origin: 0 0;
+        cursor: pointer;
+      }
+      .canvas-wrapper {
+        display: inline-block;
+        padding: 5px;
+      }
+      .color-button {
+        display: inline;
+        padding: 26px;
+        margin: 10px 23px;
+        background-color: #ff0;
+        border: 4px solid transparent;
+        border-radius: 40px;
+      }
+      .color-button:hover {
+        cursor: pointer;
+        border: 4px solid cyan;
+      }
+      #toolbar {
+        display: inline-block;
+        width: 110px;
+        vertical-align: top;
+      }
+      #toolbar div {
+        display: inline-block;
+      }
+      div#cc {
+        display: none;
+      }
+      div#pattern {
+        display: none;
+      }
+      #fullscreen #goFS {
+        vertical-align: middle;
+      }
+      #fpsDisplay {
+        color: #ccc;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+    </style>
+    <script src="js/MainLoop.js"></script>
+    <script src="js/tinycolor/tinycolor.js"></script>
+    <script src="js/pulsar.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class='canvas-wrapper'>
+        <canvas id="myCanvas" width="1200" height="890"></canvas>
+      </div>
+      <!-- <div id="pattern">
+        <canvas id="patternCanvas" width="200" height="200"></canvas>
+      </div> -->
+      <div id="toolbar">
+        <div id="fpsDisplay"></div>
+        <div id="cc">
+          <img id="canvasCopy" style="width:50px; height:50px; border: 1px solid gray;" onclick="copyCanvas()">
+        </div>
+        <div id="pulsar-buttons"></div>
+        <div id="fullscreen">
+          <button id="goFS">Fullscreen</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // prozac green:  Graphic Designers Pantone: 2253 C,   Hex: #bde9c9,   RGB: rgb(189, 233, 201)
+      var canvas = document.getElementById('myCanvas');
+      var fpsDisplay = document.getElementById('fpsDisplay');
+      var context = canvas.getContext('2d');
+      var centerY = canvas.height / 3;
+      var radius = 200;
+      var timestep = 1000 / 30;
+      var loopLog = [];
+      var frameCount = 0;
+      var scale = canvas.width / 1200;
+      var pulsarClasses = {
+        Pulsar,
+        PulsarSolid,
+        PulsarChecked,
+        PulsarSpiral,
+        PulsarDashed,
+        PulsarPattern,
+        PulsarVerticalBar,
+        Slider,
+      };
+
+      function makeGreenOrangePalette() {
+        var colors = (new ColorFactory({colorFrom: [5, 225, 90, 0.6], colorTo: [255, 60, 0, 0.6]})).getGradientValues(255);
+        for (let i=120; i <= 140; i++) {
+          colors[i] = [0,0,0,0];  // transparent band in middle
+        }
+        return colors;
+      }
+
+      function makeGreenGreenPalette() {
+        var colors = (new ColorFactory({colorFrom: [77, 212, 0, 0.2], colorTo: [0, 117, 60, 0.2]})).getGradientValues(255);
+        colors[253] = [0,60,60,0.2];
+        colors[254] = [0,60,60,0.2];
+        return colors;
+      }
+
+      var pulsarConfigs = [
+        {
+          type: 'PulsarChecked',
+          context: context,
+          // colorFactory: new ColorFactory({color: [51, 153, 0, 0.2]}),
+          // colorFactory: new ColorFactory({colorFrom: [77, 212, 0, 0.2], colorTo: [0, 117, 60, 0.2]}), //51, 153, 0, 0.2
+          colorFactory: new ColorFactory({palette: makeGreenGreenPalette()}),
+          velocity: 0.02 * scale,
+        },
+        {
+          type: 'PulsarSpiral',
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 153, 0, 0.042]}),
+          velocity: .013 * scale, // pixels per second
+        },
+        {
+          type: 'PulsarDashed',
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 0, 0, 0.9]}),
+          velocity: .02 * scale,
+        },
+        {
+          type: 'PulsarVerticalBar', //PulsarVerticalBar
+          context: context,
+          colorFactory: new ColorFactory({colorFrom: [255, 220, 0, 0.6], colorTo: [255, 100, 0, 0.6]}),
+          velocity: .03 * scale,
+          maxX: 250 * scale,
+        },
+        {
+          type: 'Pulsar',
+          context: context,
+          colorFactory: new ColorFactory({palette: makeGreenOrangePalette()}),
+          velocity: .05 * scale,
+          maxR: 250 * scale,
+        },
+        {
+          type: 'Pulsar',
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 153, 102, 0.9333]}),
+          velocity: 0.025 * scale,
+          maxR: 200 * scale,
+        },
+        {
+          type: 'Pulsar',  //solid
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 0, 102, 0.09]}),
+          velocity: .01 * scale,
+          maxR: 320 * scale,
+        },
+        {
+          type: 'PulsarChecked',
+          context: context,
+          colorFactory: new ColorFactory({colorFrom: [255, 240, 0, 1.0], colorTo: [230, 250, 30, 1.0]}),
+          velocity: 0.02 * scale,
+          maxX: 900 * scale,
+        },
+        {
+          type: 'PulsarVerticalBar',
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 0, 102, 1.0]}),
+          maxX: 800 * scale,
+          velocity: 0.025 * scale,
+        },
+        {
+          type: 'PulsarPattern',
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 153, 102, 0.6]}),
+          maxX: 800 * scale,
+          velocity: .02 * scale,
+        }
+      ];
+
+      var currentPen = pulsarConfigs[0];
+      var pattern = null;
+      var pulsars = [];
+      // var M = new DOMMatrix();
+
+      function makePatternThang() {
+        var imageObj = new Image();
+        imageObj.onload = function() {
+          pattern = context.createPattern(imageObj, 'repeat');
+        };
+        imageObj.src = './img/oak-wooden-pattern-500x500.jpg';
+
+        // var canvasP = document.getElementById('patternCanvas');
+        // var contextP = canvasP.getContext('2d');
+        // drawCircleFilled(contextP, 66, 66, 50, 'red');
+        // drawCircleFilled(contextP, 133, 133, 50, ['magenta','blue','green','yellow','black'][Math.floor(Math.random()*5)]);
+        // pattern = context.createPattern(canvasP, 'repeat');
+
+        /*
+          // draw to pattern canvas
+          // degrees += 0.001;
+          // degrees = degrees > 360 ? 0 : degrees;
+          clearCanvas(contextP, canvasP.width, canvasP.height, 'yellow');
+          contextP.translate(50, 50);
+          contextP.rotate((Math.PI / 180) * degrees);
+          contextP.translate(-50, -50);
+          drawCircleFilled(contextP, 100, 100, 120, ['magenta','orange','hotpink','pink','red'][Math.floor(Math.random()*5)]);
+          pattern = context.createPattern(canvasP, 'repeat');
+        */
+      }
+
+      function copyCanvas() {
+        var dataURL = canvas.toDataURL();
+        document.getElementById('canvasCopy').src = dataURL;
+      }
+
+      function update(delta) {
+        loopLog && loopLog.push({
+          frameCount,
+          delta,
+        });
+        frameCount++;
+        if (loopLog && frameCount > 120) {
+          console.log(JSON.stringify(loopLog, null, 4));
+          loopLog = null;
+        }
+
+        updateAll(delta);
+      }
+
+      function draw(interp) {
+        loopLog && loopLog.push({
+          frameCount,
+          interp,
+        });
+        drawAll(interp);
+        fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
+      }
+
+      function updateAll(delta) {
+        pulsars.forEach(function (p) {
+          p.update(delta);
+        });
+      }
+
+      var degrees = 0.1;
+
+      function drawAll(interp) {
+        pulsars.forEach(function (p) {
+          p.draw(interp);
+        });
+      }
+
+      function getElementClickXY(e) {
+        var rect = e.target.getBoundingClientRect();
+        return { 
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        };
+      }
+
+      function handleClick(x, y) {
+        var scale = 1 / 1;   // 1 over canvas scale factor
+        var pulsarClass = pulsarClasses[currentPen.type || 'Pulsar'];
+        currentPen.x = x;
+        currentPen.y = y;
+        currentPen.context = context;
+        pulsars.push(new pulsarClass(currentPen));
+      }
+
+      function rgbHex(rgbaArray) {
+        return tinycolor({r:rgbaArray[0], g:rgbaArray[1], b:rgbaArray[2], a:1.0}).toHex8String();
+      }
+
+      function setPen(pulsarConfig) {
+        currentPen = pulsarConfig;
+      }
+
+      function addButtons(configs) {
+        configs.forEach(function (config) {
+          var div = document.createElement('div');
+          var colorFrom = rgbHex(config.colorFactory.colorFrom);
+          var colorTo = rgbHex(config.colorFactory.colorTo);
+          div.className = ('color-button');
+          // div.style.backgroundColor = colorFrom;
+          div.style.backgroundImage = `linear-gradient(${colorFrom} 0%, ${colorTo} 100%)`;
+          if (config.type === 'PulsarVerticalBar') {
+            div.style.borderRadius = 0;
+          }
+          div.addEventListener('click', (function (c) {
+                      return function (e) { 
+                        setPen(c); 
+                      };
+                    })(config));
+          document.getElementById('pulsar-buttons').append(div);
+        })
+      }
+
+      function addGrid() {
+        setPen(pulsarConfigs[3]);
+        for (var x=100; x < 1200; x += 200) {
+          for (var y=100; y < 800; y += 150) {
+            pulsarConfigs[3].velocity = 0.001 + (Math.random() * 0.01) * scale;
+            handleClick(x, y);
+          }
+        }
+        setPen(pulsarConfigs[4]);
+        for (var x=150; x < 1200; x += 200) {
+          for (var y=120; y < 800; y += 150) {
+            pulsarConfigs[4].velocity = 0.001 + (Math.random() * 0.01) * scale;
+            handleClick(x, y);
+          }
+        }
+        setPen(pulsarConfigs[6]);
+        for (var x=150; x < 1200; x += 200) {
+          for (var y=120; y < 800; y += 150) {
+            pulsarConfigs[6].velocity = 0.001 + (Math.random() * 0.01) * scale;
+            handleClick(x, y);
+          }
+        }
+      }
+
+      function goFullScreen() {
+        var goFS = document.getElementById("goFS");
+        goFS.addEventListener("click", function() {
+          if (document.body.webkitRequestFullScreen) document.body.webkitRequestFullScreen();
+          else if (document.body.requestFullscreen) document.body.requestFullscreen();
+          else if (document.body.requestFullScreen) document.body.requestFullScreen();
+        }, false);
+      }
+
+      //============================================================
+
+      makePatternThang();
+
+      clearCanvas(context, canvas.width, canvas.height, '#006');
+      context.translate(0.5, 0.5);
+
+      MainLoop.setSimulationTimestep(timestep);
+      MainLoop.setDraw(draw);
+      MainLoop.setUpdate(update);
+      MainLoop.start();
+
+      canvas.addEventListener('click', function (e) {
+        var p = getElementClickXY(e);
+        handleClick(p.x, p.y);
+      })
+      canvas.addEventListener('touch', function (e) {
+        var p = getElementClickXY(e);
+        handleClick(p.x, p.y);
+      })
+
+      addButtons(pulsarConfigs);
+
+      goFullScreen();
+
+      // addGrid();
+      // setTimeout(function () { MainLoop.stop();}, 5000);
+    </script>
+  </body>
+</html>

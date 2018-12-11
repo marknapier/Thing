@@ -76,11 +76,10 @@ var config = {
 ////////////////
 // Tasks
 
+// Copy all images to dist
 gulp.task('images', function() {
-  // Pass through newer images only
-  return gulp.src('src/demo/img/**')
-      .pipe(newer('dist/img'))
-      .pipe(gulp.dest('dist/img'));
+  return gulp.src('src/demo/**/*.{png,gif,jpg}',  {base: './src/demo/'})
+      	.pipe(gulp.dest('dist'));
 });
 
 gulp.task('demo', function() {
@@ -111,6 +110,7 @@ gulp.task('browserify', ['jshint'], function () {
     ;
 });
 
+// copy dist to htdocs folder
 gulp.task('publish',  ['browserify', 'demo'], function() {
    gulp.src('./dist/**/*')
    .pipe(newer('../htdocs/Thing'))

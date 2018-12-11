@@ -36,6 +36,7 @@ class Thing {
     this.w = props.w;
     this.h = props.h;
 
+    this.id = props.id;
     this.$element = null;
     this.parent = null;
   }

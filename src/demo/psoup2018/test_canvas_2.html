@@ -127,14 +127,14 @@
       // var M = new DOMMatrix();
 
       function makePatternThang() {
-        // var imageObj = new Image();
-        // imageObj.onload = function() {
-        //   pattern = context.createPattern(imageObj, 'repeat');
-        // };
-        // // imageObj.src = 'https://www.html5canvastutorials.com/demos/assets/wood-pattern.png';
-        // imageObj.src = 'https://img00.deviantart.net/1c4b/i/2013/164/6/8/hexagonal_cube_pattern_thingie_by_black_light_studio-d68vloo.png';
+        var imageObj = new Image();
+        imageObj.onload = function() {
+          pattern = context.createPattern(imageObj, 'repeat');
+        };
+        imageObj.src = 'https://4.imimg.com/data4/KO/XU/MY-12855734/oak-wooden-pattern-500x500.jpg';
+
         // drawCircleFilled(contextP, 100, 100, 80, 'red');
-        drawCircleFilled(contextP, 100, 100, 80, ['magenta','blue','green','yellow','black'][Math.floor(Math.random()*5)]);
+        // drawCircleFilled(contextP, 100, 100, 80, ['magenta','blue','green','yellow','black'][Math.floor(Math.random()*5)]);
         pattern = context.createPattern(canvasP, 'repeat');
       }
 

@@ -684,6 +684,7 @@ function animate(timestamp) {
      */
     numUpdateSteps = 0;
     while (frameDelta >= simulationTimestep) {
+        // console.log('mainloop about to call update - frameDelta, simulationTimestep:', frameDelta, simulationTimestep);
         update(simulationTimestep);
         frameDelta -= simulationTimestep;
 
@@ -735,6 +736,7 @@ function animate(timestamp) {
      *
      * See `MainLoop.setDraw()` for details about draw() itself.
      */
+    // console.log('mainloop about to call draw - frameDelta, simulationTimestep:', frameDelta, simulationTimestep);
     draw(frameDelta / simulationTimestep);
 
     // Run any updates that are not dependent on time in the simulation. See
