@@ -3,35 +3,269 @@
   <head>
     <style>
       body {
+        background-color: #050505;
         margin: 0px;
         padding: 0px;
       }
+      div.color-button.checkered3 {
+        background-size: 34px 34px;
+        background-position: 0 0, 17px 17px;
+        background-image: linear-gradient(45deg, #fffbd2 25%, transparent 25%, transparent 75%, #fffbd2 75%, #fffbd2),
+                          linear-gradient(45deg, #fffbd2 25%, transparent 25%, transparent 75%, #fffbd2 75%, #fffbd2);
+      }
+      .container {
+        width: 1340px;
+        margin: 0 auto;
+      }
       #myCanvas {
+        background-color: #000
         transform: scale(1);
         transform-origin: 0 0;
+        cursor: pointer;
+        border: 1px solid #555;
+      }
+      .canvas-wrapper {
+        display: inline-block;
+        padding: 5px;
+      }
+      .color-button {
+        display: inline;
+        width: 50px;
+        height: 50px;
+        margin: 10px 23px;
+        background-color: #ff0;
+        border: 4px solid black;
+        border-radius: 40px;
+      }
+      .color-button:hover {
+        cursor: pointer;
+        border: 4px solid cyan;
+      }
+      .color-button.selected {
+        border: 4px solid aliceblue;
+      }
+      #toolbar {
+        display: inline-block;
+        width: 110px;
+        vertical-align: top;
+      }
+      #toolbar div {
+        display: inline-block;
+      }
+      div#cc {
+        display: none;
+      }
+      div#pattern {
+        /*display: none;*/
+      }
+      #fullscreen #goFS {
+        display: none;
+        vertical-align: middle;
+        padding: 10px;
+        margin: 10px 30px;
+      }
+      #fpsDisplay {
+        display: none !important;
+        color: #ccc;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #gradient {
+        background: linear-gradient(90deg, rgba(0,153,102,1) 0%, rgba(0,128,128,1) 95%, rgba(0,71,71,1) 100%);
+        width: 500px;
+        height: 5px;
+      }
+      #misc {
+        display: none;
       }
     </style>
-    <script src="js/tinycolor/tinycolor.js"></script>
-    <script src="js/Sound.js"></script>
     <script src="js/MainLoop.js"></script>
+    <script src="js/tinycolor/tinycolor.js"></script>
     <script src="js/pulsar.js"></script>
   </head>
 
   <body>
-    <canvas id="myCanvas" width="1200" height="800"></canvas>
-    <div id="fpsDisplay" style="position: absolute; top: 70px; left: 10px;"></div>
+    <div class="container">
+      <div class='canvas-wrapper'>
+        <canvas id="myCanvas" width="1200" height="800"></canvas>
+      </div>
+      <div id="toolbar">
+        <div id="fpsDisplay"></div>
+        <div id="cc">
+          <img id="canvasCopy" style="width:50px; height:50px; border: 1px solid gray;" onclick="copyCanvas()">
+        </div>
+        <div id="pulsar-buttons"></div>
+        <div id="fullscreen">
+          <button id="goFS">FS</button>
+        </div>
+      </div>
+    </div>
+    <div id="misc">
+      <div id="pattern">
+        <canvas id="patternCanvas" width="100" height="100"></canvas>
+      </div>
+      <div id="gradient">
+      </div>
+    </div>
 
     <script>
       var canvas = document.getElementById('myCanvas');
+      var fpsDisplay = document.getElementById('fpsDisplay');
       var context = canvas.getContext('2d');
-      var centerX = canvas.width / 3;
       var centerY = canvas.height / 3;
       var radius = 200;
+      var timestep = 1000 / 60;
+      var frameCount = 0;
+      var scale = canvas.width / 1200;
+      var pulsarClasses = {
+        Pulsar,
+        PulsarSolid,
+        PulsarChecked,
+        PulsarSpiral,
+        PulsarDashed,
+        PulsarPattern,
+        PulsarVerticalBar,
+        PulsarVerticalDivider,
+        PulsarSolidWithOutline,
+        Slider,
+      };
 
-      //============================================================
+      function makeGreenOrangePalette() {
+        var colors = (new ColorFactory({colorFrom: [5, 225, 90, 0.6], colorTo: [255, 60, 0, 0.6]})).getGradientValues(255);
+        for (let i=120; i <= 140; i++) {
+          colors[i] = [0,0,0,0];  // transparent band in middle
+        }
+        return colors;
+      }
 
-      var fpsDisplay = document.getElementById('fpsDisplay');
-      var timestep = 1000 / 30;
+      function makeGreenGreenPalette() {
+        var colors = (new ColorFactory({colorFrom: [77, 212, 0, 0.2], colorTo: [0, 117, 60, 0.2]})).getGradientValues(255);
+        colors[253] = [0,60,60,0.2];
+        colors[254] = [0,60,60,0.2];
+        return colors;
+      }
+
+      function makeYellowishPalette() {
+        var colors = new ColorFactory({colorFrom: [230, 255, 0, 0.6], colorTo: [255, 250, 180, 0.6]}).getGradientValues(255);
+        colors[253] = [20, 10, 30, 0.5];
+        colors[254] = [0, 10, 50, 0.5];
+        return colors;
+      }
+
+      var pulsarConfigs = [
+        {
+          type: 'Pulsar', // bluegreen - is replaced by pixel palette below
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 153, 102, 0.35]}),
+          velocity: 0.025 * scale,
+          maxR: 200 * scale,
+        },
+        {
+          type: 'Pulsar',
+          context: context,
+          colorFactory: new ColorFactory({palette: makeGreenOrangePalette()}),
+          velocity: 0.05 * scale,
+          maxR: 250 * scale,
+        },
+        {
+          type: 'Pulsar',  // solid red alpha
+          context: context,
+          colorFactory: new ColorFactory({color: [255, 0, 102, 0.09]}),
+          velocity: 0.01 * scale,
+          maxR: 320 * scale,
+        },
+        {
+          type: 'PulsarChecked',
+          context: context,
+          colorFactory: new ColorFactory({palette: makeGreenGreenPalette()}),
+          velocity: 0.02 * scale,
+        },
+        {
+          type: 'PulsarChecked',
+          context: context,
+          colorFactory: new ColorFactory({colorFrom: [255, 220, 0, 1.0], colorTo: [230, 250, 30, 1.0]}),
+          velocity: 0.02 * scale,
+        },
+        {
+          type: 'PulsarSolidWithOutline',  //solid
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),  // 102
+          velocity: 0.01 * scale,
+          maxR: 320 * scale,
+        },
+        {
+          type: 'PulsarVerticalBar',
+          context: context,
+          colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),  // 102
+          velocity: 0.025 * scale,
+        },
+        {
+          type: 'PulsarVerticalBar',
+          context: context,
+          colorFactory: new ColorFactory({colorFrom: [230, 255, 0, 0.6], colorTo: [255, 250, 180, 0.6]}),
+          velocity: 0.03 * scale,
+        },
+        {
+          type: 'PulsarVerticalDivider',
+          context: context,
+          colorFactory: new ColorFactory({colorFrom: [250, 250, 100, 0.3], colorTo: [0, 0, 50, 0.3]}),
+          velocity: 0.02 * scale,
+          maxR: 1200 * scale,
+        },
+      ];
+
+      var currentPen = pulsarConfigs[0];
+      var pattern = null;
+      var pulsars = [];
+
+      function getPixels(imageObj) {
+        var tmpCanvas = document.createElement('canvas');
+        var tmpContext = tmpCanvas.getContext('2d');
+        tmpCanvas.width = imageObj.width;
+        tmpCanvas.height = imageObj.height;
+        tmpCanvas.style.display = 'none';
+        document.body.appendChild(tmpCanvas);
+        tmpContext.drawImage(imageObj, 0, 0);
+
+        var imgd = tmpContext.getImageData(0, 0, imageObj.width, imageObj.height);
+        var pix = imgd.data;
+        var pixels = [];
+
+        // Loop over each pixel and invert the color.
+        for (var i = 0, n = pix.length; i < n; i += 4) {
+          pixels.push([
+            pix[i  ], // red
+            pix[i+1], // green
+            pix[i+2], // blue
+            pix[i+3], // alpha
+          ]);
+        }
+
+        return pixels;
+      }
+
+      function loadPixels(imgSrc, callback) {
+        var imageObj = new Image();
+        imageObj.onload = function() {
+          callback(getPixels(imageObj));
+        };
+        imageObj.src = imgSrc;
+      }
+
+      function copyCanvas() {
+        var dataURL = canvas.toDataURL();
+        document.getElementById('canvasCopy').src = dataURL;
+      }
+
+      function update(delta) {
+        frameCount++;
+        updateAll(delta);
+      }
+
+      function draw(interp) {
+        drawAll(interp);
+        fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
+      }
 
       function updateAll(delta) {
         pulsars.forEach(function (p) {
@@ -43,151 +277,121 @@
         pulsars.forEach(function (p) {
           p.draw(interp);
         });
-        fpsDisplay.textContent = Math.round(MainLoop.getFPS()) + ' FPS';
+      }
+
+      function getElementClickXY(e) {
+        var rect = e.target.getBoundingClientRect();
+        return { 
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        };
       }
 
       function handleClick(x, y) {
-        console.log(x,y);
-        var scale = 1 / 1;
-        pulsars.push(new Pulsar({
-          context: context,
-          colorFactory: huesgreen,
-          x: x * scale,
-          y: y * scale,
-          velocity: 0.003,
-        }));
+        var scale = 1 / 1;   // 1 over canvas scale factor
+        var pulsarClass = pulsarClasses[currentPen.type || 'Pulsar'];
+        currentPen.x = x;
+        currentPen.y = y;
+        currentPen.context = context;
+        addPulsar(new pulsarClass(currentPen));
       }
 
-      var alpha = 0.1;
-      var huesmediumblue  = new ColorFactory({colorFrom: [80,255,255,alpha],  colorTo: [100,80,160,alpha]});
-      var huesgreen       = new ColorFactory({colorFrom: [200,255,10,0.9],    colorTo: [80,200,100,0.95]});
-      var hueswhiteblue   = new ColorFactory({colorFrom: [250,250,205,alpha], colorTo: [0,100,255,0.95]});
-      var huesred         = new ColorFactory({colorFrom: [240,0,0,0.9],       colorTo: [90,100,160,alpha]});
-      var huesorangeblue  = new ColorFactory({colorFrom: [255,100,0,alpha],   colorTo: [100,200,255,alpha]});
-      var huesyellow      = new ColorFactory({colorFrom: [255,255,10,alpha],  colorTo: [250,200,150,alpha]});
-      var huesviolet      = new ColorFactory({colorFrom: [255,255,230,alpha], colorTo: [80,80,220,alpha]});
-      var huesdarkblue    = new ColorFactory({colorFrom: [0,0,3,0.1],         colorTo: [0,0,50,0.1]});
-      var hueslightcyan   = new ColorFactory({colorFrom: [255,250,200,alpha], colorTo: [80,200,225,alpha]});
-      var huesaqua        = new ColorFactory({colorFrom: [0,153,102,0.8],   colorTo: [11,76,61,0.7]});
+      function addPulsar(p) {
+        if (pulsars.length >= 30) {
+          pulsars.shift();
+        }
+        pulsars.push(p);
+      }
 
-      clearCanvas('#FF0');
-      window.cnv = canvas;
+      function rgbHex(rgbaArray) {
+        return tinycolor({r:rgbaArray[0], g:rgbaArray[1], b:rgbaArray[2], a:1.0}).toHex8String();
+      }
 
-      var pulsars = [];
+      function setPen(pulsarConfig) {
+        currentPen = pulsarConfig;
+      }
 
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: hueswhiteblue,
-        x: 300,
-        y: 500,
-        velocity: 0.002,
-      }));
+      var colorButtons = [];
 
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: huesred,
-        x: 350,
-        y: 500,
-        velocity: 0.0025,
-      }));
+      function clearSelectedButton() {
+        colorButtons.forEach(function (b) {
+          b.classList.remove('selected');
+        });
+      }
 
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: hueswhiteblue,
-        x: 500,
-        y: 500,
-        velocity: 0.003,
-      }));
+      function addButtons(configs) {
+        configs.forEach(function (config) {
+          var div = document.createElement('div');
+          var colorFrom = rgbHex(config.colorFactory.colorFrom);
+          var colorTo = rgbHex(config.colorFactory.colorTo);
+          div.className = ('color-button');
+          if (config.type === 'PulsarVerticalBar' || config.type === 'PulsarVerticalDivider') {
+            div.style.borderRadius = 0;
+          }
+          if (config.type === 'PulsarChecked') {
+            div.style.backgroundColor = colorFrom;
+            div.classList.add('checkered3');
+          }
+          else {
+            div.style.backgroundImage = `linear-gradient(${colorFrom} 0%, ${colorTo} 100%)`;
+          }
+          div.addEventListener('click', (function (c, d) {
+            return function (e) {
+              clearSelectedButton();
+              d.classList.add('selected');
+              setPen(c); 
+            };
+          })(config, div));
+          document.getElementById('pulsar-buttons').append(div);
+          colorButtons.push(div);
+          colorButtons[0].classList.add('selected');
+        })
+      }
 
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: huesdarkblue,
-        x: 550,
-        y: 500,
-        velocity: 0.001,
-      }));
+      function setFullscreenButton() {
+        var goFS = document.getElementById("goFS");
+        goFS.addEventListener("click", function() {
+          if (document.body.webkitRequestFullScreen) document.body.webkitRequestFullScreen();
+          else if (document.body.requestFullscreen) document.body.requestFullscreen();
+          else if (document.body.requestFullScreen) document.body.requestFullScreen();
+        }, false);
+      }
 
-      pulsars.push(new PulsarSolid({
-        context: context,
-        colorFactory: huesdarkblue,
-        x: 800,
-        y: 600,
-        maxR: 300,
-        velocity: 0.03,
-      }));
+      //============================================================
 
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: huesred,
-        x: 100,
-        y: 300,
-        velocity: 0.0035,
-        maxR: 50,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: huesyellow,
-        x: 300,
-        y: 300,
-        velocity: 0.002,
-        maxR: 200,
-      }));
-
-      pulsars.push(new Pulsar({
-        context: context,
-        colorFactory: huesyellow,
-        x: 500,
-        y: 300,
-        velocity: 0.0018,
-        maxR: 200,
-      }));
-
-      pulsars.push(new PulsarSolid({
-        context: context,
-        colorFactory: huesred,
-        x: 750,
-        y: 300,
-        velocity: 0.002,
-        maxR: 80,
-      }));
-
-      pulsars.push(new Slider({
-        context: context,
-        // color: '#00006622',
-        colorFactory: huesred,
-        x: 550,
-        y: 200,
-        velocity: 0.001,
-        maxX: 900,
-        r: radius,
-      }));
-
-      pulsars.push(new Slider({
-        context: context,
-        // color: '#00996699',
-        colorFactory: huesaqua,
-        x: 150,
-        y: 200,
-        maxX: 800,
-        r: radius,
-        velocity: 0.01,
-      }));
-
+      context.translate(0.5, 0.5);
 
       MainLoop.setSimulationTimestep(timestep);
-      MainLoop.setDraw(drawAll);
-      MainLoop.setUpdate(updateAll);
+      MainLoop.setDraw(draw);
+      MainLoop.setUpdate(update);
       MainLoop.start();
 
       canvas.addEventListener('click', function (e) {
-        handleClick(e.pageX, e.pageY);
+        var p = getElementClickXY(e);
+        handleClick(p.x, p.y);
       })
-      canvas.addEventListener('touchstart', function (e) {
-        handleClick(e.pageX, e.pageY);
+      canvas.addEventListener('touch', function (e) {
+        var p = getElementClickXY(e);
+        handleClick(p.x, p.y);
       })
-      //============================================================
 
+      loadPixels('./img/palette_blue_green_dark_edge_1.png', function (pixelValues) {
+        pulsarConfigs[0] = {
+          type: 'Pulsar',
+          context: context,
+          colorFactory: new ColorFactory({palette: pixelValues, alpha: 0.35}),
+          velocity: 0.03 * scale,
+          maxR: 250 * scale,
+        };
+      });
+
+      // bogus hack: wait for images to load before creating interface buttons
+      setTimeout(function () {
+        addButtons(pulsarConfigs);
+      }, 1000);
+
+      setFullscreenButton();
+      setPen(pulsarConfigs[0]);
     </script>
   </body>
 </html>
