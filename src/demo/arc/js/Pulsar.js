@@ -62,8 +62,8 @@ class Pulsar {
     this.y = props.y || 0;
     this.r = props.r || 0;
     this.lastr = props.r || 0;
-    this.maxR = props.maxR || (250 * Shapes.getScale());
-    this.velocity = props.velocity || (0.02 * Shapes.getScale());
+    this.maxR = props.maxR || (250 * Pulsar.SCALE);
+    this.velocity = props.velocity || (0.02 * Pulsar.SCALE);
   }
 
   update(delta) {
@@ -101,6 +101,8 @@ class Pulsar {
   }
 }
 
+Pulsar.SCALE = 1.0;
+
 //============================================================
 
 class PulsarSolid extends Pulsar {
@@ -123,16 +125,8 @@ class PulsarSolidWithOutline extends Pulsar {
     var color = this.colorFactory.getColor(this.r / this.maxR);
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
     var width = 150;
+    var innerR = this.r > width ? (this.r - width) : 0;
 
-    // Shapes.drawCircleFilled(
-    //   this.context,
-    //   this.x,
-    //   this.y,
-    //   this.r,
-    //   hex
-    // );
-
-    let innerR = this.r > width ? (this.r - width) : 0;
     Shapes.drawDonut(this.context, this.x, this.y, this.r, innerR, 0, Shapes.TWOPI, hex);
 
     // red outline
@@ -155,14 +149,12 @@ class PulsarVerticalBar extends Pulsar {
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
     var halfR = this.maxR / 2;
 
-    // this.context.globalCompositeOperation = 'saturation';
-
     Shapes.drawRectangleFilledRIGHT(
       this.context,
       this.x,
       this.y,
       this.r,
-      800 * Shapes.getScale(),
+      800 * Pulsar.SCALE,
       hex,
       this.lastr,
     );
@@ -173,13 +165,11 @@ class PulsarVerticalBar extends Pulsar {
         this.x + this.r,
         this.y,
         1,
-        800 * Shapes.getScale(),
+        800 * Pulsar.SCALE,
         '#c60',
         this.r - 2,
       );    
     }
-
-    // this.context.globalCompositeOperation = 'source-over';
   }
 }
 
@@ -193,7 +183,7 @@ class PulsarVerticalBarToTheRight extends Pulsar {
       this.x,
       this.y,
       this.r,  //(this.lastr + (this.r - this.lastr) * interp),
-      800 * Shapes.getScale(),
+      800 * Pulsar.SCALE,
       hex,
       this.lastr,
     );
@@ -222,7 +212,7 @@ class PulsarVerticalDivider extends Pulsar {
         this.r - 20,
         this.y,
         20,
-        800 * Shapes.getScale(),
+        800 * Pulsar.SCALE,
         hex,
         this.lastr,
       );      
@@ -236,7 +226,7 @@ class PulsarVerticalDivider extends Pulsar {
         this.r,
         this.y,
         20,
-        800 * Shapes.getScale(),
+        800 * Pulsar.SCALE,
         hex,
         this.lastr,
       );
@@ -273,6 +263,9 @@ class PulsarChecked extends Pulsar {
       this.r,
       hex,
       this.lastr,
+      this.maxR,
+      10,
+      40
     );
   }
 }
@@ -315,43 +308,5 @@ class PulsarDashed extends Pulsar {
       this.lastr,
     );
 
-  }
-}
-
-//============================================================
-
-class Slider {
-  constructor(props = {}) {
-    // this.color = props.color || '#ffff0022';
-    this.colorFactory = props.colorFactory;
-    this.context = props.context;
-    this.x = props.x || 0;
-    this.y = props.y || 0;
-    this.r = props.r || 100;
-    this.lastx = props.x || 0;
-    this.minX = props.x || 0;
-    this.maxX = props.maxX || 500;
-    this.velocity = props.velocity || 0.02;
-  }
-
-  update(delta) {
-    this.lastx = this.x;
-    this.x += this.velocity * delta;
-    if (this.x >= this.maxX || this.x <= this.minX) {
-      this.velocity = -this.velocity;
-    }
-  }
-
-  draw(interp) {
-    var color = this.colorFactory.getColor(this.x / (this.maxX - this.minX));
-    var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
-   Shapes. drawCircle(
-      this.context,
-      (this.lastx + (this.x - this.lastx) * interp),
-      this.y,
-      this.r,
-      // this.color
-      hex
-    );
   }
 }

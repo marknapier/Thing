@@ -1,7 +1,7 @@
 /*
   Dimensions are based on 1200 x 800 canvas size.
   To change the size of the artwork, change the canvas tag width to whatever size you want,
-  then set Shapes.setScale(actualCanvasSize/ 1200).
+  then set Shapes.setScale(actualCanvasSize / 1200).
 */
 window.Arc = (function () {
   var canvas = document.getElementById('myCanvas');
@@ -22,7 +22,6 @@ window.Arc = (function () {
     PulsarVerticalBar,
     PulsarVerticalDivider,
     PulsarSolidWithOutline,
-    Slider,
   };
 
   function makeGreenOrangePalette() {
@@ -251,9 +250,8 @@ window.Arc = (function () {
     }, false);
   }
 
-  //============================================================
   function init() {
-    Shapes.setScale(scale);
+    Pulsar.SCALE = scale;
 
     context.translate(0.5, 0.5);
 

@@ -1,6 +1,5 @@
 (function () {
   const TWOPI = 2 * Math.PI;
-  let SHAPE_SCALE = 1.0;
 
   function clearCanvas(context, w, h, color) {
     context.save();
@@ -37,14 +36,9 @@
 
   function drawCircle(context, x, y, r, color, lastr) {
     var fillWidth = Math.abs(r - lastr);
-    var step = r >= lastr ? 1 : -1;
-    // r = lastr + (fillWidth / 2);
-
     context.beginPath();
-    for (var s=0, rr=lastr; s < fillWidth; s++, rr += step) {
-      context.arc(x, y, rr, 0, TWOPI, false);
-    }
-    context.lineWidth = 2;  // magic number!!!
+    context.arc(x, y, r + ((r-lastr) / 2), 0, TWOPI, false);
+    context.lineWidth = fillWidth * 3;
     context.strokeStyle = color;
     context.stroke();
   }
@@ -53,8 +47,8 @@
     const outerR = Math.max(r1, r2);
     const innerR = Math.min(r1, r2);
     context.beginPath();
-    context.arc(x, y, outerR * SHAPE_SCALE, startRadians, endRadians, false); // Outer: CCW
-    context.arc(x, y, innerR * SHAPE_SCALE, endRadians, startRadians, true); // Inner: CW
+    context.arc(x, y, outerR, startRadians, endRadians, false); // Outer: CCW
+    context.arc(x, y, innerR, endRadians, startRadians, true); // Inner: CW
     context.closePath();
     context.fillStyle = color;
     context.fill();
@@ -69,9 +63,9 @@
 
     context.beginPath();
     for (var s=0, rr=lastr; s < fillWidth; s++, rr += step) {
-      context.arc(x, y, rr * SHAPE_SCALE, startAngle, endAngle, false);
+      context.arc(x, y, rr, startAngle, endAngle, false);
     }
-    context.lineWidth = 2 * SHAPE_SCALE;  // magic number!!!
+    context.lineWidth = 2;  // magic number!!!
     context.strokeStyle = color;
     context.stroke();
   }
@@ -91,7 +85,7 @@
   }
 
   function drawSpiralDashed(context, x, y, r, color) {
-    var amount = (r / (250 * SHAPE_SCALE)) * 7;  // magic number! number of overlaps
+    var amount = (r / (250)) * 7;  // magic number! number of overlaps
     var startAngle = amount * TWOPI;
     var endAngle = startAngle + (TWOPI * (0.2));
 
@@ -99,7 +93,7 @@
 
     context.beginPath();
     context.arc(x, y, r, startAngle, endAngle, false);
-    context.lineWidth = 25 * SHAPE_SCALE;
+    context.lineWidth = 25;
     context.strokeStyle = color;
     context.stroke();
 
@@ -107,18 +101,18 @@
   }
 
   function drawSpiralDots(context, x, y, r, color) {
-    var amount = (r / (250 * SHAPE_SCALE)) * 6;  // magic number! number of overlaps
+    var amount = (r / (250)) * 6;  // magic number! number of overlaps
     var startAngle = amount * TWOPI;
-    var endAngle = startAngle + (TWOPI * (0.02 * (r / (250 * SHAPE_SCALE))));
+    var endAngle = startAngle + (TWOPI * (0.02 * (r / (250))));
     var draw = Math.floor(r) % 2 === 0;
 
     if (draw) {
       context.save();
 
       context.beginPath();
-      // context.setLineDash([2 * SHAPE_SCALE, 10 * SHAPE_SCALE]);
+      // context.setLineDash([2, 10]);
       context.arc(x, y, r, startAngle, endAngle, false);
-      context.lineWidth = 7 * SHAPE_SCALE;
+      context.lineWidth = 7;
       context.strokeStyle = color;
       context.stroke();
 
@@ -186,7 +180,7 @@
     for (var w=0; w < fillWidth; w++) {
       r = lastr + w;
 
-      var amount = r / (250 * SHAPE_SCALE);  // magic number!
+      var amount = r / (250);  // magic number!
       var startAngle = amount * TWOPI;
       var endAngle = startAngle + TWOPI;
 
@@ -200,45 +194,41 @@
     }
   }
 
-  function drawCircleDashedArcsBlocks(context, x, y, r, color, lastr) {
-    var fillWidth = Math.abs(r - lastr);
-    var dashLen = TWOPI / 60;
-    var dashSpace = TWOPI / 60;
+  function drawCircleDashedArcsBlocks(context, x, y, r, color, lastr, maxR, numBands, numPies) {
+    var fillWidth = Math.abs(r - lastr); // how many pixels to fill, from last radius to present radius
+    var bandR = maxR / numBands; // how wide is each ring
+    var pieWidth = TWOPI / numPies; // how wide in radians is each pie slice
 
-    for (var w=0; w < fillWidth; w++) {
-      r = lastr + w;
+    context.save();
 
-      var band = Math.floor(r / (25 * SHAPE_SCALE));
-      var amount = (band * 12.5) / (250 * SHAPE_SCALE);  // magic number!
-      var startAngle = amount * TWOPI;
+    for (var w=0; w < fillWidth; w++) { // loop for as many pixels as we need to fill
+      r = lastr + w; // increment radius by one
+
+      var whichBand = Math.floor(r / bandR);
+      var rotateAmount = whichBand * pieWidth;
+      var startAngle = rotateAmount;
       var endAngle = startAngle + TWOPI;
 
-      for (var a=startAngle; a < endAngle; a += (dashLen + dashSpace)) {
-        context.save();
+
+      // draw dashed ring
+      for (var a=startAngle; a < endAngle; a += (pieWidth + pieWidth)) {
 
         context.beginPath();
-        context.arc(x, y, r, a, a + dashLen, false);
+        context.arc(x, y, r, a, a + pieWidth, false);
         context.lineWidth = 2;  // 2
         context.strokeStyle = color;
         context.stroke();
 
         context.beginPath();
-        context.arc(x, y, r, a+dashLen, a + dashLen + dashSpace, false);
+        context.arc(x, y, r, a+pieWidth, a + pieWidth + pieWidth, false);
         context.lineWidth = 2;  // 2
         context.strokeStyle = '#ffff9966';
         context.stroke();
 
-        context.restore();
       }
     }
-  }
 
-  function setScale(s) {
-    SHAPE_SCALE = s || 1;
-  }
-
-  function getScale() {
-    return SHAPE_SCALE;
+    context.restore();
   }
 
   window.Shapes = {
@@ -259,8 +249,6 @@
     drawCircleDashedArcsSpiraled,
     drawCircleDashedArcsBlocks,
     drawDonut,
-    setScale,
-    getScale,
     TWOPI,
   };
 
