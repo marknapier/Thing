@@ -51,8 +51,7 @@ window.Arc = (function () {
       type: 'Pulsar', // bluegreen - is replaced by pixel palette below
       context: context,
       colorFactory: new ColorFactory({color: [0, 153, 102, 0.35]}),
-      velocity: 0.025 * scale,
-      maxR: 200 * scale,
+      velocity: 0.03 * scale,
       dashed: [2,3],
     },
     {
