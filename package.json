@@ -4,7 +4,9 @@
   "description": "Javascript 6 OOP demo library",
   "main": "index.js",
   "dependencies": {
-    "gulp": "^3.9.1"
+    "express": "^4.16.4",
+    "gulp": "^3.9.1",
+    "serve-index": "^1.9.1"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -34,7 +36,8 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "test": "karma start karma.conf.js"
+    "test": "karma start karma.conf.js",
+    "start": "node serv/server.js"
   },
   "repository": {
     "type": "git",

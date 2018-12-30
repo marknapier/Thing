@@ -45,6 +45,12 @@ class Box extends Thing {
     return this;
   }
 
+  empty () {
+    this.items.forEach(function (item) {
+      this.remove(item);
+    });
+  }
+
   numElements () {
   	return this.items.length;
   }

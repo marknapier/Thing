@@ -53,6 +53,7 @@ window.Arc = (function () {
       colorFactory: new ColorFactory({color: [0, 153, 102, 0.35]}),
       velocity: 0.025 * scale,
       maxR: 200 * scale,
+      dashed: [2,3],
     },
     {
       type: 'Pulsar',
@@ -269,14 +270,8 @@ window.Arc = (function () {
       handleClick(p.x, p.y);
     })
 
-    loadPixels('./img/palette_blue_green_dark_edge_1.png', function (pixelValues) {
-      pulsarConfigs[0] = {
-        type: 'Pulsar',
-        context: context,
-        colorFactory: new ColorFactory({palette: pixelValues, alpha: 0.35}),
-        velocity: 0.03 * scale,
-        maxR: 250 * scale,
-      };
+    loadPixels('./img/palette_blue_green_dark_edge_2.png', function (pixelValues) {
+      pulsarConfigs[0].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.35});
     });
 
     // bogus hack: wait for images to load before creating interface buttons
