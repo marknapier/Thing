@@ -237,10 +237,6 @@ function makeFigure3 (props = {x: 0, y: 0, z: 0, scale: 1}) {
   torso.attach(thighRight, 'hipRight');
   torso.attach(thighLeft, 'hipLeft');
 
-  torso.$element.on('click', function () {
-    regenerate();
-  });
-
   return torso;
 }
 
@@ -327,20 +323,20 @@ function makePlants () {
     return 'img/' + Rand.randItem(plantNamesSmall);
   }
 
-  var bottom = CW * 0.1;
+  var bottom = CW * 0.07;
   var bottomSmall = CW * -0.015;
 
   var plants = [
-    Thing.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), z: randZ(), w: randW() + 200, bottom: bottom+'px'}),
+    // Thing.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), z: randZ(), w: randW() + 200, bottom: bottom+'px'}),
     Thing.Img.make({src:'img/BananaPalm_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
     Thing.Img.make({src:'img/banana_tree_2_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
-    Thing.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
+    // Thing.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
     Thing.Img.make({src:'img/rubber_tree_potted_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
-    //
-    Thing.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), z: randZ(), w: randW() + 200, bottom: bottom+'px'}),
+    // //
+    // Thing.Img.make({src:'img/double-palm-silk-tree_t.png', x: randX(), z: randZ(), w: randW() + 200, bottom: bottom+'px'}),
     Thing.Img.make({src:'img/BananaPalm_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
     Thing.Img.make({src:'img/banana_tree_2_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
-    Thing.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
+    // Thing.Img.make({src:'img/dracaena-marginata-potted_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
     Thing.Img.make({src:'img/rubber_tree_potted_t.png', x: randX(), z: randZ(), w: randW(), bottom: bottom+'px'}),
     //
     Thing.Img.make({src:randNameSmall(), x: randXsmall(), w: randWsmall(), z: 300, bottom: bottomSmall+'px'}),
@@ -354,14 +350,30 @@ function makePlants () {
 
 function makeCouch (props = {z: 100}) {
   var i = Thing.Img.make($.extend({
-      src:'img/sofa_3_victorian_sofa_t.png',    //sofa_leather_overstuffed_t.png
+      src:'img/sofa_3_victorian_sofa_t.png',
       x: CW * 0.1,
-      y: CW * 0.266,
+      y: CW * 0.3766,
       z: props.z,
       w: CW * 0.466,
-      filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
+      // filter: 'drop-shadow(10px 10px 19px rgba(0,0,0,0.7))'
     }, props));
   return i;
+}
+
+function makeDoor(props = {position: 'left', wall:{}}) {
+  var d = Thing.Img.make($.extend({
+    src:'img/white_door.png',
+    x: props.wall.w * (props.position === 'center' ? 0.1 : 0.3),
+    y: props.wall.h * 0.3,
+    h: props.wall.h * 0.7,
+    cursor: 'pointer',
+  }, props));
+  d.$element.on('click', function () {
+    XX += (props.position === 'left') ? -1 : (props.position === 'right' ? 1 : 0);
+    YY += (props.position === 'center') ? 1 : 0;
+    regenerate(XX, YY);
+  });
+  return d;
 }
 
 function makeSurface (props = {w:2500, h:2500}) {
@@ -387,12 +399,12 @@ function makeSurface (props = {w:2500, h:2500}) {
     w: props.w,
     h: props.h,
     backgroundColor: 'rgba(255, 136, 0, 0.06)',
-    mask: {
-      image: 'url(img/vintagewallpaper4_crop_cutout_1.png)',
-      size: '50% 80%',
-      repeat: 'repeat',
-      position: '0 0',
-    },
+    // mask: {
+    //   image: 'url(img/vintagewallpaper4_crop_cutout_1.png)',
+    //   size: '50% 80%',
+    //   repeat: 'repeat',
+    //   position: '0 0',
+    // },
   });
 
   var lightSpot = Thing.make({
@@ -406,63 +418,58 @@ function makeSurface (props = {w:2500, h:2500}) {
   return container;
 }
 
-function makePointer(targetThing, text) {
-  var tgtPoint = [50, 100];
-  var distance = CW * 0.1;
-  var delta = CW * 0.05;
-  var randY = Rand.randInt(-delta, delta);
-  var worldPoint = Meninas.getWorldCoordsOf(tgtPoint, targetThing);
+// function makePointer(targetThing, text) {
+//   var tgtPoint = [50, 100];
+//   var distance = CW * 0.1;
+//   var delta = CW * 0.05;
+//   var randY = Rand.randInt(-delta, delta);
+//   var worldPoint = Meninas.getWorldCoordsOf(tgtPoint, targetThing);
 
-  Thing.Line.make({
-    x1: worldPoint[0] - distance,
-    y1: worldPoint[1] + randY,
-    x2: worldPoint[0],
-    y2: worldPoint[1],
-    lineWidth: CW / 1000,
-    color: '#0f0'
-  }).render();
+//   Thing.Line.make({
+//     x1: worldPoint[0] - distance,
+//     y1: worldPoint[1] + randY,
+//     x2: worldPoint[0],
+//     y2: worldPoint[1],
+//     lineWidth: CW / 1000,
+//     color: '#0f0'
+//   }).render();
 
-  Thing.Label.make({
-    text: text,
-    x: (worldPoint[0] - distance) - 50,
-    y: (worldPoint[1] + randY) - 50,
-    fontSize: '60px',
-    backgroundColor: 'yellow',
-    padding: '50px 60px',
-    borderRadius: '900px',
-    border: '3px solid #360',
-  }).render();
-}
+//   Thing.Label.make({
+//     text: text,
+//     x: (worldPoint[0] - distance) - 50,
+//     y: (worldPoint[1] + randY) - 50,
+//     fontSize: '60px',
+//     backgroundColor: 'yellow',
+//     padding: '50px 60px',
+//     borderRadius: '900px',
+//     border: '3px solid #360',
+//   }).render();
+// }
 
 function makeSignature() {
   return Thing.Label.make({
     text: 'napier ' + Thing.Rand.getSeed(),
+    fontSize: Math.floor(0.01 * CW) + 'px',
   });
 }
 
+var MR;
 var stg;
 var venus;
 
-function regenerate() {
-  Thing.Rand.setSeed( Thing.Rand.getSeed() + 1 );
-  stg.each(function (item) {
-    stg.remove(item);
-    item.unRender();
-  });
-  stg.add(makeStuff());
-  // venus.unRender();
-  // venus = makeFigure3({
-  //   scale: CW/idealCanvasWidth,
-  //   x: CW * 0.7,
-  //   y: CH * 0.1,
-  //   z: 15
-  // });
-  // stg.add(venus);
-  // venus.render();
-  stg.render();
+function makeSeed(x, y) {
+  var sign = x < 0 ? -1 : 1;
+  return sign * parseInt('' + y + Math.abs(x));
 }
 
-function makeStuff() {
+function regenerate(x, y) {
+  Thing.Rand.setSeed( makeSeed(x,y) );
+  MR.empty();
+  MR.add(makeStuff(MR));
+  MR.render();
+}
+
+function makeStuff(room) {
   // Floor
   var floorImg = Thing.Img
     .make({
@@ -488,31 +495,81 @@ function makeStuff() {
   // All the things go here
   var venusStanding = makeFigure3({
     scale: CW/idealCanvasWidth,
-    x: CW * 0.7,
-    y: CH * 0.1,
-    z: 15
+    x: room.w * Thing.Rand.randFloat(0.1, 0.8),
+    y: room.h * 0.25,
+    z: Thing.Rand.randInt(0, room.d),
   });
   venus = venusStanding;
 
   return [
-    floorImg,
-    edge,
-    makePlants(),
-    makeCouch({z: 100}),
-    makeFigure({
-      x: CW * 0.07,
-      y: CW * 0.2366,
-      z: 100
+    // // floorImg,
+    // // edge,
+    makeMarkers(room),
+    // makePlants(),
+    makeCouch({
+      x: room.w * Thing.Rand.randFloat(0, 0.53),
+      y: CW * 0.3766,
+      z: 100,
     }),
+    // makeFigure({
+    //   x: CW * 0.07,
+    //   y: CW * 0.2366,
+    //   z: 100
+    // }),
     venusStanding,
+    makeSignature(),
   ];
 }
+
+function makeMarkers(room) {
+  var labels = [];
+  var fontSize = Math.floor(0.006 * CW);
+  var halfDepth = room.d / 2;
+  for (var z=halfDepth; z > -halfDepth; z -= 100) {
+    labels.push( Thing.Label.make({
+      id: 'marker-' + z,
+      text: '_' + z,
+      y: room.h - fontSize,
+      z: z,
+      fontSize: fontSize + 'px',
+      color: '#0F0',
+    }));
+  }
+  return labels;
+}
+
+function makeFloor() {
+  return Thing.BGImg.make({
+    src: 'img/wood_texture_smooth_panel_red_oak.jpg',
+  });
+}
+
+function makeRoom (props) {
+  var r = Thing.Room.make($.extend({
+    showOuter: false,
+    overflow: 'hidden'
+  }, props));
+
+  r.back.css({backgroundColor: '#000'});
+  r.right.css({backgroundColor: '#333'});
+  r.left.css({backgroundColor: '#333'});
+  r.top.css({backgroundColor: '#111'});
+  r.bottom.css({backgroundColor: '#222'});
+
+  r.left.add(makeDoor({position: 'left', wall: r.left}));
+  r.back.add(makeDoor({position: 'center', wall: r.back}));
+  r.right.add(makeDoor({position: 'right', wall: r.right}));
+  r.bottom.add(makeFloor());
+
+  return r;
+}
+
+var XX = 0;
+var YY = 1;
 
 $(function () {
   // Respond to page params and key events
   Thing.Page.setup();
-
-  Thing.Rand.setSeed(1);
 
   var stage = Thing.Box.make({
     w: CW,
@@ -522,9 +579,30 @@ $(function () {
 
   stg = stage;
 
-  // stage.add(makeStuff());
-  regenerate();
-  
+  var mainRoom = makeRoom({
+    id: 'mainroom',
+    x: 0,
+    y: 0,
+    z: -(CH * 0.9) / 2,
+    w: CW,
+    h: CH,
+    d: CH * 0.9,
+    perspectiveOrigin: (CW * 0.5) + 'px ' + (CH * 0.75) + 'px',  // origin is center of screen
+  });
+  mainRoom.back.css({backgroundColor: 'transparent'});
+  mainRoom.left.css({backgroundColor: 'rgba(255,255,0,.2)'});
+  mainRoom.right.css({backgroundColor: 'rgba(0,255,255,1)'});
+  mainRoom.top.css({backgroundColor: 'rgba(0,0,255,.2)'});
+  mainRoom.bottom.css({backgroundColor: 'rgba(0,255,0,.2)'});
+  // mainRoom.bottom.add(fillFloor());
+  // mainRoom.back.add(corridor);
+  mainRoom.add([
+  ]);
+
+  window.MR = mainRoom;
+
+  regenerate(XX, YY);
+
   // Background pattern fills the entire page
   var background = Meninas.makeBackground(CW, CH)
     .css({
@@ -535,8 +613,9 @@ $(function () {
   background.add([
     makeSurface({w: CW, h: CH}),
     stage,
+    mainRoom,
   ]);
   background.render();
 
-  makeSignature().render();
+  // makeSignature().render();
 });

@@ -60,32 +60,32 @@ class Room extends Box {
 		// }) );
 		walls.push( this.makeWall('back', {
 			backgroundColor: 'rgba(0, 0, 0, 1)',
-			width: this.w + 'px',
-			height: this.h + 'px',
+			w: this.w,
+			h: this.h,
 			transform: 'translateZ( ' + (-halfDepth * 0.997) + 'px )'    // push back slightly less than full amount (0.997) or we get a slight gap at corners
 		}) );
 		walls.push( this.makeWall('right', {
 			backgroundColor: 'rgba(255, 0, 55, 1)',
-			width: this.d + 'px',
-			height: this.h + 'px',
+			w: this.d,
+			h: this.h,
 			transform: 'rotateY( -90deg ) translateZ( ' + (-(halfWidth + (halfWidth-halfDepth))) + 'px )'
 		}) );
 		walls.push( this.makeWall('left', {
 			backgroundColor: 'rgba(255, 255, 0, 1)',
-			width: this.d + 'px',
-			height: this.h + 'px',
+			w: this.d,
+			h: this.h,
 			transform: 'rotateY( 90deg ) translateZ( ' + (-halfDepth) + 'px )'
 		}) );
 		walls.push( this.makeWall('top', {
 			backgroundColor: 'rgba(0, 55, 255, 1)',
-			width: this.w + 'px',
-			height: this.d + 'px',
+			w: this.w,
+			h: this.d,
 			transform: 'rotateX( -90deg ) translateZ( ' + (-(halfHeight - (halfHeight-halfDepth)) * 0.997) + 'px )'
 		}) );
 		walls.push( this.makeWall('bottom', {
 			backgroundColor: 'rgba(0, 255, 0, 1)',
-			width: this.w + 'px',
-			height: this.d + 'px',
+			w: this.w,
+			h: this.d,
 			transform: 'rotateX( 90deg ) translateZ( ' + (-(halfHeight + (halfHeight-halfDepth)) * 0.997) + 'px )'
 		}) );
 
@@ -93,38 +93,38 @@ class Room extends Box {
 		if (this.props.showOuter) {
 			walls.push( this.makeWall('outfront', {
 				backgroundColor: 'rgba(255, 255, 255, 0)',
-				width: this.w + 'px',
-				height: this.h + 'px',
+				w: this.w,
+				h: this.h,
 				transform: 'translateZ( ' + (halfDepth) + 'px )'
 			}) );
 			walls.push( this.makeWall('outback', {
 				backgroundColor: 'rgba(0, 0, 0, 1)',
-				width: this.w + 'px',
-				height: this.h + 'px',
+				w: this.w,
+				h: this.h,
 				transform: 'rotateX( -180deg ) translateZ( ' + halfDepth + 'px )'
 			}) );
 			walls.push( this.makeWall('outright', {
 				backgroundColor: 'rgba(100, 100, 100, 1)',
-				width: this.d + 'px',
-				height: this.h + 'px',
+				w: this.d,
+				h: this.h,
 				transform: 'rotateY( 90deg ) translateZ( ' + ((halfWidth + (halfWidth-halfDepth))) + 'px )'
 			}) );
 			walls.push( this.makeWall('outleft', {
 				backgroundColor: 'rgba(100, 100, 100, 1)',
-				width: this.d + 'px',
-				height: this.h + 'px',
+				w: this.d,
+				h: this.h,
 				transform: 'rotateY( -90deg ) translateZ( ' + (halfWidth - (halfWidth-halfDepth)) + 'px )'
 			}) );
 			walls.push( this.makeWall('outtop', {
 				backgroundColor: 'rgba(100, 100, 200, 1)',
-				width: this.w + 'px',
-				height: this.d + 'px',
+				w: this.w,
+				h: this.d,
 				transform: 'rotateX( 90deg ) translateZ( ' + halfDepth + 'px )'
 			}) );
 			walls.push( this.makeWall('outbottom', {
 				backgroundColor: 'rgba(100, 200, 100, 1)',
-				width: this.w + 'px',
-				height: this.d + 'px',
+				w: this.w,
+				h: this.d,
 				transform: 'rotateX( -90deg ) translateZ( ' + (halfHeight + (halfHeight-halfDepth)) + 'px )'
 			}) );
 		}
@@ -153,6 +153,16 @@ class Room extends Box {
 		wall.$element.addClass(which);
 		wall.which = which;
 		return wall;
+	}
+
+	empty() {
+	  var clone = this.items.slice(0);
+	  var b = this;
+	  clone.forEach(function (item) {
+	  	if (b.wallsA.indexOf(item) === -1) { // don't delete the walls, just the items in the room
+	  		b.remove(item);
+	  	}
+	  });
 	}
 }
 Thing.addClass(Room);

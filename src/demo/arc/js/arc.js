@@ -51,60 +51,59 @@ window.Arc = (function () {
       type: 'Pulsar', // bluegreen - is replaced by pixel palette below
       context: context,
       colorFactory: new ColorFactory({color: [0, 153, 102, 0.35]}),
-      velocity: 0.03 * scale,
-      dashed: [2,3],
+      duration: 10 * 1000,
     },
     {
       type: 'Pulsar',
       context: context,
       colorFactory: new ColorFactory({palette: makeGreenOrangePalette()}),
-      velocity: 0.05 * scale,
       maxR: 250 * scale,
+      duration: 5 * 1000,
     },
     {
       type: 'Pulsar',  // solid red alpha
       context: context,
       colorFactory: new ColorFactory({color: [255, 0, 102, 0.09]}),
-      velocity: 0.01 * scale,
       maxR: 320 * scale,
+      duration: 30 * 1000,
     },
     {
       type: 'PulsarChecked',
       context: context,
       colorFactory: new ColorFactory({palette: makeGreenGreenPalette()}),
-      velocity: 0.02 * scale,
+      duration: 14 * 1000,
     },
     {
       type: 'PulsarChecked',
       context: context,
       colorFactory: new ColorFactory({colorFrom: [255, 220, 0, 1.0], colorTo: [230, 250, 30, 1.0]}),
-      velocity: 0.02 * scale,
+      duration: 14 * 1000,
     },
     {
       type: 'PulsarSolidWithOutline',  //solid
       context: context,
       colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),  // 102
-      velocity: 0.01 * scale,
       maxR: 320 * scale,
+      duration: 32 * 1000,
     },
     {
       type: 'PulsarVerticalBar',
       context: context,
       colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),  // 102
-      velocity: 0.025 * scale,
+      duration: 10 * 1000,
     },
     {
       type: 'PulsarVerticalBar',
       context: context,
       colorFactory: new ColorFactory({colorFrom: [230, 255, 0, 0.6], colorTo: [255, 250, 180, 0.6]}),
-      velocity: 0.03 * scale,
+      duration: 8 * 1000,
     },
     {
       type: 'PulsarVerticalDivider',
       context: context,
       colorFactory: new ColorFactory({colorFrom: [250, 250, 100, 0.3], colorTo: [0, 0, 50, 0.3]}),
-      velocity: 0.02 * scale,
       maxR: 1200 * scale,
+      duration: 60 * 1000,
     },
   ];
 
@@ -252,6 +251,7 @@ window.Arc = (function () {
 
   function init() {
     Pulsar.SCALE = scale;
+    Pulsar.ease = Easing.linear;
 
     context.translate(0.5, 0.5);
 

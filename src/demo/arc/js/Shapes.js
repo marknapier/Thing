@@ -36,11 +36,14 @@
 
   function drawCircle(context, x, y, r, color, lastr) {
     var fillWidth = Math.abs(r - lastr);
+    var tmpr = r + ((r-lastr) / 2);
     context.beginPath();
-    context.arc(x, y, r + ((r-lastr) / 2), 0, TWOPI, false);
-    context.lineWidth = fillWidth * 3;
-    context.strokeStyle = color;
-    context.stroke();
+    if (tmpr > 0) {
+      context.arc(x, y, r + ((r-lastr) / 2), 0, TWOPI, false);
+      context.lineWidth = fillWidth * 3;
+      context.strokeStyle = color;
+      context.stroke();
+    }
   }
 
   function drawDonut(context, x, y, r1, r2, startRadians = 0, endRadians = TWOPI, color = '#f00') {

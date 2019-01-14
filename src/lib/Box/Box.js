@@ -37,7 +37,7 @@ class Box extends Thing {
   	if (item) {
   		var index = this.items.indexOf(item);
   		if (index > -1) {
-  		    this.items.splice(index, 1);
+  		  this.items.splice(index, 1);
   			item.$element.remove();
   			item.parent = null;
   		}
@@ -46,8 +46,10 @@ class Box extends Thing {
   }
 
   empty () {
-    this.items.forEach(function (item) {
-      this.remove(item);
+    var clone = this.items.slice(0);
+    var b = this;
+    clone.forEach(function (item) {
+      b.remove(item);
     });
   }
 

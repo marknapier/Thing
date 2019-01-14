@@ -54,8 +54,33 @@ class ColorFactory {
 
 //============================================================
 
+class Easing {
+  // t=time, b=start value, c=change in value, d=duration
+  static easeInOutCubic(t, b, c, d) {
+    t /= d/2;
+    if (t < 1) return c/2*t*t*t + b;
+    t -= 2;
+    return c/2*(t*t*t + 2) + b;
+  }
+
+  static linear(t, b, c, d) {
+    return c*t/d + b;
+  }
+
+  static easeInOutCubic1(t) {
+    return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1;
+  }
+
+  static easeInOutSine(t, b, c, d) {
+    return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+  }
+}
+
+//============================================================
+
 class Pulsar {
   constructor(props = {}) {
+    this.name = props.name || this.constructor.name;
     this.colorFactory = props.colorFactory;
     this.context = props.context;
     this.x = props.x || 0;
@@ -63,45 +88,75 @@ class Pulsar {
     this.r = props.r || 0;
     this.lastr = props.r || 0;
     this.maxR = props.maxR || (250 * Pulsar.SCALE);
-    this.velocity = props.velocity || (0.02 * Pulsar.SCALE);
+    this.rotateVelocity = props.rotateVelocity || 0;
+    this.rotation = 0;
+    this.point = [0,0];
+    this.duration = props.duration || 1000; // milliseconds to full size
+    this.time = props.time || 0; // how many millis are we into this objects duration
+    this.direction = props.direction || 1; // 1 or -1
+    this.velocity = props.velocity === undefined ? 1.0 : props.velocity; // how fast should time pass? >1 is faster <1 is slower
+    this.friction = props.friction || 0.0; // how much to shave off velocity each update() e.g. 0.001
   }
 
   update(delta) {
+    this.velocity -= this.velocity * this.friction;
+    this.time += delta * this.velocity * this.direction;
+    this.rotateVelocity -= this.rotateVelocity * this.friction;
+    this.rotation += this.rotateVelocity;
     this.lastr = this.r;
-    this.r += this.velocity * delta;
+    this.r = Pulsar.ease(this.time, 0, this.maxR, this.duration);
+
     // console.log('update - delta, lastr, r:', delta, this.lastr, this.r);
     if (this.r >= this.maxR) {
-      this.velocity = -this.velocity;
       this.r = this.maxR;
+      this.time = this.duration;
+      this.direction = -1;
     }
-    if (this.r <= 0) {
-      this.velocity = -this.velocity;
+    else if (this.r <= 0) {
       this.r = 0;
+      this.time = 0;
+      this.direction = 1;
     }
+
+    // update circumference point position
+    var t = (Math.PI / 2) * this.rotation;
+    this.point[0] = this.r * Math.cos(t) + this.x;
+    this.point[1] = this.r * Math.sin(t) + this.y;
   }
 
   draw(interp) {
     var color = this.colorFactory.getColor(this.r / this.maxR);
-    if (color === undefined) {
-      debugger
-    }
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
 
-    // mega-kludgey - pattern is created in main script
-    // this.context.strokeStyle = pattern;
+    this.positionBegin();
 
     Shapes.drawCircle(
       this.context,
-      this.x,
-      this.y,
-      this.r, //(this.r + (this.r - this.lastr) * interp), // * 1.5,
+      0,
+      0,
+      this.r,
       hex,
       this.lastr,
     );
+
+    this.positionEnd();
+  }
+
+  positionBegin() {
+    this.context.save();
+    this.context.translate(this.x, this.y);
+    this.context.rotate((Math.PI / 2) * this.rotation);
+  }
+
+  positionEnd() {
+    this.context.translate(-this.x, -this.y);
+    // this.context.setTransform(1, 0, 0, 1, 0, 0);
+    this.context.restore();
   }
 }
 
 Pulsar.SCALE = 1.0;
+Pulsar.ease = Easing.easeInOutSine;
 
 //============================================================
 
@@ -124,22 +179,26 @@ class PulsarSolidWithOutline extends Pulsar {
   draw(interp) {
     var color = this.colorFactory.getColor(this.r / this.maxR);
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
-    var width = 150;
-    var innerR = this.r > width ? (this.r - width) : 0;
+    var bandWidth = 150;
+    var innerR = this.r > bandWidth ? (this.r - bandWidth) : 0;
 
-    Shapes.drawDonut(this.context, this.x, this.y, this.r, innerR, 0, Shapes.TWOPI, hex);
+    this.positionBegin();
+
+    Shapes.drawDonut(this.context, 0, 0, this.r, innerR, 0, Shapes.TWOPI, hex);
 
     // red outline
     var outlineW = 1;
     var outlineR = this.r - 1 < outlineW ? outlineW : this.r - 1;
     Shapes.drawCirclePartial(
       this.context,
-      this.x,
-      this.y,
+      0,
+      0,
       outlineR,
       '#ff3000',
       outlineR - outlineW
     );
+
+    this.positionEnd();
   }
 }
 
@@ -158,7 +217,7 @@ class PulsarVerticalBar extends Pulsar {
       hex,
       this.lastr,
     );
-    if (this.velocity > 0) {
+    if (this.direction > 0) {
       // dark thin edge on right
       Shapes.drawRectangleFilledRIGHT(
         this.context,
@@ -193,29 +252,30 @@ class PulsarVerticalBarToTheRight extends Pulsar {
 class PulsarVerticalDivider extends Pulsar {
   constructor(props) {
     super(props);
-    this.newbie = true;
+
+    // This pulsar sweeps across the entire screen, from x=0 to x=1200.
+    // To position the pulsar at the mouse click position, advance the current
+    // time of the pulsar to match the click x position.
+    this.time = (this.x / this.maxR) * this.duration;
+
+    this.y = 0;
+    this.bandWidth = 20 * Pulsar.SCALE;
   }
   
   draw(interp) {
-    if (this.newbie) {
-      this.r = this.x;
-      this.y = 0;
-      this.newbie = false;
-    }
-
-    if (this.velocity > 0) {
+    if (this.direction > 0) {
       const color = this.colorFactory.colorFrom;
       const hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
       this.context.globalCompositeOperation = 'overlay';  // source-over';  //hue  soft-light
       Shapes.drawRectangleFilledRIGHT(
         this.context,
-        this.r - 20,
+        this.r - this.bandWidth,
         this.y,
-        20,
+        this.bandWidth,
         800 * Pulsar.SCALE,
         hex,
         this.lastr,
-      );      
+      );
     }
     else {
       const color = this.colorFactory.colorTo;
@@ -225,7 +285,7 @@ class PulsarVerticalDivider extends Pulsar {
         this.context,
         this.r,
         this.y,
-        20,
+        this.bandWidth,
         800 * Pulsar.SCALE,
         hex,
         this.lastr,
@@ -256,10 +316,12 @@ class PulsarChecked extends Pulsar {
     var color = this.colorFactory.getColor(this.r / this.maxR);
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
 
+    this.positionBegin();
+
     Shapes.drawCircleDashedArcsBlocks(
       this.context,
-      this.x,
-      this.y,
+      0, //this.x,
+      0, //this.y,
       this.r,
       hex,
       this.lastr,
@@ -267,6 +329,8 @@ class PulsarChecked extends Pulsar {
       10,
       40
     );
+
+    this.positionEnd();
   }
 }
 
