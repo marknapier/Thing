@@ -6,7 +6,7 @@ const appDir = path.dirname(require.main.filename);
 
 const ROOT_SRC = appDir + '/../src/demo';
 const ROOT_DIST = appDir + '/../dist';
-const LISTEN_ROOT = ROOT_DIST;
+const LISTEN_ROOT = ROOT_SRC;
 
 // works!! but only when run from serv folder
 // app.use(express.static('../src/demo'));

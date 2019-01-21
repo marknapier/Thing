@@ -1,5 +1,6 @@
 (function () {
   const TWOPI = 2 * Math.PI;
+  let fillPattern = null;
 
   function clearCanvas(context, w, h, color) {
     context.save();
@@ -29,18 +30,21 @@
 
   function drawRectangleFilledRIGHT(context, x, y, w, h, color) {
     context.beginPath();
-    context.rect(x, 0, w, h); // !!! need height here
+    context.rect(x, 0, w, h);
     context.fillStyle = color;
     context.fill();
   }
 
   function drawCircle(context, x, y, r, color, lastr) {
     var fillWidth = Math.abs(r - lastr);
+    var tmpr = r + ((r-lastr) / 2);
     context.beginPath();
-    context.arc(x, y, r + ((r-lastr) / 2), 0, TWOPI, false);
-    context.lineWidth = fillWidth * 3;
-    context.strokeStyle = color;
-    context.stroke();
+    if (tmpr > 0) {
+      context.arc(x, y, r + ((r-lastr) / 2), 0, TWOPI, false);
+      context.lineWidth = fillWidth * 3;
+      context.strokeStyle = color;
+      context.stroke();
+    }
   }
 
   function drawDonut(context, x, y, r1, r2, startRadians = 0, endRadians = TWOPI, color = '#f00') {
@@ -80,7 +84,7 @@
   function drawCirclePattern(context, x, y, r, color) {
     context.beginPath();
     context.arc(x, y, r, 0, TWOPI, false);
-    context.fillStyle = pattern;
+    context.fillStyle = fillPattern;
     context.fill();
   }
 
@@ -209,10 +213,8 @@
       var startAngle = rotateAmount;
       var endAngle = startAngle + TWOPI;
 
-
       // draw dashed ring
       for (var a=startAngle; a < endAngle; a += (pieWidth + pieWidth)) {
-
         context.beginPath();
         context.arc(x, y, r, a, a + pieWidth, false);
         context.lineWidth = 2;  // 2
@@ -224,11 +226,14 @@
         context.lineWidth = 2;  // 2
         context.strokeStyle = '#ffff9966';
         context.stroke();
-
       }
     }
 
     context.restore();
+  }
+
+  function setPattern(p) {
+    fillPattern = p;
   }
 
   window.Shapes = {
@@ -250,6 +255,7 @@
     drawCircleDashedArcsBlocks,
     drawDonut,
     TWOPI,
+    setPattern,
   };
 
 }())
