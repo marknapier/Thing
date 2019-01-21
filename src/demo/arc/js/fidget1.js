@@ -5,8 +5,10 @@
 */
 window.Arc = (function () {
   var canvas = document.getElementById('myCanvas');
+  var patternCanvas = document.getElementById('patternCanvas');
   var fpsDisplay = document.getElementById('fpsDisplay');
   var context = canvas.getContext('2d');
+  var contextPattern = patternCanvas.getContext('2d');
   var timestep = 1000 / 60;
   var frameCount = 0;
   var scale = canvas.width / 1200;
@@ -21,6 +23,7 @@ window.Arc = (function () {
     PulsarVerticalDivider,
     PulsarSolidWithOutline,
   };
+  var fidget;
 
   function makeGreenOrangePalette() {
     var colors = (new ColorFactory({colorFrom: [5, 225, 90, 0.6], colorTo: [255, 60, 0, 0.6]})).getGradientValues(255);
@@ -80,7 +83,7 @@ window.Arc = (function () {
     {
       type: 'PulsarSolidWithOutline',  //solid
       context: context,
-      colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),  // 102
+      colorFactory: new ColorFactory({color: [0, 0, 75, 0.8]}),  // 102
       duration: 32 * 1000,
       maxR: 320 * scale,
     },
@@ -106,7 +109,7 @@ window.Arc = (function () {
   ];
 
   var currentPen = pulsarConfigs[0];
-  var pattern = null;
+  var pattern = null; // kludgey global also used in Shapes.js
   var pulsars = [];
 
   function getPixels(imageObj) {
@@ -169,7 +172,7 @@ window.Arc = (function () {
       p.draw(interp);
     });
     drawGesture();
-    drawInfo(context, 10, 50, pulsars);
+    // drawInfo(context, 10, 50, pulsars);
   }
 
   function getElementClickXY(e) {
@@ -201,6 +204,7 @@ window.Arc = (function () {
     currentPen.x = x;
     currentPen.y = y;
     currentPen.context = context;
+    currentPen.friction = friction;  // fudgy: set global friction value to any pulsar added by click
     addPulsar(new pulsarClass(currentPen));
   }
 
@@ -265,18 +269,27 @@ window.Arc = (function () {
     }, false);
   }
 
-  var friction = 0.0002;
+  function makePatternThang(ctx, imgFileName, callback) {
+    var imageObj = new Image();
+    imageObj.onload = function() {
+      var p = ctx.createPattern(imageObj, 'repeat');
+      callback(p);
+    };
+    imageObj.src = imgFileName;
+  }
+
+  var friction = 0.00005;
 
   function createFidget() {
     var bar = new PulsarVerticalBar({
       context: context,
       x: 400 * scale,
       y: 0 * scale,
-      time: 10000,
-      friction: friction,
-      colorFactory: new ColorFactory({color: [0, 0, 0, 0.0]}),  // 102
-      duration: 60 * 1000,
-      maxR: 800 * scale,
+      time: 1000,
+      friction: 0.0,
+      colorFactory: new ColorFactory({color: [205, 0, 0, 0.0]}),  // 102
+      duration: 22 * 1000,  // 12
+      maxR: 300 * scale,
     });
     var disc1 = new PulsarChecked({
       context: context,
@@ -285,7 +298,7 @@ window.Arc = (function () {
       time: 10000,
       friction: friction,
       colorFactory: new ColorFactory({palette: makeGreenOrangePalette()}),
-      duration: 17 * 1000,  // 17
+      duration: 27 * 1000,  // 17
       maxR: 250 * scale,
       rotateVelocity: 0.003,
     });
@@ -296,27 +309,35 @@ window.Arc = (function () {
       time: 10000,
       friction: friction,
       colorFactory: new ColorFactory({color: [0, 153, 102, 0.35]}),
-      duration: 5 * 1000,
+      duration: 15 * 1000,  // 5
       rotateVelocity: 0.008,
       maxR: 100,
     });
-    var disc3 = new PulsarSolidWithOutline({
-      context: context,
-      time: 10000,
-      friction: friction,
-      colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),
-      duration: 5 * 1000,
-      maxR: 150 * scale,
-    });
+    // var disc3 = new Pulsar({
+    //   context: context,
+    //   colorFactory: new ColorFactory({color: [0, 153, 102, 0.75]}),
+    //   duration: 10 * 1000,
+    //   time: 10000,
+    //   friction: friction,
+    //   maxR: 150 * scale,
+    // });
+    // var disc3 = new PulsarSolidWithOutline({
+    //   context: context,
+    //   time: 10000,
+    //   friction: friction,
+    //   colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),
+    //   duration: 5 * 1000,
+    //   maxR: 150 * scale,
+    // });
     addPulsar(bar);
     addPulsar(disc1);
     addPulsar(disc2);
-    addPulsar(disc3);
+    // addPulsar(disc3);
     return {
       bar,
       disc1,
       disc2,
-      disc3,
+      // disc3,
     }
   }
 
@@ -354,18 +375,48 @@ window.Arc = (function () {
     f.disc2.x = f.disc1.point[0];
     f.disc2.y = f.disc1.point[1];
 
-    f.disc3.x = f.disc2.point[0];
-    f.disc3.y = f.disc2.point[1];
+    // f.disc3.x = f.disc2.point[0];
+    // f.disc3.y = f.disc2.point[1];
   }
 
-  var fidget;
+  function lineRectIntersect(x1, y1, x2, y2, rx, ry, rw, rh) {
+    // check if the line has hit any of the rectangle's sides
+    // uses the Line/Line function below
+    var left =   lineLineIntersect(x1,y1,x2,y2, rx,ry,rx, ry+rh);
+    var right =  lineLineIntersect(x1,y1,x2,y2, rx+rw,ry, rx+rw,ry+rh);
+    var top =    lineLineIntersect(x1,y1,x2,y2, rx,ry, rx+rw,ry);
+    var bottom = lineLineIntersect(x1,y1,x2,y2, rx,ry+rh, rx+rw,ry+rh);
 
-  // Function to check intercept of line seg and circle
+    // if ANY of the above are true, the line
+    // has hit the rectangle
+    if (left || right || top || bottom) {
+      return true;
+    }
+    return false;
+  }
+
+  function lineLineIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+    // calculate the direction of the lines
+    var uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+    var uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+
+    // if uA and uB are between 0-1, lines are colliding
+    if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+      // point where the lines meet
+      var intersectionX = x1 + (uA * (x2-x1));
+      var intersectionY = y1 + (uA * (y2-y1));
+
+      return true;
+    }
+    return false;
+  }
+
+  // Check intersection of line seg and circle
   // A,B end points of line segment
   // C center of circle
   // radius of circle
-  // returns true if touching or crossing else false   
-  function doesLineInterceptCircle(A, B, C, radius) {
+  // returns distance from line to center if intersecting else 0   
+  function doesLineIntersectCircle(A, B, C, radius) {
     var dist;
     const v1x = B.x - A.x;
     const v1y = B.y - A.y;
@@ -496,33 +547,50 @@ window.Arc = (function () {
 
   function handleGesture(start, end, v) {
     pulsars.map((p) => {
-      var distanceToCenter = (p.name === 'PulsarVerticalBar') ? doesLineInterceptCircle(start, end, p, p.r) : doesLineInterceptCircle(start, end, p, p.r);
-      return {
-        distance: distanceToCenter,
-        vector: v,
-        pulsar: p,
-        normal: getNormal(mousedownPoint, mouseupPoint, p),
-      };
+      if (p.name === 'PulsarVerticalBar') {
+        var intersects = lineRectIntersect(start.x, start.y, end.x, end.y, p.x, p.y, p.r, 800 *scale);
+        return {
+          distance: intersects ? 1 : 0,
+          vector: v,
+          pulsar: p,
+          normal: getNormal(mousedownPoint, mouseupPoint, p),
+        }
+      }
+      else {
+        var distanceToCenter = doesLineIntersectCircle(start, end, p, p.r);
+        return {
+          distance: distanceToCenter,
+          vector: v,
+          pulsar: p,
+          normal: getNormal(mousedownPoint, mouseupPoint, p),
+        };
+      }
     }).filter((intersection) => {
       return intersection.distance > 0;
     }).forEach((intersection) => {
       var longline = makeLongLine(mousedownPoint, mouseupPoint);
       var dist = distToSegment(intersection.pulsar, longline[0], longline[1]); // how far is gesture from center
-      var leverage = dist/intersection.pulsar.maxR; // 0 == at center 1 == at edge
-      var magnitude = intersection.vector.length() / (300 * scale); // how big is the gesture (300 pixels is based on 1200 pixel wide canvas)
+      var leverage = dist / intersection.pulsar.maxR; // 0 == at center 1 == at edge
+      var magnitude = intersection.vector.length() / (300 * scale); // how big is the gesture (300 pixels is based on 1200 pixel wide canvas) will be in range 0-4
       var clockwise = intersection.normal.z > 0 ? 1 : -1; // which way to rotate
-      var rotateV = magnitude * leverage * 0.01 * clockwise;
 
-      console.log('intersect', intersection.pulsar.name, 'len=', intersection.vector.length() / (300 * scale), 'dist=', dist, 'longline', longline, 'lev', leverage);
-      intersection.pulsar.velocity += magnitude * (1 - leverage);
-      intersection.pulsar.rotateVelocity += magnitude * leverage * 0.01 * clockwise;
+      if (intersection.pulsar.name === 'PulsarVerticalBar') {
+        console.log('intersectBAR', intersection.pulsar.name, intersection.vector);
+        var direction = intersection.vector.x > 0 ? 1 : -1;
+        intersection.pulsar.velocity += magnitude * 0.1;
+      }
+      else {
+        console.log('intersect', intersection.pulsar.name, 'len=', intersection.vector.length() / (300 * scale), 'dist=', dist, 'longline', longline, 'lev', leverage, intersection.vector);
+        intersection.pulsar.velocity += magnitude * (1 - leverage) * 0.1;
+        intersection.pulsar.rotateVelocity += magnitude * leverage * 0.005 * clockwise;
+      }
     });
   }
 
   function handleLongPress(start) {
     var end = {x: start.x + 1, y: start.y + 1};  // make up a short 'end' vector
     pulsars.map((p) => {
-      var distanceToCenter = doesLineInterceptCircle(start, end, new Vector(p.x, p.y), p.r);
+      var distanceToCenter = doesLineIntersectCircle(start, end, new Vector(p.x, p.y), p.r);
       return {
         distance: distanceToCenter,
         vector: null,
@@ -544,34 +612,38 @@ window.Arc = (function () {
 
     context.translate(0.5, 0.5);
 
-    MainLoop.setSimulationTimestep(timestep);
-    MainLoop.setDraw(draw);
-    MainLoop.setUpdate(update);
-    MainLoop.start();
+    // makePatternThang(contextPattern, '../img/textures/sand-texture-147.jpg', function (p) {
+    //   Shapes.setPattern(p);
+    // });
+
+    loadPixels('./img/palette_blue_green_dark_edge_2.png', function (pixelValues) {
+      pulsarConfigs[0].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.35});
+    });
+
+    // loadPixels('./img/skin_front_1px_1.png', function (pixelValues) {
+    //   pulsarConfigs[1].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.75});
+    //   pulsarConfigs[6].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.05});
+    // });
 
     canvas.addEventListener('touchstart', gestureStart);
     canvas.addEventListener('touchend', gestureEnd);
     canvas.addEventListener('mousedown', gestureStart);
     canvas.addEventListener('mouseup', gestureEnd);
 
-    loadPixels('./img/palette_blue_green_dark_edge_2.png', function (pixelValues) {
-      pulsarConfigs[0].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.35});
-    });
-
-    loadPixels('./img/skin_front_1px_1.png', function (pixelValues) {
-      pulsarConfigs[1].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.75});
-      pulsarConfigs[6].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.05});
-    });
-
-    // bogus hack: wait for images to load before creating interface buttons
-    setTimeout(function () {
-      addButtons(pulsarConfigs);
-    }, 1000);
-
     setFullscreenButton();
     setPen(pulsarConfigs[0]);
 
     fidget = createFidget();
+
+    // bogus hack: wait for images to load before creating interface buttons
+    setTimeout(function () {
+      addButtons(pulsarConfigs);
+
+      MainLoop.setSimulationTimestep(timestep);
+      MainLoop.setDraw(draw);
+      MainLoop.setUpdate(update);
+      MainLoop.start();
+    }, 1000);
   }
   
   return { init };

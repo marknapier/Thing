@@ -33,6 +33,9 @@ class ColorFactory {
       newColor[2] = this.colorFrom[2] + Math.round((this.colorTo[2]-this.colorFrom[2]) * position);
       newColor[3] = this.colorFrom[3] + ((this.colorTo[3]-this.colorFrom[3]) * position);
     }
+    if (newColor === undefined) {
+      newColor = [0,0,0,0];
+    }
     return newColor;
   }
 
@@ -225,7 +228,7 @@ class PulsarVerticalBar extends Pulsar {
         this.y,
         1,
         800 * Pulsar.SCALE,
-        '#c60',
+        '#c00040cc',
         this.r - 2,
       );    
     }
@@ -326,8 +329,8 @@ class PulsarChecked extends Pulsar {
       hex,
       this.lastr,
       this.maxR,
-      10,
-      40
+      10, // 10
+      40 // 40
     );
 
     this.positionEnd();
