@@ -99,6 +99,10 @@ class Pulsar {
     this.direction = props.direction || 1; // 1 or -1
     this.velocity = props.velocity === undefined ? 1.0 : props.velocity; // how fast should time pass? >1 is faster <1 is slower
     this.friction = props.friction || 0.0; // how much to shave off velocity each update() e.g. 0.001
+    this.numBands = props.numBands; // how many rings to draw (see checked pulsar)
+    this.numPies = props.numPies; // how many pie slices to draw (see checked pulsar)
+    this.edgeWidth = props.edgeWidth || (1 * Pulsar.SCALE); // width or right edge (see verticalBar pulsar)
+    this.bandWidth = props.bandWidth || (10 * Pulsar.SCALE); // width of vertical divider bar
   }
 
   update(delta) {
@@ -182,7 +186,7 @@ class PulsarSolidWithOutline extends Pulsar {
   draw(interp) {
     var color = this.colorFactory.getColor(this.r / this.maxR);
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
-    var bandWidth = 150;
+    var bandWidth = 150 * Pulsar.SCALE;
     var innerR = this.r > bandWidth ? (this.r - bandWidth) : 0;
 
     this.positionBegin();
@@ -226,7 +230,7 @@ class PulsarVerticalBar extends Pulsar {
         this.context,
         this.x + this.r,
         this.y,
-        1,
+        this.edgeWidth || 1,
         800 * Pulsar.SCALE,
         '#c00040cc',
         this.r - 2,
@@ -262,7 +266,7 @@ class PulsarVerticalDivider extends Pulsar {
     this.time = (this.x / this.maxR) * this.duration;
 
     this.y = 0;
-    this.bandWidth = 20 * Pulsar.SCALE;
+    this.bandWidth = this.bandWidth || (20 * Pulsar.SCALE);
   }
   
   draw(interp) {
@@ -299,6 +303,49 @@ class PulsarVerticalDivider extends Pulsar {
   }
 }
 
+class PulsarVerticalSweep extends Pulsar {
+  constructor(props) {
+    super(props);
+
+    // This pulsar sweeps across the entire screen, from x=0 to x=1200.
+    // To position the pulsar at the mouse click position, advance the current
+    // time of the pulsar to match the click x position.
+    // this.time = (this.x / this.maxR) * this.duration;
+
+    this.y = 0;
+    this.bandWidth = this.bandWidth || (20 * Pulsar.SCALE);
+  }
+  
+  draw(interp) {
+    if (this.direction > 0) {
+      const color = this.colorFactory.colorFrom;
+      const hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
+      Shapes.drawRectangleFilledRIGHT(
+        this.context,
+        this.x + this.r - this.bandWidth,
+        this.y,
+        this.bandWidth,
+        800 * Pulsar.SCALE,
+        hex,
+        this.lastr,
+      );
+    }
+    else {
+      const color = this.colorFactory.colorTo;
+      const hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
+      Shapes.drawRectangleFilledRIGHT(
+        this.context,
+        this.x + this.r,
+        this.y,
+        this.bandWidth,
+        800 * Pulsar.SCALE,
+        hex,
+        this.lastr,
+      );
+    }
+  }
+}
+
 class PulsarPattern extends Pulsar {
   draw(interp) {
     var color = this.colorFactory.getColor(this.r / this.maxR);
@@ -329,8 +376,8 @@ class PulsarChecked extends Pulsar {
       hex,
       this.lastr,
       this.maxR,
-      10, // 10
-      40 // 40
+      this.numBands || 10,
+      this.numPies || 40
     );
 
     this.positionEnd();

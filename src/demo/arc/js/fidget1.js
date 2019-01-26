@@ -21,9 +21,10 @@ window.Arc = (function () {
     PulsarPattern,
     PulsarVerticalBar,
     PulsarVerticalDivider,
+    PulsarVerticalSweep,
     PulsarSolidWithOutline,
   };
-  var fidget;
+  var fidget1, fidget2;
 
   function makeGreenOrangePalette() {
     var colors = (new ColorFactory({colorFrom: [5, 225, 90, 0.6], colorTo: [255, 60, 0, 0.6]})).getGradientValues(255);
@@ -109,7 +110,6 @@ window.Arc = (function () {
   ];
 
   var currentPen = pulsarConfigs[0];
-  var pattern = null; // kludgey global also used in Shapes.js
   var pulsars = [];
 
   function getPixels(imageObj) {
@@ -164,7 +164,8 @@ window.Arc = (function () {
     pulsars.forEach(function (p) {
       p.update(delta);
     });
-    updateFidget(fidget);
+    fidget1 && fidget1.update();
+    fidget2 && fidget2.update();
   }
 
   function drawAll(interp) {
@@ -278,9 +279,9 @@ window.Arc = (function () {
     imageObj.src = imgFileName;
   }
 
-  var friction = 0.00005;
+  var friction = 0.0; // 0.00005;
 
-  function createFidget() {
+  function createFidget1() {
     var bar = new PulsarVerticalBar({
       context: context,
       x: 400 * scale,
@@ -288,8 +289,8 @@ window.Arc = (function () {
       time: 1000,
       friction: 0.0,
       colorFactory: new ColorFactory({color: [205, 0, 0, 0.0]}),  // 102
-      duration: 22 * 1000,  // 12
-      maxR: 300 * scale,
+      duration: 20 * 1000,  // 12
+      maxR: 500 * scale,
     });
     var disc1 = new PulsarChecked({
       context: context,
@@ -311,34 +312,143 @@ window.Arc = (function () {
       colorFactory: new ColorFactory({color: [0, 153, 102, 0.35]}),
       duration: 15 * 1000,  // 5
       rotateVelocity: 0.008,
-      maxR: 100,
+      maxR: 160,
     });
-    // var disc3 = new Pulsar({
-    //   context: context,
-    //   colorFactory: new ColorFactory({color: [0, 153, 102, 0.75]}),
-    //   duration: 10 * 1000,
-    //   time: 10000,
-    //   friction: friction,
-    //   maxR: 150 * scale,
-    // });
-    // var disc3 = new PulsarSolidWithOutline({
-    //   context: context,
-    //   time: 10000,
-    //   friction: friction,
-    //   colorFactory: new ColorFactory({color: [0, 0, 75, 1.0]}),
-    //   duration: 5 * 1000,
-    //   maxR: 150 * scale,
-    // });
-    addPulsar(bar);
-    addPulsar(disc1);
-    addPulsar(disc2);
-    // addPulsar(disc3);
-    return {
-      bar,
-      disc1,
-      disc2,
-      // disc3,
+    var disc3 = new PulsarSolidWithOutline({
+      context: context,
+      time: 10000,
+      friction: friction,
+      colorFactory: new ColorFactory({color: [0, 0, 35, 0.8]}),
+      duration: 25 * 1000,
+      maxR: 100 * scale,
+    });
+
+    function update() {
+      disc1.x = bar.x + bar.r;
+
+      disc2.x = disc1.point[0];
+      disc2.y = disc1.point[1];
+
+      disc3.x = disc2.point[0];
+      disc3.y = disc2.point[1];
     }
+
+    var self = {
+      update,
+    };
+
+    addPulsar(disc3);
+    addPulsar(disc2);
+    addPulsar(disc1);
+    addPulsar(bar);
+
+    return self;
+  }
+
+  function createFidget2() {
+    var barLeft = new PulsarVerticalSweep({
+      context: context,
+      x: 0 * scale,
+      y: 0 * scale,
+      time: 0,
+      friction: 0.0,
+      colorFactory: new ColorFactory({colorFrom: [0, 0, 60, 0.9], colorTo: [250, 250, 0, 0.9]}),
+      duration: 21 * 1000,  // 12
+      maxR: 600 * scale,
+      edgeWidth: 4 * scale,
+    });
+    var barLeft1 = new PulsarVerticalSweep({
+      context: context,
+      x: 300 * scale,
+      y: 0 * scale,
+      time: 0,
+      friction: 0.0,
+      colorFactory: new ColorFactory({colorFrom: [0, 0, 60, 0.9], colorTo: [250, 250, 0, 0.9]}),
+      duration: 28 * 1000,  // 12
+      maxR: 600 * scale,
+      edgeWidth: 4 * scale,
+    });
+    var barRight = new PulsarVerticalSweep({
+      context: context,
+      x: 600 * scale,
+      y: 0 * scale,
+      time: 0,
+      friction: 0.0,
+      colorFactory: new ColorFactory({colorFrom: [255, 250, 0, 0.5], colorTo: [0, 0, 60, 0.5]}),
+      // colorFactory: new ColorFactory({colorTo: [255, 250, 30, 0.5], colorFrom:  [255, 230, 0, 0.2]}),
+      duration: 14 * 1000,  // 12
+      maxR: 600 * scale,
+      edgeWidth: 4 * scale,
+    });
+    var discLeft = new PulsarChecked({
+      context: context,
+      x: 400 * scale,
+      y: 400 * scale,
+      time: 0,
+      friction: friction,
+      colorFactory: new ColorFactory({color: [255, 250, 0, 0.35]}),
+      duration: 15 * 1000,  // 5
+      rotateVelocity: 0.008,
+      maxR: 270,
+      numBands: 1,
+      numPies: 2,
+    });
+    var discLeft1 = new PulsarChecked({
+      context: context,
+      x: 300 * scale,
+      y: 300 * scale,
+      time: 0,
+      friction: friction,
+      colorFactory: new ColorFactory({color: [255, 250, 0, 0.35]}),
+      duration: 10 * 1000,  // 5
+      rotateVelocity: 0.0,
+      maxR: 290,
+      numBands: 10,
+      numPies: 40,
+    });
+    var discRight = new PulsarChecked({
+      context: context,
+      x: 800 * scale,
+      y: 400 * scale,
+      time: 10000,
+      friction: friction,
+      colorFactory: new ColorFactory({colorFrom: [0, 0, 120, 0.9], colorTo: [0, 0, 60, 0.9]}),
+      duration: 27 * 1000,  // 17
+      maxR: 350 * scale,
+      rotateVelocity: 0.0,
+      numBands: 10,
+      numPies: 30,
+    });
+    var discRight1 = new PulsarSolidWithOutline({
+      context: context,
+      x: 700 * scale,
+      y: 410 * scale,
+      time: 10000,
+      friction: friction,
+      colorFactory: new ColorFactory({colorFrom: [0, 0, 120, 0.9], colorTo: [0, 0, 60, 0.9]}),
+      duration: 27 * 1000,  // 17
+      maxR: 250 * scale,
+      rotateVelocity: 0.003,
+      numBands: 1,
+      numPies: 2,
+    });
+
+    function update() {
+    }
+
+    var self = {
+      update,
+    };
+
+    addPulsar(barLeft);
+    // addPulsar(barLeft1);
+    addPulsar(discRight1);
+    addPulsar(barRight);
+    addPulsar(discLeft);
+    addPulsar(discLeft1);
+    addPulsar(discRight);
+
+    return self;
   }
 
   function drawInfo(context, x, y, pulsars) {
@@ -367,16 +477,6 @@ window.Arc = (function () {
     if (mouseupPoint && mouseupPoint.x !== 0 && mouseupPoint.y !== 0) {
       drawLine(context, mousedownPoint.x, mousedownPoint.y, mouseupPoint.x, mouseupPoint.y, '#f00');
     }
-  }
-
-  function updateFidget(f) {
-    f.disc1.x = f.bar.x + f.bar.r;
-
-    f.disc2.x = f.disc1.point[0];
-    f.disc2.y = f.disc1.point[1];
-
-    // f.disc3.x = f.disc2.point[0];
-    // f.disc3.y = f.disc2.point[1];
   }
 
   function lineRectIntersect(x1, y1, x2, y2, rx, ry, rw, rh) {
@@ -606,13 +706,52 @@ window.Arc = (function () {
     });
   }
 
+  function handleKeypress(e) {
+    var evtobj = window.event? event : e
+    if (evtobj.keyCode == 83 && evtobj.ctrlKey) { // ctrl-S
+      savePulsars(pulsars);
+      e.preventDefault();
+    }
+    else if (evtobj.keyCode == 76 && evtobj.ctrlKey) { // ctrl-L
+      loadPulsars();
+      e.preventDefault();
+    }
+    else if (evtobj.keyCode == 67 && evtobj.ctrlKey) { // ctrl-C
+      pulsars = [];
+      e.preventDefault();
+    }
+  }
+
+  function savePulsars(pulsars) {
+    var pulsarConfigStr = window.JSON.stringify(pulsars);
+    window.localStorage.setItem('pulsars', pulsarConfigStr);
+  }
+
+  function loadPulsars() {
+    var pulsarConfigStr = window.localStorage.getItem('pulsars');
+    var pulsarConfigs = window.JSON.parse(pulsarConfigStr);
+
+    // clear current pulsars
+    pulsars = [];
+
+    // add pulsars from storage
+    pulsarConfigs.forEach((pconfig) => {
+      pconfig.type = pconfig.name;
+      pconfig.context = context;
+      pconfig.colorFactory = new ColorFactory(pconfig.colorFactory);
+
+      var pulsarClass = pulsarClasses[pconfig.name] || pulsarClasses[0];
+      addPulsar(new pulsarClass(pconfig));
+    });
+  }
+
   function init() {
     Pulsar.SCALE = scale;
     Pulsar.ease = Easing.easeInOutSine;
 
     context.translate(0.5, 0.5);
 
-    // makePatternThang(contextPattern, '../img/textures/sand-texture-147.jpg', function (p) {
+    // makePatternThang(contextPattern, '../img/vintagewallpaper4_crop.png', function (p) {
     //   Shapes.setPattern(p);
     // });
 
@@ -630,10 +769,13 @@ window.Arc = (function () {
     canvas.addEventListener('mousedown', gestureStart);
     canvas.addEventListener('mouseup', gestureEnd);
 
+    document.addEventListener('keydown', handleKeypress);
+
     setFullscreenButton();
     setPen(pulsarConfigs[0]);
 
-    fidget = createFidget();
+    fidget1 = createFidget2();
+    // fidget2 = createFidget1();
 
     // bogus hack: wait for images to load before creating interface buttons
     setTimeout(function () {
