@@ -1,0 +1,746 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Arc</title>
+    <style>
+      body {
+        background-color: #050505;
+        margin: 0px;
+        padding: 0px;
+      }
+      div.color-button.checkered3 {
+        background-size: 34px 34px;
+        background-position: 0 0, 17px 17px;
+        background-image: linear-gradient(45deg, #fffbd2 25%, transparent 25%, transparent 75%, #fffbd2 75%, #fffbd2),
+                          linear-gradient(45deg, #fffbd2 25%, transparent 25%, transparent 75%, #fffbd2 75%, #fffbd2);
+      }
+      .container {
+        /*width: 1340px;*/
+        margin: 0 auto;
+      }
+      #myCanvas {
+        background-color: #000
+        transform: scale(1);
+        transform-origin: 0 0;
+        cursor: pointer;
+        border: 1px solid #555;
+      }
+      .canvas-wrapper {
+        display: inline-block;
+        padding: 5px;
+      }
+      .color-button {
+        display: inline;
+        width: 50px;
+        height: 50px;
+        margin: 10px 23px;
+        background-color: #ff0;
+        border: 4px solid black;
+        border-radius: 40px;
+      }
+      .color-button:hover {
+        cursor: pointer;
+        border: 4px solid cyan;
+      }
+      .color-button.selected {
+        border: 4px solid aliceblue;
+      }
+      #toolbar {
+        display: inline-block;
+        width: 110px;
+        vertical-align: top;
+      }
+      #toolbar div {
+        display: inline-block;
+      }
+      div#cc {
+        display: none;
+      }
+      div#pattern {
+        /*display: none;*/
+      }
+      #fullscreen #goFS {
+        display: none;
+        vertical-align: middle;
+        padding: 10px;
+        margin: 10px 30px;
+      }
+      #fpsDisplay {
+        display: none !important;
+        color: #ccc;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #misc {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class='canvas-wrapper' id='putCanvasHere'>
+        <!-- <canvas id="myCanvas" width="1200" height="800"></canvas> -->
+      </div>
+      <div id="toolbar">
+        <div id="fpsDisplay"></div>
+        <div id="pulsar-buttons"></div>
+        <div id="fullscreen">
+          <button id="goFS">FS</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="misc">
+      <div id="pattern">
+        <canvas id="patternCanvas" width="100" height="100"></canvas>
+      </div>
+      <div id="cc">
+        <img id="canvasCopy" style="width:50px; height:50px; border: 1px solid gray;" onclick="copyCanvas()">
+      </div>
+    </div>
+
+
+
+
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/three.min.js"></script>
+    <script src="lib/thing.js"></script>
+
+
+
+
+    <script src="js/tinycolor/tinycolor.js"></script>
+    <script src="js/MainLoop.js"></script>
+    <script src="js/Shapes.js"></script>
+    <script src="js/Pulsar.js"></script>
+    <script src="js/fidget1.js"></script>
+
+    <script id="fragment_shader_screen" type="x-shader/x-fragment">
+      varying vec2 vUv;
+      uniform sampler2D tDiffuse;
+
+      void main() {
+        gl_FragColor = texture2D( tDiffuse, vUv );
+      }
+    </script>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      }
+    </script>
+
+    <script>
+      var renderer, texture;
+      var drawing, HUD;
+      var mouse = new THREE.Vector2();
+      var frustumSize = window.innerHeight;
+      var canvas;
+
+      function mapUVsToWidth(uvArray, geometryWidth) {
+        for (let i=0; i < uvArray.length; i++) {
+          uvArray[i] = uvArray[i] / geometryWidth;
+        }
+      }
+
+      // function mapUVsQuad(geometry) {
+      //   geometry.computeBoundingBox();
+
+      //   var max = geometry.boundingBox.max,
+      //       min = geometry.boundingBox.min;
+      //   var offset = new THREE.Vector2(0 - min.x, 0 - min.y);
+      //   var range = new THREE.Vector2(max.x - min.x, max.y - min.y);
+      //   var faces = geometry.faces;
+
+      //   geometry.faceVertexUvs[0] = [];
+
+      //   for (var i = 0; i < faces.length ; i++) {
+      //       var v1 = geometry.vertices[faces[i].a], 
+      //           v2 = geometry.vertices[faces[i].b], 
+      //           v3 = geometry.vertices[faces[i].c];
+
+      //       geometry.faceVertexUvs[0].push([
+      //           new THREE.Vector2((v1.x + offset.x)/range.x ,(v1.y + offset.y)/range.y),
+      //           new THREE.Vector2((v2.x + offset.x)/range.x ,(v2.y + offset.y)/range.y),
+      //           new THREE.Vector2((v3.x + offset.x)/range.x ,(v3.y + offset.y)/range.y)
+      //       ]);
+      //   }
+      //   geometry.uvsNeedUpdate = true;
+      // }
+
+      function mapUVsToWidthRing(geometry, geometryWidth) {
+        var verts = geometry.attributes.position.array;
+        var uvs = geometry.attributes.uv.array;
+        for (let p=0, t=0; p < verts.length; p += 3, t += 2) {
+          uvs[t] = verts[p] / geometryWidth;
+          uvs[t+1] = verts[p+1] / geometryWidth;
+        }
+      }
+
+      function makeCircle(x, y, z, r) {
+        var geometry = new THREE.CircleGeometry( r, 360 ); // radius, segments
+        var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: texture } ) );
+        mesh.position.set( x, y, z );
+        // mesh.rotation.set( 0, 0, 0 );
+        // mesh.scale.set( 1, 1, 1 );
+        return mesh;
+      }
+
+      var rot = 0, rot2 = 0;
+      var tmparc, tmparc2;
+
+      function makeArc(x, y, z, r, color, txture) {
+        var circleRadius = r;
+        var geometry = new THREE.RingBufferGeometry( (r >= 100 ? r - 100 : 0), r, 60, 1, 0, 1.6 * Math.PI);
+
+        // mapUVsToWidth(geometry.attributes.uv.array, r * 2);
+        mapUVsToWidthRing(geometry, 600);
+
+        // var mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: txture } ) );
+        var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: color, transparent: true, opacity: 0.3, side: THREE.DoubleSide, map: txture } ) );
+        mesh.position.set( x, y, z );
+
+        return mesh;
+      }
+
+      function makeFlowerShape() {
+        // var heartShape = new THREE.Shape(); // From httshapp://blog.burlock.org/html5/130-paths
+        // heartShape.moveTo( 25, 25 ); // 1
+        // heartShape.bezierCurveTo( 25, 25, 20, 0,      0, 0 );  // 2
+        // heartShape.bezierCurveTo( -30, 0, -30, 35,  -30, 35 ); // 3
+        // heartShape.bezierCurveTo( -30, 55, -10, 77,   25, 95 ); // 4
+        // heartShape.bezierCurveTo( 60, 77, 80, 55,     80, 35 ); // 5
+        // heartShape.bezierCurveTo( 80, 35, 80, 0,      50, 0 ); // 6
+        // heartShape.bezierCurveTo( 35, 0, 25, 25,      25, 25 ); // 7
+
+        function randPetals() {
+          return 5 + Math.floor(Math.random() * 7);
+        }
+
+        // bezierCurveTo( from control point x, y,    to control point x, y,   to new point x, y)
+        var daisy = new THREE.Shape();
+        var numPetals = randPetals();
+        var jiggleAmount = 0.1 + (Math.random() * 1.5);
+        var outerRadius = Math.floor(100 + ( Math.random() * 250));
+        var innerRadius = Math.floor(40 + (Math.random() * (outerRadius * 0.75)));
+        var innerPoints = jiggle(createCircleNodes(numPetals, 50), jiggleAmount);
+        var outerPoints = jiggle(createCircleNodes(numPetals, 250), jiggleAmount);
+        daisy.moveTo( innerPoints[0].x, innerPoints[0].y );
+        for (var n = 1; n < innerPoints.length; n++) {
+          daisy.bezierCurveTo( 
+            outerPoints[n-1].x, outerPoints[n-1].y,     
+            outerPoints[n].x, outerPoints[n].y,       
+            innerPoints[n].x, innerPoints[n].y );
+        }
+        daisy.bezierCurveTo( 
+          outerPoints[innerPoints.length-1].x, outerPoints[innerPoints.length-1].y,     
+          outerPoints[0].x, outerPoints[0].y,       
+          innerPoints[0].x, innerPoints[0].y );
+
+
+        // var geometry = new THREE.ShapeBufferGeometry(fourLeafClover, 60);
+        var geometry = new THREE.ShapeBufferGeometry(daisy, 60);
+        mapUVsToWidthRing(geometry, outerRadius);
+
+        var textureId = Math.floor(Math.random()*textures.length);
+        console.log('textureid', textureId);
+        var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: textures[textureId] } );
+        // var mat = new THREE.MeshPhongMaterial({
+        //   color: 0xF6F300,
+        //   side: THREE.DoubleSide, 
+        //   map: texture 
+        // });
+        var mesh = new THREE.Mesh(geometry, mat);
+        mesh.position.set( 500 + Math.floor(Math.random() * 800), -(300 + Math.floor(Math.random() * 500)), -75 );
+        // mesh.scale.set(3,3,3);
+        // mesh.rotation.set( 0, 0, Math.PI );
+
+
+        // // add circle to HUD ortho scene
+        // var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: texture } );
+        // var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
+        // var mesh = new THREE.Mesh( geometry, materialHUD );
+        // mesh.position.set( 250, -200, -50 );
+
+        return mesh;
+      }
+
+      function makeQuad(x, y, z, w, h, t) {
+        var plane = new THREE.PlaneBufferGeometry(w, h);
+        var mat = new THREE.MeshBasicMaterial({ color: 0xF6FC00, side: THREE.DoubleSide, map: t });
+        var quad = new THREE.Mesh(plane, mat);
+        quad.position.set(x, y, z);
+        return quad;
+      }
+
+      function makeTexture(textureFileURL) {
+        var loader = new THREE.TextureLoader();
+        texture = loader.load(textureFileURL);
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2, 2);
+        return texture;
+      }        
+
+      function makeRenderer() {
+        var renderer = new THREE.WebGLRenderer();
+        renderer.autoClearColor = 0x000000;
+        // var renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
+        // renderer.autoClearColor = false;
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth * 1, window.innerHeight * 1);
+        return renderer;
+      }
+
+      function highlightIntersections(raycaster, scene, camera, mouse, priorIntersects) {
+        raycaster.setFromCamera( mouse, camera );
+
+        var intersects = raycaster.intersectObjects( scene.children );
+
+        if ( intersects.length > 0 ) {
+          if ( priorIntersects != intersects[ 0 ].object ) {
+            if ( priorIntersects ) {
+              priorIntersects.material.emissive.setHex( priorIntersects.currentHex );
+            }
+
+            priorIntersects = intersects[ 0 ].object;
+            priorIntersects.currentHex = priorIntersects.material.emissive.getHex();
+            priorIntersects.material.emissive.setHex( 0xff0000 );
+          }
+        } else {
+          if ( priorIntersects ) {
+            priorIntersects.material.emissive.setHex( priorIntersects.currentHex );
+          }
+          priorIntersects = null;
+        }
+
+        return priorIntersects;
+      }
+
+
+
+
+      function makeTextureFactory(tsize = 512) {
+        var scene;
+        var camera;
+
+        function makeScene() {
+          var scene = new THREE.Scene();
+          var flower = makeFlowerShape();
+
+          flower.position.set( 260, -260, 150 );
+
+          scene.background = new THREE.Color( 0xf0f0f0 );
+          scene.add( makeCircle(260, -260, 200, 100) );
+          scene.add( flower );
+
+          return scene;
+        }
+
+        function makeCamera() {
+          var cam = new THREE.OrthographicCamera( 
+            0, tsize, 
+            0, -tsize, 
+            1, 1000
+          );
+          return cam;
+        }
+
+        function makeOffscreenTexture() {
+          return new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, {
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.NearestFilter,
+            format: THREE.RGBFormat
+          });
+        }
+
+        function update() {
+          camera.position.x = 0;
+          camera.position.y = 0;
+          camera.position.z = 500;
+          camera.lookAt( scene.position );
+          camera.updateMatrixWorld();
+        }
+
+        function render(renderer) {
+          renderer.render(scene, camera, offscreenTexture, true);
+        }
+
+        function getTexture() {
+          return offscreenTexture.texture;
+        }
+
+        var scene = makeScene();
+        var camera = makeCamera();
+        var offscreenTexture = makeOffscreenTexture();
+
+        return {
+          update,
+          render,
+          getTexture,
+          scene,
+        };
+      }
+
+
+
+
+      function makeDrawing() {
+        var scene;
+        var camera;
+        var INTERSECTED;
+        var radius = 500, theta = 0;
+
+        function makeDrawingScene() {
+          var scene = new THREE.Scene();
+          scene.background = new THREE.Color( 0xf0f0f0 );
+
+          var light = new THREE.DirectionalLight( 0xffffff, 1 );
+          light.position.set( 0, 0, 1 ).normalize();
+          // scene.add( light );
+
+          scene.add( makeCircle(300, -200, 200, 100) );
+          // scene.add( tmparc = makeArc(500, -500, 10, 300, 0xF6F300, null) );
+          // scene.add( tmparc2 = makeArc(560, -500, 15, 250, 0x00F300, null) );
+
+          var w = window.innerWidth * 0.33;
+          var h = window.innerHeight;
+          scene.add( makeQuad((w/2) + 100, -h/2, -300, w, h, textures[1]) );
+
+          scene.add( makeFlowerShape() );
+
+          return scene;
+        }
+
+        function makeCamera() {
+          var aspect = window.innerWidth / window.innerHeight;
+          var cam = new THREE.OrthographicCamera( 
+            0, 
+            frustumSize * aspect, 
+            0, 
+            -frustumSize, 
+            1, 
+            1000
+          );
+          // var cam = new THREE.OrthographicCamera( 
+          //   frustumSize * aspect / -2, 
+          //   frustumSize * aspect / 2, 
+          //   frustumSize / 2, 
+          //   frustumSize / -2, 
+          //   1, 
+          //   1000
+          // );
+          return cam;
+        }
+
+        function update() {
+          // theta += 0.1;
+          // tmparc.rotation.set( 0, 0, Math.PI * rot );
+          // tmparc2.rotation.set( 0, 0, Math.PI * rot2 );
+          // rot += 0.001;
+          // rot2 += 0.0015;
+
+          camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
+          camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
+          camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
+          camera.lookAt( scene.position );
+          camera.updateMatrixWorld();
+
+          // INTERSECTED = highlightIntersections(raycaster, scene, camera, mouse, INTERSECTED);
+        }
+
+        function render(renderer) {
+          renderer.render(scene, camera, offscreenTexture, true);
+        }
+
+        function getTexture() {
+          return offscreenTexture.texture;
+        }
+
+        var scene = makeDrawingScene();
+        var camera = makeCamera();
+        var offscreenTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, {
+          minFilter: THREE.LinearFilter,
+          magFilter: THREE.NearestFilter,
+          format: THREE.RGBFormat
+        });
+        var raycaster = new THREE.Raycaster();
+
+        return {
+          update,
+          render,
+          getTexture,
+          scene,
+        };
+      }
+
+
+
+
+      function makeHUD(sceneDrawnInTexture) {
+        var scene;
+        var camera;
+        var INTERSECTED;
+        var marker;
+
+        function makeSquareGeometry(x1, y1, x2, y2) {
+          var square = new THREE.Geometry();
+          square.vertices.push(new THREE.Vector3(x1,y1,0));
+          square.vertices.push(new THREE.Vector3(x1,y2,0));
+          square.vertices.push(new THREE.Vector3(x2,y1,0));
+          square.vertices.push(new THREE.Vector3(x2,y2,0));
+          square.faces.push(new THREE.Face3(0,1,2));
+          square.faces.push(new THREE.Face3(1,2,3));
+          return square;
+        }
+
+        function makeMarker(context, x, y, w, h, color) {
+          var square_material = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
+          var square_geometry = makeSquareGeometry(-10,10,10,-10);
+          var square_mesh = new THREE.Mesh(square_geometry, square_material);
+          context.add(square_mesh);
+          return square_mesh;
+        }
+
+        function drawLine(context, x, y, w, h, color) {
+          marker = marker || makeMarker(context, x, y, w, h, color);
+          marker.position.set( x, y, 50 );
+        }
+
+        function makeHUDScene(sceneDrawnInTexture) {
+          var materialScreen = new THREE.ShaderMaterial({
+            uniforms: { tDiffuse: { value: sceneDrawnInTexture } },
+            vertexShader: document.getElementById( 'vertexShader' ).textContent,
+            fragmentShader: document.getElementById( 'fragment_shader_screen' ).textContent,
+            depthWrite: false
+          });
+          var plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
+          var quad = new THREE.Mesh( plane, materialScreen );
+          quad.position.set(window.innerWidth/2, -window.innerHeight/2, -100);
+          // quad.position.z = -100;
+          var sceneHUD = new THREE.Scene();
+          sceneHUD.add( quad );
+
+          // add circle to HUD ortho scene
+          var materialHUD = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: texture2 } );
+          var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
+          var mesh = new THREE.Mesh( geometry, materialHUD );
+          mesh.position.set( 150, -100, -50 );
+          sceneHUD.add( mesh );
+
+          // sceneHUD.add( tmparc = makeArc(300, -400, 10, 300, 0xffff00, null) );
+          // sceneHUD.add( tmparc = makeArc(300, -400, 10, 300, 0xffff00, null) );
+          // sceneHUD.add( tmparc2 = makeArc(350, -450, 15, 250, 0x00F300, null) );
+          // sceneHUD.add( tmparc = makeArc(340, -300, 10, 300, 0xffff00, null) );
+          // sceneHUD.add( tmparc2 = makeArc(330, -300, 15, 250, 0x00F300, null) );
+
+          var light = new THREE.DirectionalLight( 0xffffff, 1 );
+          light.position.set( 0, 0, 1 ).normalize();
+          sceneHUD.add( light );
+
+          return sceneHUD;
+        }
+
+        function makeCameraForScreen() {
+          var aspect = window.innerWidth / window.innerHeight;
+          var cam = new THREE.OrthographicCamera( 
+            0, 
+            frustumSize * aspect, 
+            0, 
+            -frustumSize, 
+            1, 
+            1000
+          );
+
+
+          // var cam = new THREE.OrthographicCamera( 
+          //   window.innerWidth / - 2, 
+          //   window.innerWidth / 2, 
+          //   window.innerHeight / 2, 
+          //   window.innerHeight / - 2, 
+          //   -10000, 
+          //   10000
+          // );
+          cam.position.z = 100;
+          return cam;
+        }
+
+        function update() {
+          // INTERSECTED = highlightIntersections(raycaster, scene, camera, mouse, INTERSECTED);
+        }
+
+        function render(renderer) {
+          renderer.render(scene, camera);
+        }
+
+        function drawGesture(x, y) {
+          drawLine(scene, x, y, 0, 0, null);
+        }
+
+        function addQuadWithTexture(t) {
+          scene.add( makeQuad(400, -600, 10, 500, 500, t) );
+        }
+
+        var scene = makeHUDScene(sceneDrawnInTexture);
+        var camera = makeCameraForScreen();
+        var raycaster = new THREE.Raycaster();
+
+        return {
+          update,
+          render,
+          drawGesture,
+          scene,
+          addQuadWithTexture,
+        };
+      }
+
+      function onWindowResize() {
+        var aspect = window.innerWidth / window.innerHeight;
+        camera.left = - frustumSize * aspect / 2;
+        camera.right = frustumSize * aspect / 2;
+        camera.top = frustumSize / 2;
+        camera.bottom = - frustumSize / 2;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+      }
+
+      function onDocumentMouseMove( event ) {
+        event.preventDefault();
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      }
+
+      function update(delta) {
+        drawing.update(delta);
+        window.Arc.update(delta);
+        HUD.update();
+      }
+
+      function render() {
+        // render drawing into texture
+        drawing.render(renderer);
+        window.Arc.draw();
+
+        // render drawing + overlay to screen
+        HUD.render(renderer);
+      }
+
+      function animate() {
+        MainLoop.setDraw(render);
+        MainLoop.setUpdate(update);
+        MainLoop.start();
+      }
+
+      function createCircleNodes(numNodes, radius) {
+        var nodes = [], 
+            // width = (radius * 2),
+            // height = (radius * 2),
+            angle,
+            x,
+            y,
+            i;
+        for (i=0; i<numNodes; i++) {
+         angle = (i / (numNodes/2)) * Math.PI; // Calculate the angle at which the element will be placed.
+         x = (radius * Math.cos(angle)); // Calculate the x position of the element.
+         y = (radius * Math.sin(angle)); // Calculate the y position of the element.
+         nodes.push({'id': i, 'x': x, 'y': y});
+        }
+        return nodes;
+      }
+
+      function jiggle(points, howmuch) {
+        for (var n=0; n < points.length; n++) {
+          points[n].x += points[n].x * (Math.random() * howmuch);
+          points[n].y += points[n].y * (Math.random() * howmuch);
+        }
+        return points;
+      }
+
+      var texture2;
+      var textures;
+      var textureFactory;
+
+      function init() {
+        var imageNames = [
+          { src:'img/red_on_white_floral_pattern.jpg' },
+          { src:'img/gold_leaf_bg_bright.png' },
+          { src:'img/USA_flag_starfield_seamless.png' },
+          { src:'img/ftiles.jpg' },
+          { src:'img/wood_panelling.jpg' },
+          { src:'img/watermelon.jpg' },
+          { src:'img/yellowfreeaccess.jpg' },
+          { src:'img/twit_logo_blue_crop_t.png' },
+          { src:'img/twits_in_circle.png' },
+          { src:'img/skin_with_water_droplets.png' },
+          { src:'img/Checkerboard_pattern.png' },
+          { src:'img/youtube-play-button_red_on_white.png' },
+          { src:'img/youtube_play_button_white_on_red_1.png' },
+        ];
+
+        Thing.Img.loadBatch(imageNames, (imgs) => {
+          textures = [
+            makeTexture('img/red_on_white_floral_pattern.jpg'),
+            makeTexture('img/gold_leaf_bg_bright.png'),
+            makeTexture('img/USA_flag_starfield_seamless.png'),
+            makeTexture('img/ftiles.jpg'),
+            makeTexture('img/wood_panelling.jpg'),
+            makeTexture('img/watermelon.jpg'),
+            makeTexture('img/yellowfreeaccess.jpg'),
+            // makeTexture('img/orange_water_drops_256.png'),
+            makeTexture('img/twit_logo_blue_crop_t.png'),
+            makeTexture('img/twits_in_circle.png'),
+            makeTexture('img/skin_with_water_droplets.png'),
+            // makeTexture('img/metal_button_1.png'),
+            makeTexture('img/Checkerboard_pattern.png'),
+            makeTexture('img/youtube-play-button_red_on_white.png'),
+            makeTexture('img/youtube_play_button_white_on_red_1.png'),
+          ];
+
+          texture = textures[ Math.floor(Math.random() * textures.length) ];
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.offset.set(0, 0);
+          texture.repeat.set(4, 4);
+
+
+          renderer = makeRenderer();
+
+          textureFactory = makeTextureFactory();
+          texture2 = textureFactory.getTexture();
+          textures.push(texture2);
+          textures.push(texture2);
+          textures.push(texture2);
+          textures.push(texture2);
+
+          // HUD.drawGesture(100, 100);
+          drawing = makeDrawing();
+          HUD = makeHUD(drawing.getTexture());
+
+          HUD.addQuadWithTexture(drawing.getTexture());
+          // HUD.addQuadWithTexture(texture);
+
+          document.getElementById('putCanvasHere').appendChild( renderer.domElement );
+
+          document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+          window.addEventListener( 'resize', onWindowResize, false );
+
+          window.Arc.init(renderer.domElement, drawing.scene, textures);
+
+          animate();
+
+          setTimeout(() => {
+            textureFactory.update();
+            textureFactory.render(renderer);
+          }, 1000);
+        });
+
+      }
+
+      init();
+
+    </script>
+
+  </body>
+</html>
