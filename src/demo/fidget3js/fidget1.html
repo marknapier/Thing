@@ -158,8 +158,8 @@
       //   geometry.faceVertexUvs[0] = [];
 
       //   for (var i = 0; i < faces.length ; i++) {
-      //       var v1 = geometry.vertices[faces[i].a], 
-      //           v2 = geometry.vertices[faces[i].b], 
+      //       var v1 = geometry.vertices[faces[i].a],
+      //           v2 = geometry.vertices[faces[i].b],
       //           v3 = geometry.vertices[faces[i].c];
 
       //       geometry.faceVertexUvs[0].push([
@@ -230,14 +230,14 @@
         var outerPoints = jiggle(createCircleNodes(numPetals, 250), jiggleAmount);
         daisy.moveTo( innerPoints[0].x, innerPoints[0].y );
         for (var n = 1; n < innerPoints.length; n++) {
-          daisy.bezierCurveTo( 
-            outerPoints[n-1].x, outerPoints[n-1].y,     
-            outerPoints[n].x, outerPoints[n].y,       
+          daisy.bezierCurveTo(
+            outerPoints[n-1].x, outerPoints[n-1].y,
+            outerPoints[n].x, outerPoints[n].y,
             innerPoints[n].x, innerPoints[n].y );
         }
-        daisy.bezierCurveTo( 
-          outerPoints[innerPoints.length-1].x, outerPoints[innerPoints.length-1].y,     
-          outerPoints[0].x, outerPoints[0].y,       
+        daisy.bezierCurveTo(
+          outerPoints[innerPoints.length-1].x, outerPoints[innerPoints.length-1].y,
+          outerPoints[0].x, outerPoints[0].y,
           innerPoints[0].x, innerPoints[0].y );
 
 
@@ -250,8 +250,8 @@
         var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: textures[textureId] } );
         // var mat = new THREE.MeshPhongMaterial({
         //   color: 0xF6F300,
-        //   side: THREE.DoubleSide, 
-        //   map: texture 
+        //   side: THREE.DoubleSide,
+        //   map: texture
         // });
         var mesh = new THREE.Mesh(geometry, mat);
         mesh.position.set( 500 + Math.floor(Math.random() * 800), -(300 + Math.floor(Math.random() * 500)), -75 );
@@ -282,7 +282,7 @@
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(2, 2);
         return texture;
-      }        
+      }
 
       function makeRenderer() {
         var renderer = new THREE.WebGLRenderer();
@@ -322,28 +322,50 @@
 
 
 
+
+
+
+      ////////////////////////////////////////////////////////////////////////////////
+
       function makeTextureFactory(tsize = 512) {
+        /** 
+          This module will copy pixels from the framebuffer into a texture. 
+          -- The framebuffer may contain more pixels than the canvas size. For example 
+             the Mac retina display has 2 framebuffer pixels per 1 screen pixel (dpr=2), and  
+             my HP laptop has 1.25 framebuffer pixels per 1 screen pixel. 
+          -- Either way I want to always copy exactly tsize X tsize pixels into the texture 
+          -- Texture dimensions (tsize) have to be a power of 2 or the texture will not tile  
+             correctly when I use it to create patterns.
+          -- Since the texture size is fixed (e.g. 512) but the framebuffer size is 
+             variable (1, 1.25, 2) I scale the scene to fit into exactly 512 actual pixels.
+        */
         var scene;
         var camera;
+        var dpr = window.devicePixelRatio;
+        var sceneScale = 1/dpr;
 
         function makeScene() {
           var scene = new THREE.Scene();
           var flower = makeFlowerShape();
 
-          flower.position.set( 260, -260, 150 );
+          flower.position.set( 0, 0, 20 );
 
           scene.background = new THREE.Color( 0xf0f0f0 );
-          scene.add( makeCircle(260, -260, 200, 100) );
+          scene.add( makeCircle(0, 0, 30, 50) );
           scene.add( flower );
+          scene.scale.set(sceneScale, sceneScale, 1);
 
           return scene;
         }
 
         function makeCamera() {
-          var cam = new THREE.OrthographicCamera( 
-            0, tsize, 
-            0, -tsize, 
-            1, 1000
+          var cam = new THREE.OrthographicCamera(
+            window.innerWidth / - 2,
+            window.innerWidth / 2,
+            window.innerHeight / 2,
+            window.innerHeight / - 2,
+            -1000,
+            1000
           );
           return cam;
         }
@@ -365,7 +387,31 @@
         }
 
         function render(renderer) {
-          renderer.render(scene, camera, offscreenTexture, true);
+          renderer.render(scene, camera);
+
+          // center the texture proportions in pixel buffer (account for more pixels in framebuffer)
+          var lowerLeftCorner = new THREE.Vector2(
+            (window.innerWidth * dpr / 2) - (tsize / 2),
+            (window.innerHeight * dpr / 2) - (tsize / 2)
+          );
+          renderer.copyFramebufferToTexture( lowerLeftCorner, textureAlso );
+        }
+
+        function makeTexture() {
+          var data = new Uint8Array( tsize * tsize * 3 );
+          var texture = new THREE.DataTexture( data, tsize, tsize, THREE.RGBFormat );
+          texture.minFilter = THREE.NearestFilter;
+          texture.magFilter = THREE.NearestFilter;
+
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(2, 2);
+
+          texture.needsUpdate = true;
+          return texture;
+        }
+
+        function getTexture2() {
+          return textureAlso;
         }
 
         function getTexture() {
@@ -375,14 +421,23 @@
         var scene = makeScene();
         var camera = makeCamera();
         var offscreenTexture = makeOffscreenTexture();
+        var textureAlso = makeTexture();
 
         return {
           update,
           render,
           getTexture,
+          getTexture2,
           scene,
         };
       }
+
+
+
+
+
+
+
 
 
 
@@ -416,20 +471,20 @@
 
         function makeCamera() {
           var aspect = window.innerWidth / window.innerHeight;
-          var cam = new THREE.OrthographicCamera( 
-            0, 
-            frustumSize * aspect, 
-            0, 
-            -frustumSize, 
-            1, 
+          var cam = new THREE.OrthographicCamera(
+            0,
+            frustumSize * aspect,
+            0,
+            -frustumSize,
+            1,
             1000
           );
-          // var cam = new THREE.OrthographicCamera( 
-          //   frustumSize * aspect / -2, 
-          //   frustumSize * aspect / 2, 
-          //   frustumSize / 2, 
-          //   frustumSize / -2, 
-          //   1, 
+          // var cam = new THREE.OrthographicCamera(
+          //   frustumSize * aspect / -2,
+          //   frustumSize * aspect / 2,
+          //   frustumSize / 2,
+          //   frustumSize / -2,
+          //   1,
           //   1000
           // );
           return cam;
@@ -475,6 +530,8 @@
           scene,
         };
       }
+
+
 
 
 
@@ -528,7 +585,7 @@
           var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
           var mesh = new THREE.Mesh( geometry, materialHUD );
           mesh.position.set( 150, -100, -50 );
-          sceneHUD.add( mesh );
+          // sceneHUD.add( mesh );
 
           // sceneHUD.add( tmparc = makeArc(300, -400, 10, 300, 0xffff00, null) );
           // sceneHUD.add( tmparc = makeArc(300, -400, 10, 300, 0xffff00, null) );
@@ -545,24 +602,14 @@
 
         function makeCameraForScreen() {
           var aspect = window.innerWidth / window.innerHeight;
-          var cam = new THREE.OrthographicCamera( 
-            0, 
-            frustumSize * aspect, 
-            0, 
-            -frustumSize, 
-            1, 
+          var cam = new THREE.OrthographicCamera(
+            0,
+            frustumSize * aspect,
+            0,
+            -frustumSize,
+            1,
             1000
           );
-
-
-          // var cam = new THREE.OrthographicCamera( 
-          //   window.innerWidth / - 2, 
-          //   window.innerWidth / 2, 
-          //   window.innerHeight / 2, 
-          //   window.innerHeight / - 2, 
-          //   -10000, 
-          //   10000
-          // );
           cam.position.z = 100;
           return cam;
         }
@@ -580,7 +627,7 @@
         }
 
         function addQuadWithTexture(t) {
-          scene.add( makeQuad(400, -600, 10, 500, 500, t) );
+          scene.add( makeQuad(260, -450, 50, 500, 500, t) );
         }
 
         var scene = makeHUDScene(sceneDrawnInTexture);
@@ -595,6 +642,13 @@
           addQuadWithTexture,
         };
       }
+
+
+
+
+
+
+
 
       function onWindowResize() {
         var aspect = window.innerWidth / window.innerHeight;
@@ -626,6 +680,8 @@
 
         // render drawing + overlay to screen
         HUD.render(renderer);
+
+        // textureFactory.render(renderer); ///!!!!
       }
 
       function animate() {
@@ -635,7 +691,7 @@
       }
 
       function createCircleNodes(numNodes, radius) {
-        var nodes = [], 
+        var nodes = [],
             // width = (radius * 2),
             // height = (radius * 2),
             angle,
@@ -708,17 +764,13 @@
           renderer = makeRenderer();
 
           textureFactory = makeTextureFactory();
-          texture2 = textureFactory.getTexture();
-          textures.push(texture2);
-          textures.push(texture2);
-          textures.push(texture2);
-          textures.push(texture2);
+          texture2 = textureFactory.getTexture2();
 
           // HUD.drawGesture(100, 100);
           drawing = makeDrawing();
           HUD = makeHUD(drawing.getTexture());
 
-          HUD.addQuadWithTexture(drawing.getTexture());
+          // HUD.addQuadWithTexture(drawing.getTexture());
           // HUD.addQuadWithTexture(texture);
 
           document.getElementById('putCanvasHere').appendChild( renderer.domElement );
@@ -726,13 +778,24 @@
           document.addEventListener( 'mousemove', onDocumentMouseMove, false );
           window.addEventListener( 'resize', onWindowResize, false );
 
-          window.Arc.init(renderer.domElement, drawing.scene, textures);
 
-          animate();
+          // animate();
 
           setTimeout(() => {
+            // render a flower and copy to texture
             textureFactory.update();
             textureFactory.render(renderer);
+            texture2 = textureFactory.getTexture2();
+
+            textures.push(texture2);
+            textures.push(texture2);
+            textures.push(texture2);
+            textures.push(texture2);
+
+            HUD.addQuadWithTexture(drawing.getTexture());
+            // HUD.addQuadWithTexture(textureFactory.getTexture2());
+            window.Arc.init(renderer.domElement, drawing.scene, textures);
+            animate();
           }, 1000);
         });
 
