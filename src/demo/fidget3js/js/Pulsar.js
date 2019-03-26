@@ -192,7 +192,7 @@ class Pulsar {
         r + bw,
         txtr ? '#fff' : hex,
         txtr,
-        txtr ? 1.0 : randOpacity(),
+        txtr ? 0.9 : randOpacity(),
         randArcSize(),
       );
       // set color and position

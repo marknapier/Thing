@@ -27,7 +27,7 @@
       }
       .canvas-wrapper {
         display: inline-block;
-        padding: 5px;
+        padding: 1px;
       }
       .color-button {
         display: inline;
@@ -49,6 +49,9 @@
         display: inline-block;
         width: 110px;
         vertical-align: top;
+      }
+      #toolbar {
+        display: none;
       }
       #toolbar div {
         display: inline-block;
@@ -109,11 +112,13 @@
 
 
 
-
     <script src="js/tinycolor/tinycolor.js"></script>
     <script src="js/MainLoop.js"></script>
     <script src="js/Shapes.js"></script>
     <script src="js/Pulsar.js"></script>
+    <script src="js/TextureFactory.js"></script>
+    <script src="js/BlendedDrawing.js"></script>
+    <script src="js/HUD.js"></script>
     <script src="js/fidget1.js"></script>
 
     <script id="fragment_shader_screen" type="x-shader/x-fragment">
@@ -136,40 +141,15 @@
     <script>
       var renderer, texture;
       var drawing, HUD;
-      var mouse = new THREE.Vector2();
-      var frustumSize = window.innerHeight;
-      var canvas;
+      var textures;
+      var textureFactory;
 
+      // SHAPES //////////////////////////////////////////////////////////////////////////
       function mapUVsToWidth(uvArray, geometryWidth) {
         for (let i=0; i < uvArray.length; i++) {
           uvArray[i] = uvArray[i] / geometryWidth;
         }
       }
-
-      // function mapUVsQuad(geometry) {
-      //   geometry.computeBoundingBox();
-
-      //   var max = geometry.boundingBox.max,
-      //       min = geometry.boundingBox.min;
-      //   var offset = new THREE.Vector2(0 - min.x, 0 - min.y);
-      //   var range = new THREE.Vector2(max.x - min.x, max.y - min.y);
-      //   var faces = geometry.faces;
-
-      //   geometry.faceVertexUvs[0] = [];
-
-      //   for (var i = 0; i < faces.length ; i++) {
-      //       var v1 = geometry.vertices[faces[i].a],
-      //           v2 = geometry.vertices[faces[i].b],
-      //           v3 = geometry.vertices[faces[i].c];
-
-      //       geometry.faceVertexUvs[0].push([
-      //           new THREE.Vector2((v1.x + offset.x)/range.x ,(v1.y + offset.y)/range.y),
-      //           new THREE.Vector2((v2.x + offset.x)/range.x ,(v2.y + offset.y)/range.y),
-      //           new THREE.Vector2((v3.x + offset.x)/range.x ,(v3.y + offset.y)/range.y)
-      //       ]);
-      //   }
-      //   geometry.uvsNeedUpdate = true;
-      // }
 
       function mapUVsToWidthRing(geometry, geometryWidth) {
         var verts = geometry.attributes.position.array;
@@ -189,14 +169,10 @@
         return mesh;
       }
 
-      var rot = 0, rot2 = 0;
-      var tmparc, tmparc2;
-
       function makeArc(x, y, z, r, color, txture) {
         var circleRadius = r;
         var geometry = new THREE.RingBufferGeometry( (r >= 100 ? r - 100 : 0), r, 60, 1, 0, 1.6 * Math.PI);
 
-        // mapUVsToWidth(geometry.attributes.uv.array, r * 2);
         mapUVsToWidthRing(geometry, 600);
 
         // var mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: txture } ) );
@@ -206,7 +182,30 @@
         return mesh;
       }
 
-      function makeFlowerShape() {
+      function createCirclePoints(numPoints, radius) {
+        var points = [],
+          angle,
+          x,
+          y,
+          i;
+        for (i=0; i<numPoints; i++) {
+          angle = (i / (numPoints/2)) * Math.PI; // Calculate the angle at which the element will be placed.
+          x = (radius * Math.cos(angle)); // Calculate the x position of the element.
+          y = (radius * Math.sin(angle)); // Calculate the y position of the element.
+          points.push({'id': i, 'x': x, 'y': y});
+        }
+        return points;
+      }
+
+      function jiggle(points, howmuch) {
+        for (var n=0; n < points.length; n++) {
+          points[n].x += points[n].x * (Math.random() * howmuch);
+          points[n].y += points[n].y * (Math.random() * howmuch);
+        }
+        return points;
+      }
+
+      function makeFlowerShape(txtrArray) {
         // var heartShape = new THREE.Shape(); // From httshapp://blog.burlock.org/html5/130-paths
         // heartShape.moveTo( 25, 25 ); // 1
         // heartShape.bezierCurveTo( 25, 25, 20, 0,      0, 0 );  // 2
@@ -226,44 +225,29 @@
         var jiggleAmount = 0.1 + (Math.random() * 1.5);
         var outerRadius = Math.floor(100 + ( Math.random() * 250));
         var innerRadius = Math.floor(40 + (Math.random() * (outerRadius * 0.75)));
-        var innerPoints = jiggle(createCircleNodes(numPetals, 50), jiggleAmount);
-        var outerPoints = jiggle(createCircleNodes(numPetals, 250), jiggleAmount);
+        var innerPoints = jiggle(createCirclePoints(numPetals, 50), jiggleAmount);
+        var outerPoints = jiggle(createCirclePoints(numPetals, 250), jiggleAmount);
         daisy.moveTo( innerPoints[0].x, innerPoints[0].y );
+
         for (var n = 1; n < innerPoints.length; n++) {
           daisy.bezierCurveTo(
             outerPoints[n-1].x, outerPoints[n-1].y,
             outerPoints[n].x, outerPoints[n].y,
             innerPoints[n].x, innerPoints[n].y );
         }
+
         daisy.bezierCurveTo(
           outerPoints[innerPoints.length-1].x, outerPoints[innerPoints.length-1].y,
           outerPoints[0].x, outerPoints[0].y,
           innerPoints[0].x, innerPoints[0].y );
 
-
-        // var geometry = new THREE.ShapeBufferGeometry(fourLeafClover, 60);
         var geometry = new THREE.ShapeBufferGeometry(daisy, 60);
         mapUVsToWidthRing(geometry, outerRadius);
 
-        var textureId = Math.floor(Math.random()*textures.length);
-        console.log('textureid', textureId);
-        var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: textures[textureId] } );
-        // var mat = new THREE.MeshPhongMaterial({
-        //   color: 0xF6F300,
-        //   side: THREE.DoubleSide,
-        //   map: texture
-        // });
+        var textureId = Math.floor(Math.random()*txtrArray.length);
+        var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: txtrArray[textureId] } );
         var mesh = new THREE.Mesh(geometry, mat);
         mesh.position.set( 500 + Math.floor(Math.random() * 800), -(300 + Math.floor(Math.random() * 500)), -75 );
-        // mesh.scale.set(3,3,3);
-        // mesh.rotation.set( 0, 0, Math.PI );
-
-
-        // // add circle to HUD ortho scene
-        // var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: texture } );
-        // var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
-        // var mesh = new THREE.Mesh( geometry, materialHUD );
-        // mesh.position.set( 250, -200, -50 );
 
         return mesh;
       }
@@ -276,412 +260,28 @@
         return quad;
       }
 
-      function makeTexture(textureFileURL) {
-        var loader = new THREE.TextureLoader();
-        texture = loader.load(textureFileURL);
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(2, 2);
-        return texture;
-      }
-
-      function makeRenderer() {
-        var renderer = new THREE.WebGLRenderer();
-        renderer.autoClearColor = 0x000000;
-        // var renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
-        // renderer.autoClearColor = false;
-        renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( window.innerWidth * 1, window.innerHeight * 1);
-        return renderer;
-      }
-
-      function highlightIntersections(raycaster, scene, camera, mouse, priorIntersects) {
-        raycaster.setFromCamera( mouse, camera );
-
-        var intersects = raycaster.intersectObjects( scene.children );
-
-        if ( intersects.length > 0 ) {
-          if ( priorIntersects != intersects[ 0 ].object ) {
-            if ( priorIntersects ) {
-              priorIntersects.material.emissive.setHex( priorIntersects.currentHex );
-            }
-
-            priorIntersects = intersects[ 0 ].object;
-            priorIntersects.currentHex = priorIntersects.material.emissive.getHex();
-            priorIntersects.material.emissive.setHex( 0xff0000 );
-          }
-        } else {
-          if ( priorIntersects ) {
-            priorIntersects.material.emissive.setHex( priorIntersects.currentHex );
-          }
-          priorIntersects = null;
-        }
-
-        return priorIntersects;
-      }
-
-
-
-
-
-
-
-      ////////////////////////////////////////////////////////////////////////////////
-
-      function makeTextureFactory(tsize = 512) {
-        /** 
-          This module will copy pixels from the framebuffer into a texture. 
-          -- The framebuffer may contain more pixels than the canvas size. For example 
-             the Mac retina display has 2 framebuffer pixels per 1 screen pixel (dpr=2), and  
-             my HP laptop has 1.25 framebuffer pixels per 1 screen pixel. 
-          -- Either way I want to always copy exactly tsize X tsize pixels into the texture 
-          -- Texture dimensions (tsize) have to be a power of 2 or the texture will not tile  
-             correctly when I use it to create patterns.
-          -- Since the texture size is fixed (e.g. 512) but the framebuffer size is 
-             variable (1, 1.25, 2) I scale the scene to fit into exactly 512 actual pixels.
-        */
-        var scene;
-        var camera;
-        var dpr = window.devicePixelRatio;
-        var sceneScale = 1/dpr;
-
-        function makeScene() {
-          var scene = new THREE.Scene();
-          var flower = makeFlowerShape();
-
-          flower.position.set( 0, 0, 20 );
-
-          scene.background = new THREE.Color( 0xf0f0f0 );
-          scene.add( makeCircle(0, 0, 30, 50) );
-          scene.add( flower );
-          scene.scale.set(sceneScale, sceneScale, 1);
-
-          return scene;
-        }
-
-        function makeCamera() {
-          var cam = new THREE.OrthographicCamera(
-            window.innerWidth / - 2,
-            window.innerWidth / 2,
-            window.innerHeight / 2,
-            window.innerHeight / - 2,
-            -1000,
-            1000
-          );
-          return cam;
-        }
-
-        function makeOffscreenTexture() {
-          return new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, {
-            minFilter: THREE.LinearFilter,
-            magFilter: THREE.NearestFilter,
-            format: THREE.RGBFormat
-          });
-        }
-
-        function update() {
-          camera.position.x = 0;
-          camera.position.y = 0;
-          camera.position.z = 500;
-          camera.lookAt( scene.position );
-          camera.updateMatrixWorld();
-        }
-
-        function render(renderer) {
-          renderer.render(scene, camera);
-
-          // center the texture proportions in pixel buffer (account for more pixels in framebuffer)
-          var lowerLeftCorner = new THREE.Vector2(
-            (window.innerWidth * dpr / 2) - (tsize / 2),
-            (window.innerHeight * dpr / 2) - (tsize / 2)
-          );
-          renderer.copyFramebufferToTexture( lowerLeftCorner, textureAlso );
-        }
-
-        function makeTexture() {
-          var data = new Uint8Array( tsize * tsize * 3 );
-          var texture = new THREE.DataTexture( data, tsize, tsize, THREE.RGBFormat );
-          texture.minFilter = THREE.NearestFilter;
-          texture.magFilter = THREE.NearestFilter;
-
-          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(2, 2);
-
-          texture.needsUpdate = true;
-          return texture;
-        }
-
-        function getTexture2() {
-          return textureAlso;
-        }
-
-        function getTexture() {
-          return offscreenTexture.texture;
-        }
-
-        var scene = makeScene();
-        var camera = makeCamera();
-        var offscreenTexture = makeOffscreenTexture();
-        var textureAlso = makeTexture();
-
-        return {
-          update,
-          render,
-          getTexture,
-          getTexture2,
-          scene,
-        };
-      }
-
-
-
-
-
-
-
-
-
-
-
-      function makeDrawing() {
-        var scene;
-        var camera;
-        var INTERSECTED;
-        var radius = 500, theta = 0;
-
-        function makeDrawingScene() {
-          var scene = new THREE.Scene();
-          scene.background = new THREE.Color( 0xf0f0f0 );
-
-          var light = new THREE.DirectionalLight( 0xffffff, 1 );
-          light.position.set( 0, 0, 1 ).normalize();
-          // scene.add( light );
-
-          scene.add( makeCircle(300, -200, 200, 100) );
-          // scene.add( tmparc = makeArc(500, -500, 10, 300, 0xF6F300, null) );
-          // scene.add( tmparc2 = makeArc(560, -500, 15, 250, 0x00F300, null) );
-
-          var w = window.innerWidth * 0.33;
-          var h = window.innerHeight;
-          scene.add( makeQuad((w/2) + 100, -h/2, -300, w, h, textures[1]) );
-
-          scene.add( makeFlowerShape() );
-
-          return scene;
-        }
-
-        function makeCamera() {
-          var aspect = window.innerWidth / window.innerHeight;
-          var cam = new THREE.OrthographicCamera(
-            0,
-            frustumSize * aspect,
-            0,
-            -frustumSize,
-            1,
-            1000
-          );
-          // var cam = new THREE.OrthographicCamera(
-          //   frustumSize * aspect / -2,
-          //   frustumSize * aspect / 2,
-          //   frustumSize / 2,
-          //   frustumSize / -2,
-          //   1,
-          //   1000
-          // );
-          return cam;
-        }
-
-        function update() {
-          // theta += 0.1;
-          // tmparc.rotation.set( 0, 0, Math.PI * rot );
-          // tmparc2.rotation.set( 0, 0, Math.PI * rot2 );
-          // rot += 0.001;
-          // rot2 += 0.0015;
-
-          camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
-          camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
-          camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
-          camera.lookAt( scene.position );
-          camera.updateMatrixWorld();
-
-          // INTERSECTED = highlightIntersections(raycaster, scene, camera, mouse, INTERSECTED);
-        }
-
-        function render(renderer) {
-          renderer.render(scene, camera, offscreenTexture, true);
-        }
-
-        function getTexture() {
-          return offscreenTexture.texture;
-        }
-
-        var scene = makeDrawingScene();
-        var camera = makeCamera();
-        var offscreenTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, {
-          minFilter: THREE.LinearFilter,
-          magFilter: THREE.NearestFilter,
-          format: THREE.RGBFormat
-        });
-        var raycaster = new THREE.Raycaster();
-
-        return {
-          update,
-          render,
-          getTexture,
-          scene,
-        };
-      }
-
-
-
-
-
-
-      function makeHUD(sceneDrawnInTexture) {
-        var scene;
-        var camera;
-        var INTERSECTED;
-        var marker;
-
-        function makeSquareGeometry(x1, y1, x2, y2) {
-          var square = new THREE.Geometry();
-          square.vertices.push(new THREE.Vector3(x1,y1,0));
-          square.vertices.push(new THREE.Vector3(x1,y2,0));
-          square.vertices.push(new THREE.Vector3(x2,y1,0));
-          square.vertices.push(new THREE.Vector3(x2,y2,0));
-          square.faces.push(new THREE.Face3(0,1,2));
-          square.faces.push(new THREE.Face3(1,2,3));
-          return square;
-        }
-
-        function makeMarker(context, x, y, w, h, color) {
-          var square_material = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
-          var square_geometry = makeSquareGeometry(-10,10,10,-10);
-          var square_mesh = new THREE.Mesh(square_geometry, square_material);
-          context.add(square_mesh);
-          return square_mesh;
-        }
-
-        function drawLine(context, x, y, w, h, color) {
-          marker = marker || makeMarker(context, x, y, w, h, color);
-          marker.position.set( x, y, 50 );
-        }
-
-        function makeHUDScene(sceneDrawnInTexture) {
-          var materialScreen = new THREE.ShaderMaterial({
-            uniforms: { tDiffuse: { value: sceneDrawnInTexture } },
-            vertexShader: document.getElementById( 'vertexShader' ).textContent,
-            fragmentShader: document.getElementById( 'fragment_shader_screen' ).textContent,
-            depthWrite: false
-          });
-          var plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
-          var quad = new THREE.Mesh( plane, materialScreen );
-          quad.position.set(window.innerWidth/2, -window.innerHeight/2, -100);
-          // quad.position.z = -100;
-          var sceneHUD = new THREE.Scene();
-          sceneHUD.add( quad );
-
-          // add circle to HUD ortho scene
-          var materialHUD = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: texture2 } );
-          var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
-          var mesh = new THREE.Mesh( geometry, materialHUD );
-          mesh.position.set( 150, -100, -50 );
-          // sceneHUD.add( mesh );
-
-          // sceneHUD.add( tmparc = makeArc(300, -400, 10, 300, 0xffff00, null) );
-          // sceneHUD.add( tmparc = makeArc(300, -400, 10, 300, 0xffff00, null) );
-          // sceneHUD.add( tmparc2 = makeArc(350, -450, 15, 250, 0x00F300, null) );
-          // sceneHUD.add( tmparc = makeArc(340, -300, 10, 300, 0xffff00, null) );
-          // sceneHUD.add( tmparc2 = makeArc(330, -300, 15, 250, 0x00F300, null) );
-
-          var light = new THREE.DirectionalLight( 0xffffff, 1 );
-          light.position.set( 0, 0, 1 ).normalize();
-          sceneHUD.add( light );
-
-          return sceneHUD;
-        }
-
-        function makeCameraForScreen() {
-          var aspect = window.innerWidth / window.innerHeight;
-          var cam = new THREE.OrthographicCamera(
-            0,
-            frustumSize * aspect,
-            0,
-            -frustumSize,
-            1,
-            1000
-          );
-          cam.position.z = 100;
-          return cam;
-        }
-
-        function update() {
-          // INTERSECTED = highlightIntersections(raycaster, scene, camera, mouse, INTERSECTED);
-        }
-
-        function render(renderer) {
-          renderer.render(scene, camera);
-        }
-
-        function drawGesture(x, y) {
-          drawLine(scene, x, y, 0, 0, null);
-        }
-
-        function addQuadWithTexture(t) {
-          scene.add( makeQuad(260, -450, 50, 500, 500, t) );
-        }
-
-        var scene = makeHUDScene(sceneDrawnInTexture);
-        var camera = makeCameraForScreen();
-        var raycaster = new THREE.Raycaster();
-
-        return {
-          update,
-          render,
-          drawGesture,
-          scene,
-          addQuadWithTexture,
-        };
-      }
-
-
-
-
-
-
-
+      ////////////////////////////////////////////////////////////////////////////////////
 
       function onWindowResize() {
-        var aspect = window.innerWidth / window.innerHeight;
-        camera.left = - frustumSize * aspect / 2;
-        camera.right = frustumSize * aspect / 2;
-        camera.top = frustumSize / 2;
-        camera.bottom = - frustumSize / 2;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize( window.innerWidth, window.innerHeight );
-      }
-
-      function onDocumentMouseMove( event ) {
-        event.preventDefault();
-        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        // todo: propogate new window size to drawing and HUD
+        // renderer.setSize( window.innerWidth, window.innerHeight );
       }
 
       function update(delta) {
         drawing.update(delta);
-        window.Arc.update(delta);
+        ArcField.update(delta);
         HUD.update();
       }
 
       function render() {
+        // redraw animation
+        ArcField.draw();
+
         // render drawing into texture
-        drawing.render(renderer);
-        window.Arc.draw();
+        drawing.render();
 
         // render drawing + overlay to screen
-        HUD.render(renderer);
-
-        // textureFactory.render(renderer); ///!!!!
+        HUD.render();
       }
 
       function animate() {
@@ -690,34 +290,62 @@
         MainLoop.start();
       }
 
-      function createCircleNodes(numNodes, radius) {
-        var nodes = [],
-            // width = (radius * 2),
-            // height = (radius * 2),
-            angle,
-            x,
-            y,
-            i;
-        for (i=0; i<numNodes; i++) {
-         angle = (i / (numNodes/2)) * Math.PI; // Calculate the angle at which the element will be placed.
-         x = (radius * Math.cos(angle)); // Calculate the x position of the element.
-         y = (radius * Math.sin(angle)); // Calculate the y position of the element.
-         nodes.push({'id': i, 'x': x, 'y': y});
-        }
-        return nodes;
+      function makeTexture(textureFileURL) {
+        var loader = new THREE.TextureLoader();
+        texture = loader.load(textureFileURL);
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.minFilter = THREE.LinearFilter,
+        texture.magFilter = THREE.LinearFilter,
+        texture.generateMipmaps = true;
+        texture.needsUpdate = true;
+        texture.repeat.set(2, 2);
+        return texture;
       }
 
-      function jiggle(points, howmuch) {
-        for (var n=0; n < points.length; n++) {
-          points[n].x += points[n].x * (Math.random() * howmuch);
-          points[n].y += points[n].y * (Math.random() * howmuch);
-        }
-        return points;
+      function makeRenderer(w, h, dpr) {
+        var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true}); // premultipliedAlpha, antialias: true
+        renderer.autoClearColor = 0x000000;
+        // var renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
+        // renderer.autoClearColor = false;
+        renderer.setPixelRatio( dpr );
+        renderer.setSize(w, h);
+        return renderer;
       }
 
-      var texture2;
-      var textures;
-      var textureFactory;
+      ////////////////////////////////////////////////////////////////////////////////
+
+      function addStuffToDrawing(scene, rendrr, txtrArray) {
+        // var light = new THREE.DirectionalLight( 0xffffff, 1 );
+        // light.position.set( 0, 0, 1 ).normalize();
+        // scene.add( light );
+
+        scene.add( makeCircle(300, -200, 200, 100) );
+
+        var w = rendrr.getSize().width * 0.33;
+        var h = rendrr.getSize().height;
+        scene.add( makeQuad((w/2) + 100, -h/2, -300, w, h, textures[1]) );
+
+        scene.add( makeFlowerShape(txtrArray) );
+      }
+
+      function addStuffToHUD(scene, txtr) {
+        var material = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: txtr } );
+        var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
+        var mesh = new THREE.Mesh( geometry, material );
+        mesh.position.set( 150, -100, -50 );
+        scene.add( mesh );
+
+        // var light = new THREE.DirectionalLight( 0xffffff, 1 );
+        // light.position.set( 0, 0, 1 ).normalize();
+        // scene.add( light );
+      }
+
+      function makeFlowerScene(scene) {
+        var flower = makeFlowerShape(textures);
+        flower.position.set( 0, 0, 20 );
+        scene.add( makeCircle(0, 0, 30, 50) );
+        scene.add( flower );
+      }
 
       function init() {
         var imageNames = [
@@ -735,6 +363,7 @@
           { src:'img/youtube-play-button_red_on_white.png' },
           { src:'img/youtube_play_button_white_on_red_1.png' },
         ];
+        var texture2;
 
         Thing.Img.loadBatch(imageNames, (imgs) => {
           textures = [
@@ -760,31 +389,29 @@
           texture.offset.set(0, 0);
           texture.repeat.set(4, 4);
 
+          // create the webgl canvas
+          renderer = makeRenderer(window.innerWidth * 0.99, window.innerHeight * 0.99, window.devicePixelRatio);
 
-          renderer = makeRenderer();
+          // add the webgl canvas to document
+          document.getElementById('putCanvasHere').appendChild( renderer.domElement );
+          window.addEventListener('resize', onWindowResize, false );
 
-          textureFactory = makeTextureFactory();
+          // Builds textures for use in drawing
+          textureFactory = makeTextureFactory(renderer);
           texture2 = textureFactory.getTexture2();
 
-          // HUD.drawGesture(100, 100);
-          drawing = makeDrawing();
-          HUD = makeHUD(drawing.getTexture());
+          // Draws shapes without clearing canvas (blends into offscreen buffer)
+          drawing = makeBlendedDrawing(renderer);
+          addStuffToDrawing(drawing.scene, renderer, textures);
 
-          // HUD.addQuadWithTexture(drawing.getTexture());
-          // HUD.addQuadWithTexture(texture);
+          // Renders the drawing layer and additional shapes that do not blend 
+          HUD = makeHUD(renderer, drawing.getTexture());
+          addStuffToHUD(HUD.scene, texture2);
 
-          document.getElementById('putCanvasHere').appendChild( renderer.domElement );
-
-          document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-          window.addEventListener( 'resize', onWindowResize, false );
-
-
-          // animate();
-
+          // bogus way to wait for textures images to load
           setTimeout(() => {
             // render a flower and copy to texture
-            textureFactory.update();
-            textureFactory.render(renderer);
+            textureFactory.render(makeFlowerScene);
             texture2 = textureFactory.getTexture2();
 
             textures.push(texture2);
@@ -792,9 +419,13 @@
             textures.push(texture2);
             textures.push(texture2);
 
-            HUD.addQuadWithTexture(drawing.getTexture());
-            // HUD.addQuadWithTexture(textureFactory.getTexture2());
-            window.Arc.init(renderer.domElement, drawing.scene, textures);
+            // HUD.addQuadWithTexture(drawing.getTexture());
+            HUD.addQuadWithTexture(textureFactory.getTexture2());
+
+            // arcfield will render into drawing layer
+            window.ArcField.init(renderer, drawing.scene, textures);
+
+            // start the rendering loop
             animate();
           }, 1000);
         });

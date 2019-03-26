@@ -3,7 +3,7 @@
   To change the size of the artwork, change the canvas tag width to whatever size you want,
   then set Shapes.setScale(actualCanvasSize / 1200).
 */
-window.Arc = (function () {
+window.ArcField = (function () {
   var canvas = null; //document.getElementById('myCanvas');
   var patternCanvas = document.getElementById('patternCanvas');
   var fpsDisplay = document.getElementById('fpsDisplay');
@@ -176,10 +176,9 @@ window.Arc = (function () {
       p.draw(interp);
     });
     drawGesture();
-    // drawInfo(context, 10, 50, pulsars);
   }
 
-  function getElementClickXY(e) {
+  function getElementMouseXY(e) {
     var rect = e.target.getBoundingClientRect();
     var cx, cy;
     if (e.touches && e.touches[0]) {
@@ -200,16 +199,6 @@ window.Arc = (function () {
       x: cx - rect.left,
       y: cy - rect.top
     };
-  }
-
-  function handleClick(x, y) {
-    var scale = 1 / 1;   // 1 over canvas scale factor
-    var pulsarClass = pulsarClasses[currentPen.type || 'Pulsar'];
-    currentPen.x = x;
-    currentPen.y = -y;  // invert Y axis
-    currentPen.context = context;
-    currentPen.friction = friction;  // fudgy: set global friction value to any pulsar added by click
-    addPulsar(new pulsarClass(currentPen));
   }
 
   function addPulsar(p) {
@@ -426,40 +415,10 @@ window.Arc = (function () {
     return self;
   }
 
-  // function drawInfo(context, x, y, pulsars) {
-  //   var n = 0;
-  //   context.fillStyle = '#000';
-  //   context.fillRect(x, y - 16, 300, 150);
-  //   context.font = '14px sans-serif';
-  //   context.fillStyle = '#f90';
-  //   for (var i=0; i < pulsars.length; i++) {
-  //     let p = pulsars[i];
-  //     context.fillText(`${p.name} x=${Math.floor(p.x)} y=${Math.floor(p.y)} r=${Math.floor(p.r)}`, x, y + (i*16));
-  //   };
-  // }
-
-  function makeSquareGeometry(x1, y1, x2, y2) {
-    var square = new THREE.Geometry();
-    square.vertices.push(new THREE.Vector3(x1,y1,0));
-    square.vertices.push(new THREE.Vector3(x1,y2,0));
-    square.vertices.push(new THREE.Vector3(x2,y1,0));
-    square.vertices.push(new THREE.Vector3(x2,y2,0));
-    square.faces.push(new THREE.Face3(0,1,2));
-    square.faces.push(new THREE.Face3(1,2,3));
-    return square;
-  }
-
-  function drawLine(context, x, y, w, h, color) {
-    var square_material = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
-    var square_geometry = makeSquareGeometry(30,30,70,70);
-    var square_mesh = new THREE.Mesh(square_geometry, square_material);
-    context.add(square_mesh);
-  }
-
   function drawGesture() {
-    if (mouseupPoint && mouseupPoint.x !== 0 && mouseupPoint.y !== 0) {
-      // drawLine(context, mousedownPoint.x, mousedownPoint.y, mouseupPoint.x, mouseupPoint.y, '#f00');
-      HUD.drawGesture(mouseupPoint.x, -mouseupPoint.y);
+    if (gesture && gesture !== drawnGesture) {
+      HUD.drawGesture(gesture.start.x, gesture.start.y, gesture.end.x, gesture.end.y);
+      drawnGesture = gesture;
     }
   }
 
@@ -589,21 +548,46 @@ window.Arc = (function () {
     }
   }
 
+  // given a mouse position in screen coords (Y is positive)
+  // clone the point and force the Y axis to negative (gl space has negative Y axis)
+  function invertY(point) {
+    return {x: point.x, y: point.y > 0 ? -point.y : point.y};
+  }
+
+  class Gesture {
+    constructor(start, end) {
+      this.start = invertY(start);
+      this.end = invertY(end);
+    }
+  }
+
+  var mousePosition = null;
   var mousedownPoint = null;
   var mouseupPoint = null;
   var vector = new Vector;
   var longpressTimer;
   var longpressing = false;
+  var gesture;
+  var drawnGesture;
+
+  function mouseMove(e) {
+    var p = getElementMouseXY(e);
+    mousePosition = new Vector(p.x, p.y);
+  }
 
   function longPress() {
     // if we got to this function, the user has pressed and held
-    longpressing = true;
-    console.log('LONG PRESS!!!!!!');
-    handleLongPress(mousedownPoint);
+    // if the mouse position has not moved, then it's a long press
+    var v = new Vector(mousePosition.x - mousedownPoint.x, mousePosition.y - mousedownPoint.y);
+    if (v.length() < 5 * scale) { 
+      longpressing = true;
+      console.log('LONG PRESS!!!!!!');
+      handleLongPress(invertY(mousedownPoint));
+    }
   }
 
   function gestureStart(e) {
-    var p = getElementClickXY(e);
+    var p = getElementMouseXY(e);
     mouseupPoint = null;
     mousedownPoint = new Vector(p.x, p.y);
     longpressTimer = setTimeout(longPress, 600); // in 600 millis we'll check if this is a long press
@@ -611,29 +595,38 @@ window.Arc = (function () {
   }
 
   function gestureEnd(e) {
-    var p = getElementClickXY(e);
+    var p = getElementMouseXY(e);
     clearTimeout(longpressTimer);
     mouseupPoint = new Vector(p.x, p.y);
     vector = new Vector(p.x - mousedownPoint.x, p.y - mousedownPoint.y);
-    console.log('--->UP', vector.x, vector.y, vector.length());
+
+    console.log('--->UP x y vector xy length', p.x, p.y, vector.x, vector.y, vector.length());
     if (longpressing) {
       // gesture has been handled by longpress logic
       longpressing = false;
     }
     else if (vector.length() < 5 * scale) { 
       // if little/no movement, treat it as a click
-      handleClick(mousedownPoint.x, mousedownPoint.y);
+      handleClick(invertY(mousedownPoint));
     }
     else {
-      handleGesture(mousedownPoint, mouseupPoint, vector);
+      drawnGesture = gesture;
+      gesture = new Gesture(mousedownPoint, mouseupPoint);
+      handleGesture(gesture.start, gesture.end, vector);
     }
   }
 
-  function handleGesture(start, end, v) {
-    // swap vertical axis from mouse coords to GL coords
-    start.y = -start.y;
-    end.y = -end.y;
+  function handleClick(point) {
+    var scale = 1 / 1;   // 1 over canvas scale factor
+    var pulsarClass = pulsarClasses[currentPen.type || 'Pulsar'];
+    currentPen.x = point.x;
+    currentPen.y = point.y;
+    currentPen.context = context;
+    currentPen.friction = friction;  // fudgy: set global friction value to any pulsar added by click
+    addPulsar(new pulsarClass(currentPen));
+  }
 
+  function handleGesture(start, end, v) {
     pulsars.map((p) => {
       if (p.name === 'PulsarVerticalBar') {
         var intersects = lineRectIntersect(start.x, start.y, end.x, end.y, p.x, p.y, p.r, 800 *scale);
@@ -641,7 +634,7 @@ window.Arc = (function () {
           distance: intersects ? 1 : 0,
           vector: v,
           pulsar: p,
-          normal: getNormal(mousedownPoint, mouseupPoint, p),
+          normal: getNormal(start, end, p),
         }
       }
       else {
@@ -650,13 +643,13 @@ window.Arc = (function () {
           distance: distanceToCenter,
           vector: v,
           pulsar: p,
-          normal: getNormal(mousedownPoint, mouseupPoint, p),
+          normal: getNormal(start, end, p),
         };
       }
     }).filter((intersection) => {
       return intersection.distance > 0;
     }).forEach((intersection) => {
-      var longline = makeLongLine(mousedownPoint, mouseupPoint);
+      var longline = makeLongLine(start, end);
       var dist = distToSegment(intersection.pulsar, longline[0], longline[1]); // how far is gesture from center
       var leverage = dist / intersection.pulsar.maxR; // 0 == at center 1 == at edge
       var magnitude = intersection.vector.length() / (300 * scale); // how big is the gesture (300 pixels is based on 1200 pixel wide canvas) will be in range 0-4
@@ -678,7 +671,6 @@ window.Arc = (function () {
   }
 
   function handleLongPress(start) {
-    start.y = -start.y;
     var end = {x: start.x + 1, y: start.y + 1};  // make up a short 'end' vector
     pulsars.map((p) => {
       var distanceToCenter = doesLineIntersectCircle(start, end, new Vector(p.x, p.y), p.r);
@@ -715,63 +707,6 @@ window.Arc = (function () {
 
 
 
-/***
-  var UX = (function () {
-    var mousedownPoint = null;
-    var mouseupPoint = null;
-    var vector = new Vector;
-    var longpressTimer;
-    var longpressing = false;
-    var callbacks = {};
-
-    function longPress() {
-      // if we got to this function, the user has pressed and held
-      longpressing = true;
-      console.log('LONG PRESS!!!!!!');
-      handleLongPress(mousedownPoint);
-    }
-
-    function gestureStart(e) {
-      var p = getElementClickXY(e);
-      mouseupPoint = null;
-      mousedownPoint = new Vector(p.x, p.y);
-      longpressTimer = setTimeout(longPress, 600); // in 600 millis we'll check if this is a long press
-      console.log('--->Down', p.x, p.y);
-    }
-
-    function gestureEnd(e) {
-      var p = getElementClickXY(e);
-      clearTimeout(longpressTimer);
-      mouseupPoint = new Vector(p.x, p.y);
-      vector = new Vector(p.x - mousedownPoint.x, p.y - mousedownPoint.y);
-      console.log('--->UP', vector.x, vector.y, vector.length());
-      if (longpressing) {
-        // gesture has been handled by longpress logic
-        longpressing = false;
-      }
-      else if (vector.length() < 5 * scale) { 
-        // if little/no movement, treat it as a click
-        handleClick(mousedownPoint.x, mousedownPoint.y);
-      }
-      else {
-        handleGesture(mousedownPoint, mouseupPoint, vector);
-      }
-    }
-
-    function init(_callbacks) {
-      callbacks = _callbacks;
-    }
-
-    return {
-      gestureStart,
-      gestureEnd,
-      init,
-    }
-  }());
-
-***/
-
-
   function savePulsars(pulsars) {
     var pulsarConfigStr = window.JSON.stringify(pulsars);
     window.localStorage.setItem('pulsars', pulsarConfigStr);
@@ -799,10 +734,12 @@ window.Arc = (function () {
     return Math.floor(60 + Math.random() * 200);
   }
 
-  function init(webglCanvas, scene3js, textures) {
-    canvas = webglCanvas;
+  var DPR = 1;
+
+  function init(rendrr, scene3js, textures) {
+    canvas = rendrr.domElement;
     context = scene3js;
-    // context = webglCanvas.getContext('webgl');
+    DPR = rendrr.getPixelRatio();
 
     Pulsar.SCALE = scale;
     Pulsar.ease = Easing.easeInOutSine;
@@ -827,6 +764,7 @@ window.Arc = (function () {
     canvas.addEventListener('touchend', gestureEnd);
     canvas.addEventListener('mousedown', gestureStart);
     canvas.addEventListener('mouseup', gestureEnd);
+    canvas.addEventListener('mousemove', mouseMove);
 
     document.addEventListener('keydown', handleKeypress);
 
@@ -850,16 +788,6 @@ window.Arc = (function () {
     fidget1 = createFidget1(600, -400, randomR());
 
     // fidget2 = createFidget2();
-
-    // bogus hack: wait for images to load before creating interface buttons
-    setTimeout(function () {
-      addButtons(pulsarConfigs);
-
-      // MainLoop.setSimulationTimestep(timestep);
-      // MainLoop.setDraw(draw);
-      // MainLoop.setUpdate(update);
-      // MainLoop.start();
-    }, 1000);
   }
   
   return { 
@@ -869,4 +797,3 @@ window.Arc = (function () {
   };
 }())
 
-// window.Arc.init();
