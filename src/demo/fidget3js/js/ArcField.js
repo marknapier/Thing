@@ -178,29 +178,6 @@ window.ArcField = (function () {
     drawGesture();
   }
 
-  function getElementMouseXY(e) {
-    var rect = e.target.getBoundingClientRect();
-    var cx, cy;
-    if (e.touches && e.touches[0]) {
-      console.log('touchstart!!!!!!!!!!', e.touches);
-      cx = e.touches[0].clientX;
-      cy = e.touches[0].clientY;
-    } 
-    else if (e.changedTouches && e.changedTouches[0]) {
-      console.log('touchEnd!!!!!!!!!!', e.changedTouches);
-      cx = e.changedTouches[0].clientX;
-      cy = e.changedTouches[0].clientY;
-    }
-    else {
-      cx = e.clientX;
-      cy = e.clientY;
-    }
-    return { 
-      x: cx - rect.left,
-      y: cy - rect.top
-    };
-  }
-
   function addPulsar(p) {
     if (pulsars.length >= 200) {
       pulsars.shift();
@@ -217,41 +194,6 @@ window.ArcField = (function () {
   }
 
   var colorButtons = [];
-
-  function clearSelectedButton() {
-    colorButtons.forEach(function (b) {
-      b.classList.remove('selected');
-    });
-  }
-
-  function addButtons(configs) {
-    configs.forEach(function (config) {
-      var div = document.createElement('div');
-      var colorFrom = rgbHex(config.colorFactory.colorFrom);
-      var colorTo = rgbHex(config.colorFactory.colorTo);
-      div.className = ('color-button');
-      if (config.type === 'PulsarVerticalBar' || config.type === 'PulsarVerticalDivider') {
-        div.style.borderRadius = 0;
-      }
-      if (config.type === 'PulsarChecked') {
-        div.style.backgroundColor = colorFrom;
-        div.classList.add('checkered3');
-      }
-      else {
-        div.style.backgroundImage = `linear-gradient(${colorFrom} 0%, ${colorTo} 100%)`;
-      }
-      div.addEventListener('click', (function (c, d) {
-        return function (e) {
-          clearSelectedButton();
-          d.classList.add('selected');
-          setPen(c); 
-        };
-      })(config, div));
-      document.getElementById('pulsar-buttons').append(div);
-      colorButtons.push(div);
-      colorButtons[0].classList.add('selected');
-    })
-  }
 
   function setFullscreenButton() {
     var goFS = document.getElementById("goFS");
@@ -278,7 +220,7 @@ window.ArcField = (function () {
   }
 
 
-  function createFidget1(x, y, radius=100) {
+  function createFidget1(x, y, w, h, radius=100) {
     let circles = [];
     let bandWidth = randBandWidth();
 
@@ -292,6 +234,7 @@ window.ArcField = (function () {
         x: x,
         y: y,
         velocity: 0.0001,
+        bounds: {minx: 0, maxx: w, miny: -h, maxy: 0},
       });
 
       addPulsar(p);
@@ -415,126 +358,14 @@ window.ArcField = (function () {
     return self;
   }
 
+  var drawnGesture;
+
   function drawGesture() {
+    var gesture = UIListener.getGesture();
     if (gesture && gesture !== drawnGesture) {
       HUD.drawGesture(gesture.start.x, gesture.start.y, gesture.end.x, gesture.end.y);
       drawnGesture = gesture;
     }
-  }
-
-  function lineRectIntersect(x1, y1, x2, y2, rx, ry, rw, rh) {
-    // check if the line has hit any of the rectangle's sides
-    // uses the Line/Line function below
-    var left =   lineLineIntersect(x1,y1,x2,y2, rx,ry,rx, ry+rh);
-    var right =  lineLineIntersect(x1,y1,x2,y2, rx+rw,ry, rx+rw,ry+rh);
-    var top =    lineLineIntersect(x1,y1,x2,y2, rx,ry, rx+rw,ry);
-    var bottom = lineLineIntersect(x1,y1,x2,y2, rx,ry+rh, rx+rw,ry+rh);
-
-    // if ANY of the above are true, the line
-    // has hit the rectangle
-    if (left || right || top || bottom) {
-      return true;
-    }
-    return false;
-  }
-
-  function lineLineIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
-    // calculate the direction of the lines
-    var uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
-    var uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
-
-    // if uA and uB are between 0-1, lines are colliding
-    if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
-      // point where the lines meet
-      var intersectionX = x1 + (uA * (x2-x1));
-      var intersectionY = y1 + (uA * (y2-y1));
-
-      return true;
-    }
-    return false;
-  }
-
-  // Check intersection of line seg and circle
-  // A,B end points of line segment
-  // C center of circle
-  // radius of circle
-  // returns distance from line to center if intersecting else 0   
-  function doesLineIntersectCircle(A, B, C, radius) {
-    var dist;
-    const v1x = B.x - A.x;
-    const v1y = B.y - A.y;
-    const v2x = C.x - A.x;
-    const v2y = C.y - A.y;
-    // get the unit distance along the line of the closest point to
-    // circle center
-    const u = (v2x * v1x + v2y * v1y) / (v1y * v1y + v1x * v1x);
-
-    // if the point is on the line segment get the distance squared
-    // from that point to the circle center
-    if (u >= 0 && u <= 1) {
-      dist = (A.x + v1x * u - C.x) ** 2 + (A.y + v1y * u - C.y) ** 2;
-    } 
-    else {
-      // if closest point not on the line segment
-      // use the unit distance to determine which end is closest
-      // and get dist square to circle
-      dist = u < 0 ?
-      (A.x - C.x) ** 2 + (A.y - C.y) ** 2 :
-      (B.x - C.x) ** 2 + (B.y - C.y) ** 2;
-    }
-
-    if (dist < radius * radius) {
-      return Math.sqrt(dist);
-    }
-    return 0;
-  }
-
-  function sqr(x) { 
-    return x * x 
-  }
-  function dist2(v, w) { 
-    return sqr(v.x - w.x) + sqr(v.y - w.y) 
-  }
-  function distToSegmentSquared(p, v, w) {
-    var l2 = dist2(v, w);
-    if (l2 == 0) return dist2(p, v);
-    var t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
-    t = Math.max(0, Math.min(1, t));
-    return dist2(p, { x: v.x + t * (w.x - v.x),
-                      y: v.y + t * (w.y - v.y) });
-  }
-  function distToSegment(p, v, w) { 
-    return Math.sqrt(distToSegmentSquared(p, v, w)); 
-  }
-
-  function slope(p1, p2) {
-    return (p2.y - p1.y) / (p2.x - p1.x);
-  }
-
-  function b(p1, p2) {
-    // y=mx+b
-    var m = slope(p1, p2);
-    return p1.y - (m * p1.x); 
-  }
-
-  function makeLongLine(p1, p2) {
-    var m = slope(p1, p2);
-    var b = p1.y - (m * p1.x);
-    var y1 = (m * 0) + b;
-    var y2 = (m * 1200) + b;
-    return [ {x: 0, y: y1}, {x: 1200, y: y2}];
-  }
-
-  function getNormal(a, b, c) {
-    var u = {x: b.x - a.x, y: b.y - a.y};
-    var v = {x: c.x - a.x, y: c.y - a.y};
-    // z is always 0 here (2d only)
-    var n = {
-      x: (u.y * 0) - (0 * v.y),
-      y: (0 * v.x) - (u.x * 0),
-      z: (u.x * v.y) - (u.y * v.x),
-    }
-    return n;
   }
 
   class Vector {
@@ -548,74 +379,6 @@ window.ArcField = (function () {
     }
   }
 
-  // given a mouse position in screen coords (Y is positive)
-  // clone the point and force the Y axis to negative (gl space has negative Y axis)
-  function invertY(point) {
-    return {x: point.x, y: point.y > 0 ? -point.y : point.y};
-  }
-
-  class Gesture {
-    constructor(start, end) {
-      this.start = invertY(start);
-      this.end = invertY(end);
-    }
-  }
-
-  var mousePosition = null;
-  var mousedownPoint = null;
-  var mouseupPoint = null;
-  var vector = new Vector;
-  var longpressTimer;
-  var longpressing = false;
-  var gesture;
-  var drawnGesture;
-
-  function mouseMove(e) {
-    var p = getElementMouseXY(e);
-    mousePosition = new Vector(p.x, p.y);
-  }
-
-  function longPress() {
-    // if we got to this function, the user has pressed and held
-    // if the mouse position has not moved, then it's a long press
-    var v = new Vector(mousePosition.x - mousedownPoint.x, mousePosition.y - mousedownPoint.y);
-    if (v.length() < 5 * scale) { 
-      longpressing = true;
-      console.log('LONG PRESS!!!!!!');
-      handleLongPress(invertY(mousedownPoint));
-    }
-  }
-
-  function gestureStart(e) {
-    var p = getElementMouseXY(e);
-    mouseupPoint = null;
-    mousedownPoint = new Vector(p.x, p.y);
-    longpressTimer = setTimeout(longPress, 600); // in 600 millis we'll check if this is a long press
-    console.log('--->Down', p.x, p.y);
-  }
-
-  function gestureEnd(e) {
-    var p = getElementMouseXY(e);
-    clearTimeout(longpressTimer);
-    mouseupPoint = new Vector(p.x, p.y);
-    vector = new Vector(p.x - mousedownPoint.x, p.y - mousedownPoint.y);
-
-    console.log('--->UP x y vector xy length', p.x, p.y, vector.x, vector.y, vector.length());
-    if (longpressing) {
-      // gesture has been handled by longpress logic
-      longpressing = false;
-    }
-    else if (vector.length() < 5 * scale) { 
-      // if little/no movement, treat it as a click
-      handleClick(invertY(mousedownPoint));
-    }
-    else {
-      drawnGesture = gesture;
-      gesture = new Gesture(mousedownPoint, mouseupPoint);
-      handleGesture(gesture.start, gesture.end, vector);
-    }
-  }
-
   function handleClick(point) {
     var scale = 1 / 1;   // 1 over canvas scale factor
     var pulsarClass = pulsarClasses[currentPen.type || 'Pulsar'];
@@ -623,34 +386,35 @@ window.ArcField = (function () {
     currentPen.y = point.y;
     currentPen.context = context;
     currentPen.friction = friction;  // fudgy: set global friction value to any pulsar added by click
+    currentPen.bounds = {minx: 0, maxx: 1600, miny: -800, maxy: 0}
     addPulsar(new pulsarClass(currentPen));
   }
 
   function handleGesture(start, end, v) {
     pulsars.map((p) => {
       if (p.name === 'PulsarVerticalBar') {
-        var intersects = lineRectIntersect(start.x, start.y, end.x, end.y, p.x, p.y, p.r, 800 *scale);
+        var intersects = Intersections.lineRectIntersect(start.x, start.y, end.x, end.y, p.x, p.y, p.r, 800 *scale);
         return {
           distance: intersects ? 1 : 0,
           vector: v,
           pulsar: p,
-          normal: getNormal(start, end, p),
+          normal: Intersections.getNormal(start, end, p),
         }
       }
       else {
-        var distanceToCenter = doesLineIntersectCircle(start, end, p, p.r);
+        var distanceToCenter = Intersections.doesLineIntersectCircle(start, end, p, p.r);
         return {
           distance: distanceToCenter,
           vector: v,
           pulsar: p,
-          normal: getNormal(start, end, p),
+          normal: Intersections.getNormal(start, end, p),
         };
       }
     }).filter((intersection) => {
       return intersection.distance > 0;
     }).forEach((intersection) => {
-      var longline = makeLongLine(start, end);
-      var dist = distToSegment(intersection.pulsar, longline[0], longline[1]); // how far is gesture from center
+      var longline = Intersections.makeLongLine(start, end);
+      var dist = Intersections.distToSegment(intersection.pulsar, longline[0], longline[1]); // how far is gesture from center
       var leverage = dist / intersection.pulsar.maxR; // 0 == at center 1 == at edge
       var magnitude = intersection.vector.length() / (300 * scale); // how big is the gesture (300 pixels is based on 1200 pixel wide canvas) will be in range 0-4
       var clockwise = intersection.normal.z > 0 ? 1 : -1; // which way to rotate
@@ -673,7 +437,7 @@ window.ArcField = (function () {
   function handleLongPress(start) {
     var end = {x: start.x + 1, y: start.y + 1};  // make up a short 'end' vector
     pulsars.map((p) => {
-      var distanceToCenter = doesLineIntersectCircle(start, end, new Vector(p.x, p.y), p.r);
+      var distanceToCenter = Intersections.doesLineIntersectCircle(start, end, new Vector(p.x, p.y), p.r);
       return {
         distance: distanceToCenter,
         vector: null,
@@ -705,8 +469,6 @@ window.ArcField = (function () {
     }
   }
 
-
-
   function savePulsars(pulsars) {
     var pulsarConfigStr = window.JSON.stringify(pulsars);
     window.localStorage.setItem('pulsars', pulsarConfigStr);
@@ -737,55 +499,50 @@ window.ArcField = (function () {
   var DPR = 1;
 
   function init(rendrr, scene3js, textures) {
+    var rWidth = rendrr.getSize().width;
+    var rHeight = rendrr.getSize().height;
+
     canvas = rendrr.domElement;
     context = scene3js;
     DPR = rendrr.getPixelRatio();
+
+    UIListener.setScale(scale);
 
     Pulsar.SCALE = scale;
     Pulsar.ease = Easing.easeInOutSine;
     Pulsar.textures = textures;
 
-    // context.translate(0.5, 0.5);
-
-    // makePatternThang(contextPattern, '../img/vintagewallpaper4_crop.png', function (p) {
-    //   Shapes.setPattern(p);
-    // });
-
     loadPixels('./img/palette_blue_green_dark_edge_2.png', function (pixelValues) {
       pulsarConfigs[0].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.35});
     });
 
-    // loadPixels('./img/skin_front_1px_1.png', function (pixelValues) {
-    //   pulsarConfigs[1].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.75});
-    //   pulsarConfigs[6].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.05});
-    // });
-
-    canvas.addEventListener('touchstart', gestureStart);
-    canvas.addEventListener('touchend', gestureEnd);
-    canvas.addEventListener('mousedown', gestureStart);
-    canvas.addEventListener('mouseup', gestureEnd);
-    canvas.addEventListener('mousemove', mouseMove);
+    UIListener.listenOnElement(canvas);
+    UIListener.setCallbacks({
+      handleClick,
+      handleGesture,
+      handleLongPress,
+    });
 
     document.addEventListener('keydown', handleKeypress);
 
     setFullscreenButton();
     setPen(pulsarConfigs[0]);
 
-    fidget1 = createFidget1(1200, -100, randomR()); // middle
-    fidget1 = createFidget1(400, -100, randomR());
-    fidget1 = createFidget1(800, -100, randomR());
+    fidget1 = createFidget1(1200, -100, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(400, -100, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(800, -100, rWidth, rHeight, randomR());
 
-    fidget1 = createFidget1(1000, -200, randomR()); // middle
-    fidget1 = createFidget1(200, -200, randomR());
-    fidget1 = createFidget1(600, -200, randomR());
+    fidget1 = createFidget1(1000, -200, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(200, -200, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(600, -200, rWidth, rHeight, randomR());
 
-    fidget1 = createFidget1(1200, -300, randomR()); // middle
-    fidget1 = createFidget1(400, -300, randomR());
-    fidget1 = createFidget1(800, -300, randomR());
+    fidget1 = createFidget1(1200, -300, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(400, -300, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(800, -300, rWidth, rHeight, randomR());
 
-    fidget1 = createFidget1(1000, -400, randomR()); // middle
-    fidget1 = createFidget1(200, -400, randomR());
-    fidget1 = createFidget1(600, -400, randomR());
+    fidget1 = createFidget1(1000, -400, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(200, -400, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(600, -400, rWidth, rHeight, randomR());
 
     // fidget2 = createFidget2();
   }

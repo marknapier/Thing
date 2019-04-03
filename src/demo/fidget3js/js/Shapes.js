@@ -101,10 +101,6 @@
     return circles;
   }
 
-  function drawCircleFull(innerR, outerR, color, texture, opacity, arcSize) {
-    return makeFatArc(innerR, outerR, color, texture, opacity, arcSize);
-  }
-
   function drawDonut(context, x, y, r1, r2, startRadians = 0, endRadians = TWOPI, color = '#f00') {
     const outerR = Math.max(r1, r2);
     const innerR = Math.min(r1, r2);
@@ -311,8 +307,8 @@
     drawCircleDashedArcs,
     drawCircleDashedArcsSpiraled,
     drawCircleDashedArcsBlocks,
-    drawCircleFull,
     drawDonut,
+    makeFatArc,
     TWOPI,
     setPattern,
   };

@@ -22,7 +22,7 @@ function makeHUD(rendrr, sceneDrawnInTexture) {
 
     marker && scene.remove(marker);
 
-    marker = makeMarker(lineWidth, length, 0xF6831E);
+    marker = makeMarker(lineWidth, length, 0xF00030);
     marker.rotateOnAxis( {x:0, y:0, z:1}, angle - ninetyRads );
     marker.position.set(x1, y1, 50);
     marker.translateY(length/2);

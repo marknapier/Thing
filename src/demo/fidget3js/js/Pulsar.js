@@ -104,6 +104,7 @@ class Pulsar {
     this.edgeWidth = props.edgeWidth || (1 * Pulsar.SCALE); // width or right edge (see verticalBar pulsar)
     this.bandWidth = props.bandWidth || (10 * Pulsar.SCALE); // width of vertical divider bar
     this.direction = {x: 0, y: 0};
+    this.bounds = props.bounds;
   }
 
   update(delta) {
@@ -116,32 +117,20 @@ class Pulsar {
     // move pulsar
     this.x += this.direction.x * this.velocity;
     this.y += (this.direction.y * this.velocity);
-    if (this.x >= 1600) {
-      this.direction.x = -this.direction.x;
+    if (this.bounds) {
+      if (this.x >= this.bounds.maxx) {
+        this.direction.x = -this.direction.x;
+      }
+      else if (this.x <= this.bounds.minx) {
+        this.direction.x = -this.direction.x;
+      }
+      if (this.y <= this.bounds.miny) {
+        this.direction.y = -this.direction.y;
+      }
+      else if (this.y >= this.bounds.maxy) {
+        this.direction.y = -this.direction.y;
+      }      
     }
-    else if (this.x <=0 ) {
-      this.direction.x = -this.direction.x;
-    }
-    if (this.y <= -800) {
-      this.direction.y = -this.direction.y;
-    }
-    else if (this.y >=0 ) {
-      this.direction.y = -this.direction.y;
-    }
-    // this.lastr = this.r;
-    // this.r = 250; // Pulsar.ease(this.time, 0, this.maxR, this.duration);
-
-    // // console.log('update - delta, lastr, r:', delta, this.lastr, this.r);
-    // if (this.r >= this.maxR) {
-    //   // this.r = 250; // this.maxR;
-    //   this.time = this.duration;
-    //   this.direction = -1;
-    // }
-    // else if (this.r <= 0) {
-    //   this.r = 250; //0;
-    //   this.time = 0;
-    //   this.direction = 1;
-    // }
 
     // update circumference point position
     var t = (Math.PI / 2) * this.rotation;
@@ -186,8 +175,8 @@ class Pulsar {
       var txtr = Math.random() > 0.65 ? Pulsar.textures[Math.floor(Math.random() * Pulsar.textures.length)] : undefined;  // GLOBAL!!!!
       this.r = r + bw;
       this.rotation = this.rotation || (Math.random() * (2 * Math.PI));
-      // retrieve the right sized mesh
-      this.mesh = Shapes.drawCircleFull(
+
+      this.mesh = Shapes.makeFatArc(
         r,
         r + bw,
         txtr ? '#fff' : hex,
@@ -206,12 +195,6 @@ class Pulsar {
     var oneDegree = (Math.PI / 2) / 360;
     this.mesh.rotateZ(this.rotateVelocity);
     this.mesh.position.set( this.x, this.y, 0 );
-  }
-
-  positionBegin() {
-  }
-
-  positionEnd() {
   }
 }
 
@@ -242,8 +225,6 @@ class PulsarSolidWithOutline extends Pulsar {
     var bandWidth = 150 * Pulsar.SCALE;
     var innerR = this.r > bandWidth ? (this.r - bandWidth) : 0;
 
-    this.positionBegin();
-
     Shapes.drawDonut(this.context, 0, 0, this.r, innerR, 0, Shapes.TWOPI, hex);
 
     // red outline
@@ -257,8 +238,6 @@ class PulsarSolidWithOutline extends Pulsar {
       '#ff3000',
       outlineR - outlineW
     );
-
-    this.positionEnd();
   }
 }
 
@@ -419,8 +398,6 @@ class PulsarChecked extends Pulsar {
     var color = this.colorFactory.getColor(this.r / this.maxR);
     var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
 
-    this.positionBegin();
-
     Shapes.drawCircleDashedArcsBlocks(
       this.context,
       0, //this.x,
@@ -432,8 +409,6 @@ class PulsarChecked extends Pulsar {
       this.numBands || 10,
       this.numPies || 40
     );
-
-    this.positionEnd();
   }
 }
 

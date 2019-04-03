@@ -104,22 +104,21 @@
     </div>
 
 
-
-
     <script src="lib/jquery.min.js"></script>
     <script src="lib/three.min.js"></script>
     <script src="lib/thing.js"></script>
 
 
-
     <script src="js/tinycolor/tinycolor.js"></script>
     <script src="js/MainLoop.js"></script>
     <script src="js/Shapes.js"></script>
+    <script src="js/Intersections.js"></script>
     <script src="js/Pulsar.js"></script>
     <script src="js/TextureFactory.js"></script>
     <script src="js/BlendedDrawing.js"></script>
     <script src="js/HUD.js"></script>
-    <script src="js/fidget1.js"></script>
+    <script src="js/UIListener.js"></script>
+    <script src="js/ArcField.js"></script>
 
     <script id="fragment_shader_screen" type="x-shader/x-fragment">
       varying vec2 vUv;
@@ -419,15 +418,15 @@
             textures.push(texture2);
             textures.push(texture2);
 
-            // HUD.addQuadWithTexture(drawing.getTexture());
-            HUD.addQuadWithTexture(textureFactory.getTexture2());
+            HUD.addQuadWithTexture(drawing.getTexture());
+            // HUD.addQuadWithTexture(textureFactory.getTexture2());
 
             // arcfield will render into drawing layer
             window.ArcField.init(renderer, drawing.scene, textures);
 
             // start the rendering loop
             animate();
-          }, 1000);
+          }, 500);
         });
 
       }
