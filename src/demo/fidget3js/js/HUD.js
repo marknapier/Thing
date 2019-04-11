@@ -70,7 +70,7 @@ function makeHUD(rendrr, sceneDrawnInTexture) {
   }
 
   function addQuadWithTexture(t) {
-    scene.add( makeQuad(260, -450, 50, 512, 512, t) );
+    scene.add( Shapes.makeQuad(260, -450, 50, 512, 512, t) );
   }
 
   var scene = makeHUDScene(sceneDrawnInTexture);

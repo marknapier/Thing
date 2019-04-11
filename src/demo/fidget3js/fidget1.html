@@ -143,122 +143,6 @@
       var textures;
       var textureFactory;
 
-      // SHAPES //////////////////////////////////////////////////////////////////////////
-      function mapUVsToWidth(uvArray, geometryWidth) {
-        for (let i=0; i < uvArray.length; i++) {
-          uvArray[i] = uvArray[i] / geometryWidth;
-        }
-      }
-
-      function mapUVsToWidthRing(geometry, geometryWidth) {
-        var verts = geometry.attributes.position.array;
-        var uvs = geometry.attributes.uv.array;
-        for (let p=0, t=0; p < verts.length; p += 3, t += 2) {
-          uvs[t] = verts[p] / geometryWidth;
-          uvs[t+1] = verts[p+1] / geometryWidth;
-        }
-      }
-
-      function makeCircle(x, y, z, r) {
-        var geometry = new THREE.CircleGeometry( r, 360 ); // radius, segments
-        var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: texture } ) );
-        mesh.position.set( x, y, z );
-        // mesh.rotation.set( 0, 0, 0 );
-        // mesh.scale.set( 1, 1, 1 );
-        return mesh;
-      }
-
-      function makeArc(x, y, z, r, color, txture) {
-        var circleRadius = r;
-        var geometry = new THREE.RingBufferGeometry( (r >= 100 ? r - 100 : 0), r, 60, 1, 0, 1.6 * Math.PI);
-
-        mapUVsToWidthRing(geometry, 600);
-
-        // var mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: txture } ) );
-        var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: color, transparent: true, opacity: 0.3, side: THREE.DoubleSide, map: txture } ) );
-        mesh.position.set( x, y, z );
-
-        return mesh;
-      }
-
-      function createCirclePoints(numPoints, radius) {
-        var points = [],
-          angle,
-          x,
-          y,
-          i;
-        for (i=0; i<numPoints; i++) {
-          angle = (i / (numPoints/2)) * Math.PI; // Calculate the angle at which the element will be placed.
-          x = (radius * Math.cos(angle)); // Calculate the x position of the element.
-          y = (radius * Math.sin(angle)); // Calculate the y position of the element.
-          points.push({'id': i, 'x': x, 'y': y});
-        }
-        return points;
-      }
-
-      function jiggle(points, howmuch) {
-        for (var n=0; n < points.length; n++) {
-          points[n].x += points[n].x * (Math.random() * howmuch);
-          points[n].y += points[n].y * (Math.random() * howmuch);
-        }
-        return points;
-      }
-
-      function makeFlowerShape(txtrArray) {
-        // var heartShape = new THREE.Shape(); // From httshapp://blog.burlock.org/html5/130-paths
-        // heartShape.moveTo( 25, 25 ); // 1
-        // heartShape.bezierCurveTo( 25, 25, 20, 0,      0, 0 );  // 2
-        // heartShape.bezierCurveTo( -30, 0, -30, 35,  -30, 35 ); // 3
-        // heartShape.bezierCurveTo( -30, 55, -10, 77,   25, 95 ); // 4
-        // heartShape.bezierCurveTo( 60, 77, 80, 55,     80, 35 ); // 5
-        // heartShape.bezierCurveTo( 80, 35, 80, 0,      50, 0 ); // 6
-        // heartShape.bezierCurveTo( 35, 0, 25, 25,      25, 25 ); // 7
-
-        function randPetals() {
-          return 5 + Math.floor(Math.random() * 7);
-        }
-
-        // bezierCurveTo( from control point x, y,    to control point x, y,   to new point x, y)
-        var daisy = new THREE.Shape();
-        var numPetals = randPetals();
-        var jiggleAmount = 0.1 + (Math.random() * 1.5);
-        var outerRadius = Math.floor(100 + ( Math.random() * 250));
-        var innerRadius = Math.floor(40 + (Math.random() * (outerRadius * 0.75)));
-        var innerPoints = jiggle(createCirclePoints(numPetals, 50), jiggleAmount);
-        var outerPoints = jiggle(createCirclePoints(numPetals, 250), jiggleAmount);
-        daisy.moveTo( innerPoints[0].x, innerPoints[0].y );
-
-        for (var n = 1; n < innerPoints.length; n++) {
-          daisy.bezierCurveTo(
-            outerPoints[n-1].x, outerPoints[n-1].y,
-            outerPoints[n].x, outerPoints[n].y,
-            innerPoints[n].x, innerPoints[n].y );
-        }
-
-        daisy.bezierCurveTo(
-          outerPoints[innerPoints.length-1].x, outerPoints[innerPoints.length-1].y,
-          outerPoints[0].x, outerPoints[0].y,
-          innerPoints[0].x, innerPoints[0].y );
-
-        var geometry = new THREE.ShapeBufferGeometry(daisy, 60);
-        mapUVsToWidthRing(geometry, outerRadius);
-
-        var textureId = Math.floor(Math.random()*txtrArray.length);
-        var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: txtrArray[textureId] } );
-        var mesh = new THREE.Mesh(geometry, mat);
-        mesh.position.set( 500 + Math.floor(Math.random() * 800), -(300 + Math.floor(Math.random() * 500)), -75 );
-
-        return mesh;
-      }
-
-      function makeQuad(x, y, z, w, h, t) {
-        var plane = new THREE.PlaneBufferGeometry(w, h);
-        var mat = new THREE.MeshBasicMaterial({ color: 0xF6FC00, side: THREE.DoubleSide, map: t });
-        var quad = new THREE.Mesh(plane, mat);
-        quad.position.set(x, y, z);
-        return quad;
-      }
-
       ////////////////////////////////////////////////////////////////////////////////////
 
       function onWindowResize() {
@@ -275,10 +159,8 @@
       function render() {
         // redraw animation
         ArcField.draw();
-
         // render drawing into texture
         drawing.render();
-
         // render drawing + overlay to screen
         HUD.render();
       }
@@ -318,21 +200,22 @@
         // light.position.set( 0, 0, 1 ).normalize();
         // scene.add( light );
 
-        scene.add( makeCircle(300, -200, 200, 100) );
-
         var w = rendrr.getSize().width * 0.33;
         var h = rendrr.getSize().height;
-        scene.add( makeQuad((w/2) + 100, -h/2, -300, w, h, textures[1]) );
+        scene.add( Shapes.makeQuad((w/2) + 100, -h/2, -300, w, h, textures[1]) );
 
-        scene.add( makeFlowerShape(txtrArray) );
+        // var textureId = Math.floor(Math.random()*txtrArray.length);
+        // var txtr = txtrArray[textureId];
+
+        // scene.add( Shapes.makeFlowerShape(txtr) );
       }
 
       function addStuffToHUD(scene, txtr) {
-        var material = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: txtr } );
-        var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
-        var mesh = new THREE.Mesh( geometry, material );
-        mesh.position.set( 150, -100, -50 );
-        scene.add( mesh );
+        // var material = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: txtr } );
+        // var geometry = new THREE.CircleGeometry( 50, 360 ); // radius, segments
+        // var mesh = new THREE.Mesh( geometry, material );
+        // mesh.position.set( 150, -100, -50 );
+        // scene.add( mesh );
 
         // var light = new THREE.DirectionalLight( 0xffffff, 1 );
         // light.position.set( 0, 0, 1 ).normalize();
@@ -340,11 +223,16 @@
       }
 
       function makeFlowerScene(scene) {
-        var flower = makeFlowerShape(textures);
+        var textureId = Math.floor(Math.random()*textures.length);
+        var txtr = textures[textureId];
+
+        var flower = Shapes.makeFlowerShape(txtr);
         flower.position.set( 0, 0, 20 );
-        scene.add( makeCircle(0, 0, 30, 50) );
+        scene.add( Shapes.makeCircle(0, 0, 30, 50, texture) );
         scene.add( flower );
       }
+
+      var texture2;
 
       function init() {
         var imageNames = [
@@ -362,7 +250,6 @@
           { src:'img/youtube-play-button_red_on_white.png' },
           { src:'img/youtube_play_button_white_on_red_1.png' },
         ];
-        var texture2;
 
         Thing.Img.loadBatch(imageNames, (imgs) => {
           textures = [
@@ -403,9 +290,17 @@
           drawing = makeBlendedDrawing(renderer);
           addStuffToDrawing(drawing.scene, renderer, textures);
 
-          // Renders the drawing layer and additional shapes that do not blend 
+          // Renders the drawing layer and additional shapes that do not blend
           HUD = makeHUD(renderer, drawing.getTexture());
           addStuffToHUD(HUD.scene, texture2);
+
+          UIListener.setScale(renderer.getSize().width / 1200);
+          UIListener.listenOnElement(renderer.domElement);
+          UIListener.setCallbacks({
+            handleClick: ArcField.handleClick,
+            handleGesture: ArcField.handleGesture,
+            handleLongPress: ArcField.handleLongPress,
+          });
 
           // bogus way to wait for textures images to load
           setTimeout(() => {
@@ -422,13 +317,12 @@
             // HUD.addQuadWithTexture(textureFactory.getTexture2());
 
             // arcfield will render into drawing layer
-            window.ArcField.init(renderer, drawing.scene, textures);
+            window.ArcField.init(renderer, drawing.scene, HUD.scene, textures);
 
             // start the rendering loop
             animate();
           }, 500);
         });
-
       }
 
       init();

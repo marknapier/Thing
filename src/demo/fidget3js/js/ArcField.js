@@ -24,7 +24,6 @@ window.ArcField = (function () {
     PulsarVerticalSweep,
     PulsarSolidWithOutline,
   };
-  var fidget1, fidget2;
 
   function makeGreenOrangePalette() {
     var colors = (new ColorFactory({colorFrom: [5, 225, 90, 0.6], colorTo: [255, 60, 0, 0.6]})).getGradientValues(255);
@@ -168,7 +167,6 @@ window.ArcField = (function () {
       p.update(delta);
     });
     fidget1 && fidget1.update();
-    fidget2 && fidget2.update();
   }
 
   function drawAll(interp) {
@@ -221,14 +219,13 @@ window.ArcField = (function () {
 
 
   function createFidget1(x, y, w, h, radius=100) {
-    let circles = [];
     let bandWidth = randBandWidth();
 
     for (let r=10; r < radius; ) {
       bandWidth = randBandWidth();
 
       let p = new Pulsar({
-        context,
+        context: Math.random() > 0.5 ? contextBlend : contextOverlay,
         r,
         bandWidth,
         x: x,
@@ -238,7 +235,6 @@ window.ArcField = (function () {
       });
 
       addPulsar(p);
-      circles.push(p);
       r += (Math.random() * bandWidth);
     }
 
@@ -252,116 +248,24 @@ window.ArcField = (function () {
     return self;
   }
 
-  function createFidget2() {
-    var barLeft = new PulsarVerticalSweep({
-      context: context,
-      x: 0 * scale,
-      y: 0 * scale,
-      time: 0,
-      friction: 0.0,
-      colorFactory: new ColorFactory({colorFrom: [0, 0, 60, 0.9], colorTo: [250, 250, 0, 0.9]}),
-      duration: 21 * 1000,  // 12
-      maxR: 600 * scale,
-      edgeWidth: 4 * scale,
-    });
-    var barLeft1 = new PulsarVerticalSweep({
-      context: context,
-      x: 300 * scale,
-      y: 0 * scale,
-      time: 0,
-      friction: 0.0,
-      colorFactory: new ColorFactory({colorFrom: [0, 0, 60, 0.9], colorTo: [250, 250, 0, 0.9]}),
-      duration: 28 * 1000,  // 12
-      maxR: 600 * scale,
-      edgeWidth: 4 * scale,
-    });
-    var barRight = new PulsarVerticalSweep({
-      context: context,
-      x: 600 * scale,
-      y: 0 * scale,
-      time: 0,
-      friction: 0.0,
-      colorFactory: new ColorFactory({colorFrom: [255, 250, 0, 0.5], colorTo: [0, 0, 60, 0.5]}),
-      // colorFactory: new ColorFactory({colorTo: [255, 250, 30, 0.5], colorFrom:  [255, 230, 0, 0.2]}),
-      duration: 14 * 1000,  // 12
-      maxR: 600 * scale,
-      edgeWidth: 4 * scale,
-    });
-    var discLeft = new PulsarChecked({
-      context: context,
-      x: 400 * scale,
-      y: 400 * scale,
-      time: 0,
-      friction: friction,
-      colorFactory: new ColorFactory({color: [255, 250, 0, 0.35]}),
-      duration: 15 * 1000,  // 5
-      rotateVelocity: 0.008,
-      maxR: 270,
-      numBands: 1,
-      numPies: 2,
-    });
-    var discLeft1 = new PulsarChecked({
-      context: context,
-      x: 300 * scale,
-      y: 300 * scale,
-      time: 0,
-      friction: friction,
-      colorFactory: new ColorFactory({color: [255, 250, 0, 0.35]}),
-      duration: 10 * 1000,  // 5
-      rotateVelocity: 0.0,
-      maxR: 290,
-      numBands: 10,
-      numPies: 40,
-    });
-    var discRight = new PulsarChecked({
-      context: context,
-      x: 800 * scale,
-      y: 400 * scale,
-      time: 10000,
-      friction: friction,
-      colorFactory: new ColorFactory({colorFrom: [0, 0, 120, 0.9], colorTo: [0, 0, 60, 0.9]}),
-      duration: 27 * 1000,  // 17
-      maxR: 350 * scale,
-      rotateVelocity: 0.0,
-      numBands: 10,
-      numPies: 30,
-    });
-    var discRight1 = new PulsarSolidWithOutline({
-      context: context,
-      x: 700 * scale,
-      y: 410 * scale,
-      time: 10000,
-      friction: friction,
-      colorFactory: new ColorFactory({colorFrom: [0, 0, 120, 0.9], colorTo: [0, 0, 60, 0.9]}),
-      duration: 27 * 1000,  // 17
-      maxR: 250 * scale,
-      rotateVelocity: 0.003,
-      numBands: 1,
-      numPies: 2,
+  function addFlower(x, y, w, h, r=100) {
+    var p = new Pulsar({
+      context: contextBlend,
+      r,
+      x: x,
+      y: y,
+      velocity: 0.0001,
+      bounds: {minx: 0, maxx: w, miny: -h, maxy: 0},
     });
 
-    function update() {
-    }
-
-    var self = {
-      update,
-    };
-
-    addPulsar(barLeft);
-    // addPulsar(barLeft1);
-    addPulsar(discRight1);
-    addPulsar(barRight);
-    addPulsar(discLeft);
-    addPulsar(discLeft1);
-    addPulsar(discRight);
-
-    return self;
+    addPulsar(p);
+    return p;
   }
 
   var drawnGesture;
+  var gesture;
 
   function drawGesture() {
-    var gesture = UIListener.getGesture();
     if (gesture && gesture !== drawnGesture) {
       HUD.drawGesture(gesture.start.x, gesture.start.y, gesture.end.x, gesture.end.y);
       drawnGesture = gesture;
@@ -379,65 +283,72 @@ window.ArcField = (function () {
     }
   }
 
+  function applyForce(intersection, start, end) {
+    var longline = Intersections.makeLongLine(start, end);
+    var dist = Intersections.distToSegment(intersection.pulsar, longline[0], longline[1]); // how far is gesture from center
+    var leverage = dist / intersection.pulsar.maxR; // 0 == at center 1 == at edge
+    var magnitude = intersection.vector.length() / (300 * scale); // how big is the gesture (300 pixels is based on 1200 pixel wide canvas) will be in range 0-4
+    var clockwise = intersection.normal.z > 0 ? 1 : -1; // which way to rotate
+
+    if (intersection.pulsar.name === 'PulsarVerticalBar') {
+      console.log('intersectBAR', intersection.pulsar.name, intersection.vector);
+      var direction = intersection.vector.x > 0 ? 1 : -1;
+      intersection.pulsar.velocity += magnitude * 0.1;
+    }
+    else {
+      console.log('intersect', intersection.pulsar.name, 'len=', intersection.vector.length() / (300 * scale), 'dist=', dist, 'longline', longline, 'lev', leverage, intersection.vector);
+      intersection.pulsar.direction = {x: intersection.vector.x / 10, y: -intersection.vector.y / 10};
+      intersection.pulsar.velocity += magnitude * (1 - leverage) * 0.01;
+      intersection.pulsar.rotateVelocity += magnitude * leverage * 0.1 * clockwise;
+    }
+  }
+
   function handleClick(point) {
-    var scale = 1 / 1;   // 1 over canvas scale factor
     var pulsarClass = pulsarClasses[currentPen.type || 'Pulsar'];
     currentPen.x = point.x;
     currentPen.y = point.y;
     currentPen.context = context;
     currentPen.friction = friction;  // fudgy: set global friction value to any pulsar added by click
-    currentPen.bounds = {minx: 0, maxx: 1600, miny: -800, maxy: 0}
+    currentPen.bounds = {minx: 0, maxx: bounds.width, miny: bounds.height, maxy: 0};
     addPulsar(new pulsarClass(currentPen));
   }
 
-  function handleGesture(start, end, v) {
+  function pulsarIntersection(p, start, end, v) {
+    if (p.name === 'PulsarVerticalBar') {
+      var intersects = Intersections.lineRectIntersect(start.x, start.y, end.x, end.y, p.x, p.y, p.r, 800 *scale);
+      return {
+        distance: intersects ? 1 : 0,
+        vector: v,
+        pulsar: p,
+        normal: Intersections.getNormal(start, end, p),
+      }
+    }
+    else {
+      var distanceToCenter = Intersections.doesLineIntersectCircle(start, end, p, p.r);
+      return {
+        distance: distanceToCenter,
+        vector: v,
+        pulsar: p,
+        normal: Intersections.getNormal(start, end, p),
+      };
+    }
+  }
+
+  function handleGesture(gestr, v) {
+    gesture = gestr;
     pulsars.map((p) => {
-      if (p.name === 'PulsarVerticalBar') {
-        var intersects = Intersections.lineRectIntersect(start.x, start.y, end.x, end.y, p.x, p.y, p.r, 800 *scale);
-        return {
-          distance: intersects ? 1 : 0,
-          vector: v,
-          pulsar: p,
-          normal: Intersections.getNormal(start, end, p),
-        }
-      }
-      else {
-        var distanceToCenter = Intersections.doesLineIntersectCircle(start, end, p, p.r);
-        return {
-          distance: distanceToCenter,
-          vector: v,
-          pulsar: p,
-          normal: Intersections.getNormal(start, end, p),
-        };
-      }
+      return pulsarIntersection(p, gestr.start, gestr.end, v);
     }).filter((intersection) => {
       return intersection.distance > 0;
     }).forEach((intersection) => {
-      var longline = Intersections.makeLongLine(start, end);
-      var dist = Intersections.distToSegment(intersection.pulsar, longline[0], longline[1]); // how far is gesture from center
-      var leverage = dist / intersection.pulsar.maxR; // 0 == at center 1 == at edge
-      var magnitude = intersection.vector.length() / (300 * scale); // how big is the gesture (300 pixels is based on 1200 pixel wide canvas) will be in range 0-4
-      var clockwise = intersection.normal.z > 0 ? 1 : -1; // which way to rotate
-
-      if (intersection.pulsar.name === 'PulsarVerticalBar') {
-        console.log('intersectBAR', intersection.pulsar.name, intersection.vector);
-        var direction = intersection.vector.x > 0 ? 1 : -1;
-        intersection.pulsar.velocity += magnitude * 0.1;
-      }
-      else {
-        console.log('intersect', intersection.pulsar.name, 'len=', intersection.vector.length() / (300 * scale), 'dist=', dist, 'longline', longline, 'lev', leverage, intersection.vector);
-        // intersection.pulsar.direction = {x: (intersection.vector.x/intersection.vector.x)*Math.sign(intersection.vector.x), y: -((intersection.vector.y/intersection.vector.y)*Math.sign(intersection.vector.y))};
-        intersection.pulsar.direction = {x: intersection.vector.x / 10, y: -intersection.vector.y / 10};
-        intersection.pulsar.velocity += magnitude * (1 - leverage) * 0.01;
-        intersection.pulsar.rotateVelocity += magnitude * leverage * 0.1 * clockwise;
-      }
+      applyForce(intersection, gestr.start, gestr.end);
     });
   }
 
-  function handleLongPress(start) {
-    var end = {x: start.x + 1, y: start.y + 1};  // make up a short 'end' vector
-    pulsars.map((p) => {
-      var distanceToCenter = Intersections.doesLineIntersectCircle(start, end, new Vector(p.x, p.y), p.r);
+  function getObjectsAtPoint(objs, pos) {
+    var end = {x: pos.x + 1, y: pos.y + 1};  // make up a short 'end' vector
+    return objs.map((p) => {
+      var distanceToCenter = Intersections.doesLineIntersectCircle(pos, end, new Vector(p.x, p.y), p.r);
       return {
         distance: distanceToCenter,
         vector: null,
@@ -446,7 +357,22 @@ window.ArcField = (function () {
       };
     }).filter((intersection) => {
       return intersection.distance > 0;
-    }).forEach((intersection) => {
+    });
+  }
+
+  function handleLongPress(start) {
+    // var end = {x: start.x + 1, y: start.y + 1};  // make up a short 'end' vector
+    // pulsars.map((p) => {
+    //   var distanceToCenter = Intersections.doesLineIntersectCircle(start, end, new Vector(p.x, p.y), p.r);
+    //   return {
+    //     distance: distanceToCenter,
+    //     vector: null,
+    //     pulsar: p,
+    //     normal: null,
+    //   };
+    // }).filter((intersection) => {
+    //   return intersection.distance > 0;
+    getObjectsAtPoint(pulsars, start).forEach((intersection) => {
       console.log('long press on', intersection.pulsar.name);
       intersection.pulsar.velocity *= 0.5;
       intersection.pulsar.rotateVelocity *= 0.5;
@@ -497,16 +423,22 @@ window.ArcField = (function () {
   }
 
   var DPR = 1;
+  var bounds = {width: 1200, height: -800};
+  var contextBlend;
+  var contextOverlay;
 
-  function init(rendrr, scene3js, textures) {
+  function init(rendrr, scene3js, sceneHUD, textures) {
     var rWidth = rendrr.getSize().width;
     var rHeight = rendrr.getSize().height;
 
     canvas = rendrr.domElement;
-    context = scene3js;
-    DPR = rendrr.getPixelRatio();
 
-    UIListener.setScale(scale);
+    contextBlend = scene3js;
+    contextOverlay = sceneHUD;
+    context = scene3js;
+
+    DPR = rendrr.getPixelRatio();
+    scale = rWidth / 1200;
 
     Pulsar.SCALE = scale;
     Pulsar.ease = Easing.easeInOutSine;
@@ -514,13 +446,6 @@ window.ArcField = (function () {
 
     loadPixels('./img/palette_blue_green_dark_edge_2.png', function (pixelValues) {
       pulsarConfigs[0].colorFactory = new ColorFactory({palette: pixelValues, alpha: 0.35});
-    });
-
-    UIListener.listenOnElement(canvas);
-    UIListener.setCallbacks({
-      handleClick,
-      handleGesture,
-      handleLongPress,
     });
 
     document.addEventListener('keydown', handleKeypress);
@@ -532,25 +457,67 @@ window.ArcField = (function () {
     fidget1 = createFidget1(400, -100, rWidth, rHeight, randomR());
     fidget1 = createFidget1(800, -100, rWidth, rHeight, randomR());
 
-    fidget1 = createFidget1(1000, -200, rWidth, rHeight, randomR()); // middle
-    fidget1 = createFidget1(200, -200, rWidth, rHeight, randomR());
-    fidget1 = createFidget1(600, -200, rWidth, rHeight, randomR());
+    // fidget1 = createFidget1(1000, -200, rWidth, rHeight, randomR()); // middle
+    // fidget1 = createFidget1(200, -200, rWidth, rHeight, randomR());
+    // fidget1 = createFidget1(600, -200, rWidth, rHeight, randomR());
 
-    fidget1 = createFidget1(1200, -300, rWidth, rHeight, randomR()); // middle
-    fidget1 = createFidget1(400, -300, rWidth, rHeight, randomR());
-    fidget1 = createFidget1(800, -300, rWidth, rHeight, randomR());
+    // fidget1 = createFidget1(1200, -300, rWidth, rHeight, randomR()); // middle
+    // fidget1 = createFidget1(400, -300, rWidth, rHeight, randomR());
+    // fidget1 = createFidget1(800, -300, rWidth, rHeight, randomR());
 
-    fidget1 = createFidget1(1000, -400, rWidth, rHeight, randomR()); // middle
-    fidget1 = createFidget1(200, -400, rWidth, rHeight, randomR());
-    fidget1 = createFidget1(600, -400, rWidth, rHeight, randomR());
+    // fidget1 = createFidget1(1000, -400, rWidth, rHeight, randomR()); // middle
+    // fidget1 = createFidget1(200, -400, rWidth, rHeight, randomR());
+    // fidget1 = createFidget1(600, -400, rWidth, rHeight, randomR());
 
-    // fidget2 = createFidget2();
+    // add a random flower
+    var textureId = Math.floor(Math.random()*textures.length);
+    var txtr = textures[textureId];
+    let fp = new PulsarFlower({
+      context: contextBlend,
+      x: 700,
+      y: -400,
+      z: 100,
+      velocity: 0.0001,
+      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+      texture: txtr,
+    });
+    addPulsar(fp);
+
+    // add a disc
+    let disc1 = new PulsarSolid({
+      context: contextBlend,
+      x: 500,
+      y: -200,
+      z: 250,
+      r: 200,
+      velocity: 0.0001,
+      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+      texture: texture, // global!
+    });
+    addPulsar(disc1);
+
+    // another disc
+    let disc2 = new PulsarSolid({
+      context: contextBlend,
+      x: 150,
+      y: -200,
+      z: -100,
+      r: -50,
+      velocity: 0.0001,
+      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+      texture: texture2, // global!
+    });
+    addPulsar(disc2);
   }
-  
-  return { 
-    init, 
-    update, 
-    draw 
+
+  return {
+    init,
+    update,
+    draw,
+    handleClick,
+    handleLongPress,
+    handleGesture,
+    addFlower,
   };
 }())
 

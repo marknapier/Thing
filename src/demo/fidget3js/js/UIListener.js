@@ -42,7 +42,7 @@ window.UIListener = (function () {
       console.log('touchstart!!!!!!!!!!', e.touches);
       cx = e.touches[0].clientX;
       cy = e.touches[0].clientY;
-    } 
+    }
     else if (e.changedTouches && e.changedTouches[0]) {
       console.log('touchEnd!!!!!!!!!!', e.changedTouches);
       cx = e.changedTouches[0].clientX;
@@ -52,7 +52,7 @@ window.UIListener = (function () {
       cx = e.clientX;
       cy = e.clientY;
     }
-    return { 
+    return {
       x: cx - rect.left,
       y: cy - rect.top
     };
@@ -67,7 +67,7 @@ window.UIListener = (function () {
     // if we got to this function, the user has pressed and held
     // if the mouse position has not moved, then it's a long press
     var v = new Vector(mousePosition.x - mousedownPoint.x, mousePosition.y - mousedownPoint.y);
-    if (v.length() < 5 * scale) { 
+    if (v.length() < 5 * scale) {
       longpressing = true;
       console.log('LONG PRESS!!!!!!');
       handleLongPress && handleLongPress(invertY(mousedownPoint));
@@ -93,13 +93,13 @@ window.UIListener = (function () {
       // gesture has been handled by longpress logic
       longpressing = false;
     }
-    else if (vector.length() < 5 * scale) { 
+    else if (vector.length() < 5 * scale) {
       // if little/no movement, treat it as a click
       handleClick && handleClick(invertY(mousedownPoint));
     }
     else {
       gesture = new Gesture(mousedownPoint, mouseupPoint);
-      handleGesture && handleGesture(gesture.start, gesture.end, vector);
+      handleGesture && handleGesture(gesture, vector);
     }
   }
 

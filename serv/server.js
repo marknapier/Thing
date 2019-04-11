@@ -4,6 +4,7 @@ const serveIndex = require('serve-index');
 const path = require('path');
 const appDir = path.dirname(require.main.filename);
 
+const PORTNUM = 3030;
 const ROOT_SRC = appDir + '/../src/demo';
 const ROOT_DIST = appDir + '/../dist';
 const LISTEN_ROOT = ROOT_SRC;
@@ -21,4 +22,4 @@ app.use(serveIndex(LISTEN_ROOT));
 // });
 
 
-app.listen(3000, () => console.log('Server listening on port 3000! root folder is ' + LISTEN_ROOT));
+app.listen(PORTNUM, () => console.log('Server listening on port ' + PORTNUM + '! root folder is ' + LISTEN_ROOT));

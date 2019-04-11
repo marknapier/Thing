@@ -26,7 +26,7 @@ class ColorFactory {
       if (this.alpha) {
         newColor[3] = this.alpha; // apply given alpha value to all palette pixels
       }
-    } 
+    }
     else {
       newColor[0] = this.colorFrom[0] + Math.round((this.colorTo[0]-this.colorFrom[0]) * position);
       newColor[1] = this.colorFrom[1] + Math.round((this.colorTo[1]-this.colorFrom[1]) * position);
@@ -105,6 +105,7 @@ class Pulsar {
     this.bandWidth = props.bandWidth || (10 * Pulsar.SCALE); // width of vertical divider bar
     this.direction = {x: 0, y: 0};
     this.bounds = props.bounds;
+    this.texture = props.texture;
   }
 
   update(delta) {
@@ -129,7 +130,7 @@ class Pulsar {
       }
       else if (this.y >= this.bounds.maxy) {
         this.direction.y = -this.direction.y;
-      }      
+      }
     }
 
     // update circumference point position
@@ -139,60 +140,12 @@ class Pulsar {
   }
 
   draw(interp) {
-    function rand255() {
-      return Math.floor(50 + Math.random() * 200);
-    }
-
-    function randOpacity() {
-      // return 0.4 + (Math.random() * 0.6);
-      return 0.2 + (Math.random() * 0.8);
-    }
-
-    function randRadius() {
-      return Math.floor(2 + (Math.random() * 8)) * 50;
-    }
-
-    function randBandWidth() {
-      return Math.floor(10 + Math.random() * 150);
-    }
-
-    function randArcSize() {
-      var circleRad = 2 * Math.PI;
-      var rad = 2.39996;
-      var small = rad;
-      var large = circleRad - rad;
-      return (Math.random() > 0.5) ? small : large;
-    }
-
-    // var color = this.colorFactory.getColor(this.r / this.maxR);
-    // var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHexString();
-    var hex = tinycolor({r:rand255(), g:rand255(), b:rand255(), a:randOpacity()}).toHexString();
-    // var hex = ['#ff0000', '#ddeeff', '#0000ff', '#ff00ff', '#cc0000', '#cc0033', '#3300cc', '#330099'][Math.floor(Math.random() * 7)];
-
     if (!this.mesh) {
-      var bw = this.bandWidth || randBandWidth();
-      var r = this.r || randRadius();
-      var txtr = Math.random() > 0.65 ? Pulsar.textures[Math.floor(Math.random() * Pulsar.textures.length)] : undefined;  // GLOBAL!!!!
-      this.r = r + bw;
-      this.rotation = this.rotation || (Math.random() * (2 * Math.PI));
-
-      this.mesh = Shapes.makeFatArc(
-        r,
-        r + bw,
-        txtr ? '#fff' : hex,
-        txtr,
-        txtr ? 0.9 : randOpacity(),
-        randArcSize(),
-      );
-      // set color and position
-      this.mesh.material.color.set( txtr ? '#fff' : hex );
-      this.mesh.position.set( this.x, this.y, 0 );
-      this.mesh.rotateZ(this.rotation);
-      // add it to scene
+      // kludgey: this will update values on the pulsar that is passed in
+      Shapes.makeRandomArc(this);
       this.context.add( this.mesh );
     }
 
-    var oneDegree = (Math.PI / 2) / 360;
     this.mesh.rotateZ(this.rotateVelocity);
     this.mesh.position.set( this.x, this.y, 0 );
   }
@@ -203,18 +156,29 @@ Pulsar.ease = Easing.easeInOutSine;
 
 //============================================================
 
+class PulsarFlower extends Pulsar {
+  draw(interp) {
+    if (!this.mesh) {
+      this.mesh = Shapes.makeFlowerShape(this.texture);
+      this.mesh.rotateZ(this.rotation);
+      this.context.add( this.mesh );
+    }
+
+    this.mesh.rotateZ(this.rotateVelocity);
+    this.mesh.position.set( this.x, this.y, 0 );
+  }
+}
+
 class PulsarSolid extends Pulsar {
   draw(interp) {
-    var color = this.colorFactory.getColor(this.r / this.maxR);
-    var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHex8String();
+    if (!this.mesh) {
+      this.mesh = Shapes.makeCircle(this.x, this.y, this.z, this.r, this.texture);
+      this.mesh.rotateZ(this.rotation);
+      this.context.add( this.mesh );
+    }
 
-    Shapes.drawCircleFilled(
-      this.context,
-      this.x,
-      this.y,
-      this.r,
-      hex
-    );
+    this.mesh.rotateZ(this.rotateVelocity);
+    this.mesh.position.set( this.x, this.y, 0 );
   }
 }
 
@@ -266,7 +230,7 @@ class PulsarVerticalBar extends Pulsar {
         800 * Pulsar.SCALE,
         '#c00040cc',
         this.r - 2,
-      );    
+      );
     }
   }
 }
@@ -300,7 +264,7 @@ class PulsarVerticalDivider extends Pulsar {
     this.y = 0;
     this.bandWidth = this.bandWidth || (20 * Pulsar.SCALE);
   }
-  
+
   draw(interp) {
     if (this.direction > 0) {
       const color = this.colorFactory.colorFrom;
@@ -347,7 +311,7 @@ class PulsarVerticalSweep extends Pulsar {
     this.y = 0;
     this.bandWidth = this.bandWidth || (20 * Pulsar.SCALE);
   }
-  
+
   draw(interp) {
     if (this.direction > 0) {
       const color = this.colorFactory.colorFrom;

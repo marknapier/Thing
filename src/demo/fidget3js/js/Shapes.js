@@ -70,6 +70,31 @@
     return mesh;
   }
 
+  function mapUVsToWidth(uvArray, geometryWidth) {
+    for (let i=0; i < uvArray.length; i++) {
+      uvArray[i] = uvArray[i] / geometryWidth;
+    }
+  }
+
+  function makeCircle(x, y, z, r, txtr) {
+    var geometry = new THREE.CircleGeometry( r, 360 ); // radius, segments
+    var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: txtr } ) );
+    mesh.position.set( x, y, z );
+    // mesh.rotation.set( 0, 0, 0 );
+    // mesh.scale.set( 1, 1, 1 );
+    return mesh;
+  }
+
+  function makeQuad(x, y, z, w, h, t) {
+    var plane = new THREE.PlaneBufferGeometry(w, h);
+    var mat = new THREE.MeshBasicMaterial({ color: 0xF6FC00, side: THREE.DoubleSide, map: t });
+    var quad = new THREE.Mesh(plane, mat);
+    quad.position.set(x, y, z);
+    return quad;
+  }
+
+  //////////////////////////////////////////////////////////
+
   var meshCache = null;
 
   function buildMeshes() {
@@ -155,7 +180,7 @@
     context.strokeStyle = color;
     context.stroke();
 
-    context.restore();    
+    context.restore();
   }
 
   function drawSpiralDots(context, x, y, r, color) {
@@ -174,7 +199,7 @@
       context.strokeStyle = color;
       context.stroke();
 
-      context.restore();    
+      context.restore();
     }
   }
 
@@ -286,8 +311,129 @@
     context.restore();
   }
 
+  function createCirclePoints(numPoints, radius) {
+    var points = [],
+      angle,
+      x,
+      y,
+      i;
+    for (i=0; i<numPoints; i++) {
+      angle = (i / (numPoints/2)) * Math.PI; // Calculate the angle at which the element will be placed.
+      x = (radius * Math.cos(angle)); // Calculate the x position of the element.
+      y = (radius * Math.sin(angle)); // Calculate the y position of the element.
+      points.push({'id': i, 'x': x, 'y': y});
+    }
+    return points;
+  }
+
+  function jiggle(points, howmuch) {
+    for (var n=0; n < points.length; n++) {
+      points[n].x += points[n].x * (Math.random() * howmuch);
+      points[n].y += points[n].y * (Math.random() * howmuch);
+    }
+    return points;
+  }
+
+  function makeFlowerShape(txtr) {
+    // var heartShape = new THREE.Shape(); // From httshapp://blog.burlock.org/html5/130-paths
+    // heartShape.moveTo( 25, 25 ); // 1
+    // heartShape.bezierCurveTo( 25, 25, 20, 0,      0, 0 );  // 2
+    // heartShape.bezierCurveTo( -30, 0, -30, 35,  -30, 35 ); // 3
+    // heartShape.bezierCurveTo( -30, 55, -10, 77,   25, 95 ); // 4
+    // heartShape.bezierCurveTo( 60, 77, 80, 55,     80, 35 ); // 5
+    // heartShape.bezierCurveTo( 80, 35, 80, 0,      50, 0 ); // 6
+    // heartShape.bezierCurveTo( 35, 0, 25, 25,      25, 25 ); // 7
+
+    function randPetals() {
+      return 5 + Math.floor(Math.random() * 7);
+    }
+
+    // bezierCurveTo( from control point x, y,    to control point x, y,   to new point x, y)
+    var daisy = new THREE.Shape();
+    var numPetals = randPetals();
+    var jiggleAmount = 0.1 + (Math.random() * 1.5);
+    var outerRadius = Math.floor(100 + ( Math.random() * 250));
+    var innerRadius = Math.floor(40 + (Math.random() * (outerRadius * 0.75)));
+    var innerPoints = jiggle(createCirclePoints(numPetals, 50), jiggleAmount);
+    var outerPoints = jiggle(createCirclePoints(numPetals, 250), jiggleAmount);
+    daisy.moveTo( innerPoints[0].x, innerPoints[0].y );
+
+    for (var n = 1; n < innerPoints.length; n++) {
+      daisy.bezierCurveTo(
+        outerPoints[n-1].x, outerPoints[n-1].y,
+        outerPoints[n].x, outerPoints[n].y,
+        innerPoints[n].x, innerPoints[n].y );
+    }
+
+    daisy.bezierCurveTo(
+      outerPoints[innerPoints.length-1].x, outerPoints[innerPoints.length-1].y,
+      outerPoints[0].x, outerPoints[0].y,
+      innerPoints[0].x, innerPoints[0].y );
+
+    var geometry = new THREE.ShapeBufferGeometry(daisy, 60);
+    mapUVsToWidthRing(geometry, outerRadius);
+
+    var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: txtr } );
+    var mesh = new THREE.Mesh(geometry, mat);
+    mesh.position.set( 500 + Math.floor(Math.random() * 800), -(300 + Math.floor(Math.random() * 500)), -75 );
+
+    return mesh;
+  }
+
   function setPattern(p) {
     fillPattern = p;
+  }
+
+function makeRandomArc(p) {
+    function rand255() {
+      return Math.floor(50 + Math.random() * 200);
+    }
+
+    function randOpacity() {
+      // return 0.4 + (Math.random() * 0.6);
+      return 0.2 + (Math.random() * 0.8);
+    }
+
+    function randRadius() {
+      return Math.floor(2 + (Math.random() * 8)) * 50;
+    }
+
+    function randBandWidth() {
+      return Math.floor(10 + Math.random() * 150);
+    }
+
+    function randArcSize() {
+      var circleRad = 2 * Math.PI;
+      var rad = 2.39996;
+      var small = rad;
+      var large = circleRad - rad;
+      return (Math.random() > 0.5) ? small : large;
+    }
+
+    // var color = this.colorFactory.getColor(this.r / this.maxR);
+    // var hex = tinycolor({r:color[0], g:color[1], b:color[2], a:color[3]}).toHexString();
+    var hex = tinycolor({r:rand255(), g:rand255(), b:rand255(), a:randOpacity()}).toHexString();
+    // var hex = ['#ff0000', '#ddeeff', '#0000ff', '#ff00ff', '#cc0000', '#cc0033', '#3300cc', '#330099'][Math.floor(Math.random() * 7)];
+
+    var bw = this.bandWidth || randBandWidth();
+    var r = p.r || randRadius();
+    var txtr = Math.random() > 0.65 ? Pulsar.textures[Math.floor(Math.random() * Pulsar.textures.length)] : undefined;  // GLOBAL!!!!
+    p.r = r + bw;
+    p.rotation = p.rotation || (Math.random() * (2 * Math.PI));
+
+    p.mesh = Shapes.makeFatArc(
+      r,
+      r + bw,
+      txtr ? '#fff' : hex,
+      txtr,
+      txtr ? 0.9 : randOpacity(),
+      randArcSize(),
+    );
+    // set color and position
+    p.mesh.material.color.set( txtr ? '#fff' : hex );
+    p.mesh.rotateZ(p.rotation);
+    // add it to scene
+    p.context.add( p.mesh );
   }
 
   window.Shapes = {
@@ -309,6 +455,10 @@
     drawCircleDashedArcsBlocks,
     drawDonut,
     makeFatArc,
+    makeFlowerShape,
+    makeRandomArc,
+    makeCircle,
+    makeQuad,
     TWOPI,
     setPattern,
   };
