@@ -222,6 +222,13 @@
         // scene.add( light );
       }
 
+      function makeCircleScene(scene, txtr) {
+        scene.add( Shapes.makeCircle(0, 128, 0, 120, txtr) );
+        scene.add( Shapes.makeCircle(0, -128, 0, 120, txtr) );
+        scene.add( Shapes.makeCircle(-128, 0, 0, 120, txtr) );
+        scene.add( Shapes.makeCircle(128, 0, 0, 120, txtr) );
+      }
+
       function makeFlowerScene(scene) {
         var textureId = Math.floor(Math.random()*textures.length);
         var txtr = textures[textureId];
@@ -249,9 +256,12 @@
           { src:'img/Checkerboard_pattern.png' },
           { src:'img/youtube-play-button_red_on_white.png' },
           { src:'img/youtube_play_button_white_on_red_1.png' },
+          { src:'img/metal_button_1.png' },
         ];
 
         Thing.Img.loadBatch(imageNames, (imgs) => {
+          var metalButtonTxtr = makeTexture('img/metal_button_1.png');
+
           textures = [
             makeTexture('img/red_on_white_floral_pattern.jpg'),
             makeTexture('img/gold_leaf_bg_bright.png'),
@@ -305,7 +315,8 @@
           // bogus way to wait for textures images to load
           setTimeout(() => {
             // render a flower and copy to texture
-            textureFactory.render(makeFlowerScene);
+            textureFactory.render((scene) => makeCircleScene(scene, metalButtonTxtr) );
+            // textureFactory.render(makeFlowerScene);
             texture2 = textureFactory.getTexture2();
 
             textures.push(texture2);
