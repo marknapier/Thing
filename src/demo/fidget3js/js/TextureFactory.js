@@ -45,9 +45,18 @@ function makeTextureFactory(rendrr, tsize = 512) {
     return cam;
   }
 
+  function clearScene(scn) {
+    let chilluns = scn.children.slice(0);
+    chilluns.forEach((c) => c.parent.remove(c));
+  }
+
   function render(sceneFunction) {
+    clearScene(scene);
+
     // add things to the scene
     sceneFunction(scene);
+
+    rendrr.clear();
 
     // render the scene to framebuffer
     rendrr.render(scene, camera);

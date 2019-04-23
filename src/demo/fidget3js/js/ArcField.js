@@ -470,8 +470,6 @@ window.ArcField = (function () {
     // fidget1 = createFidget1(600, -400, rWidth, rHeight, randomR());
 
     // add a random flower
-    var textureId = Math.floor(Math.random()*textures.length);
-    var txtr = textures[textureId];
     let fp = new PulsarFlower({
       context: contextBlend,
       x: 700,
@@ -479,9 +477,21 @@ window.ArcField = (function () {
       z: 100,
       velocity: 0.0001,
       bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
-      texture: txtr,
+      texture: textures[Math.floor(Math.random()*textures.length)],
     });
     addPulsar(fp);
+
+    // add a random flower
+    let fp1 = new PulsarFlower({
+      context: contextBlend,
+      x: 800,
+      y: -600,
+      z: 110,
+      velocity: 0.0001,
+      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+      texture: textures[Math.floor(Math.random()*textures.length)],
+    });
+    addPulsar(fp1);
 
     // add a disc
     let disc1 = new PulsarSolid({
@@ -499,10 +509,10 @@ window.ArcField = (function () {
     // another disc
     let disc2 = new PulsarSolid({
       context: contextBlend,
-      x: 150,
-      y: -200,
-      z: -100,
-      r: -50,
+      x: 1000,
+      y: -500,
+      z: 100,
+      r: 250,
       velocity: 0.0001,
       bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
       texture: texture2, // global!

@@ -169,6 +169,19 @@ class PulsarFlower extends Pulsar {
   }
 }
 
+class PulsarFlowerLine extends Pulsar {
+  draw(interp) {
+    if (!this.mesh) {
+      this.mesh = FatLine.makeFlowerOutline();
+      this.mesh.rotateZ(this.rotation);
+      this.context.add( this.mesh );
+    }
+
+    this.mesh.rotateZ(this.rotateVelocity);
+    this.mesh.position.set( this.x, this.y, 0 );
+  }
+}
+
 class PulsarSolid extends Pulsar {
   draw(interp) {
     if (!this.mesh) {

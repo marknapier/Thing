@@ -78,16 +78,16 @@
 
   function makeCircle(x, y, z, r, txtr) {
     var geometry = new THREE.CircleGeometry( r, 360 ); // radius, segments
-    var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: txtr } ) );
+    var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { transparent: true, map: txtr } ) );
     mesh.position.set( x, y, z );
     // mesh.rotation.set( 0, 0, 0 );
     // mesh.scale.set( 1, 1, 1 );
     return mesh;
   }
 
-  function makeQuad(x, y, z, w, h, t) {
+  function makeQuad(x, y, z, w, h, t, color) {
     var plane = new THREE.PlaneBufferGeometry(w, h);
-    var mat = new THREE.MeshBasicMaterial({ color: 0xF6FC00, side: THREE.DoubleSide, map: t });
+    var mat = new THREE.MeshBasicMaterial({map: t, transparent: true, color: color});
     var quad = new THREE.Mesh(plane, mat);
     quad.position.set(x, y, z);
     return quad;
@@ -321,7 +321,7 @@
       angle = (i / (numPoints/2)) * Math.PI; // Calculate the angle at which the element will be placed.
       x = (radius * Math.cos(angle)); // Calculate the x position of the element.
       y = (radius * Math.sin(angle)); // Calculate the y position of the element.
-      points.push({'id': i, 'x': x, 'y': y});
+      points.push({id: i, x: x, y: y, angle: angle});
     }
     return points;
   }
@@ -353,7 +353,6 @@
     var numPetals = randPetals();
     var jiggleAmount = 0.1 + (Math.random() * 1.5);
     var outerRadius = Math.floor(100 + ( Math.random() * 250));
-    var innerRadius = Math.floor(40 + (Math.random() * (outerRadius * 0.75)));
     var innerPoints = jiggle(createCirclePoints(numPetals, 50), jiggleAmount);
     var outerPoints = jiggle(createCirclePoints(numPetals, 250), jiggleAmount);
     daisy.moveTo( innerPoints[0].x, innerPoints[0].y );
@@ -373,18 +372,29 @@
     var geometry = new THREE.ShapeBufferGeometry(daisy, 60);
     mapUVsToWidthRing(geometry, outerRadius);
 
-    var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, side: THREE.DoubleSide, map: txtr } );
+    var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300, transparent: true, map: txtr } );
     var mesh = new THREE.Mesh(geometry, mat);
     mesh.position.set( 500 + Math.floor(Math.random() * 800), -(300 + Math.floor(Math.random() * 500)), -75 );
 
     return mesh;
+    // return makeLineShape(daisy);
+  }
+
+  function makeLineShape(shape) {
+    shape.autoClose = true;
+    var points = shape.getPoints( 100 );
+    var spacedPoints = shape.getSpacedPoints( 50 );
+    var geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
+    var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints( spacedPoints );
+    var line = new THREE.Line( geometryPoints, new THREE.LineBasicMaterial( { color: 0xF6F300 } ) );
+    return line;
   }
 
   function setPattern(p) {
     fillPattern = p;
   }
 
-function makeRandomArc(p) {
+  function makeRandomArc(p) {
     function rand255() {
       return Math.floor(50 + Math.random() * 200);
     }
@@ -459,6 +469,7 @@ function makeRandomArc(p) {
     makeRandomArc,
     makeCircle,
     makeQuad,
+    createCirclePoints,
     TWOPI,
     setPattern,
   };
