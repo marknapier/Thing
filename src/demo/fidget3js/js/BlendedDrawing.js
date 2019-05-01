@@ -29,7 +29,8 @@ function makeBlendedDrawing(rendrr) {
 
   function render() {
     // renders into offscreent texture without clearing background: moving shapes will leave trails
-    rendrr.render(scene, camera, offscreenTexture, true);
+    rendrr.render(scene, camera, offscreenTexture, true); // mem leak??
+    // rendrr.render(scene, camera); // direct to screen
   }
 
   function makeOffscreenTexture(r) {

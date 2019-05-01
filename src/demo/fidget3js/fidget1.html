@@ -110,11 +110,11 @@
     <script src="js/tinycolor/tinycolor.js"></script>
     <script src="js/MainLoop.js"></script>
     <!-- for FatLine -->
-    <script src='js/lines/LineSegmentsGeometry.js'></script>
-    <script src='js/lines/LineGeometry.js'></script>
-    <script src='js/lines/LineMaterial.js'></script>
-    <script src='js/lines/LineSegments2.js'></script>
-    <script src='js/lines/Line2.js'></script>
+    <!-- <script src='js/lines/LineSegmentsGeometry.js'></script>
+    // <script src='js/lines/LineGeometry.js'></script>
+    // <script src='js/lines/LineMaterial.js'></script>
+    // <script src='js/lines/LineSegments2.js'></script>
+    // <script src='js/lines/Line2.js'></script> -->
 
     <script src="js/Shapes.js"></script>
     <script src="js/Intersections.js"></script>
@@ -159,12 +159,12 @@
       function update(delta) {
         drawing.update(delta);
         ArcField.update(delta);
-        HUD.update();
+        // HUD.update();
       }
 
       function render() {
-        FatLine.setResolution( window.innerWidth, window.innerHeight );
-        
+        // FatLine.setResolution( window.innerWidth, window.innerHeight );
+
         // redraw animation
         ArcField.draw();
         // render drawing into texture
@@ -334,11 +334,11 @@
           setTimeout(() => {
             // render a flower and copy to texture
             textureFactory.render(makeFlower);
-            textureFactory.render((scene) => makeTileRing(scene, textureFactory.getTexture2()) ); // textures[7]
+            // textureFactory.render((scene) => makeTileRing(scene, textureFactory.getTexture2()) ); // textures[7]
             texture2 = textureFactory.getTexture2();
 
-            textureFactory.render((scene) => makeTileRing(scene, textures[7]) ); // textures[7]
-            var texture3 = textureFactory.getTexture2();
+            // textureFactory.render((scene) => makeTileRing(scene, textures[7]) ); // textures[7]
+            // var texture3 = textureFactory.getTexture2();
 
             textures.push(texture2);
             textures.push(texture2);
@@ -349,7 +349,7 @@
             // HUD.addQuadWithTexture(textureFactory.getTexture2());
             // HUD.addQuadWithTexture(texture3);
 
-            FatLine.setResolution( window.innerWidth, window.innerHeight );
+            // FatLine.setResolution( window.innerWidth, window.innerHeight );
             // arcfield will render into drawing layer
             window.ArcField.init(renderer, drawing.scene, HUD.scene, textures);
 

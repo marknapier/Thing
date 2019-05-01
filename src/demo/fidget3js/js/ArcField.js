@@ -225,7 +225,7 @@ window.ArcField = (function () {
       bandWidth = randBandWidth();
 
       let p = new Pulsar({
-        context: Math.random() > 0.5 ? contextBlend : contextOverlay,
+        context: contextBlend,  //Math.random() > 0.5 ? contextBlend : contextOverlay,
         r,
         bandWidth,
         x: x,
@@ -457,67 +457,67 @@ window.ArcField = (function () {
     fidget1 = createFidget1(400, -100, rWidth, rHeight, randomR());
     fidget1 = createFidget1(800, -100, rWidth, rHeight, randomR());
 
-    // fidget1 = createFidget1(1000, -200, rWidth, rHeight, randomR()); // middle
-    // fidget1 = createFidget1(200, -200, rWidth, rHeight, randomR());
-    // fidget1 = createFidget1(600, -200, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(1000, -200, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(200, -200, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(600, -200, rWidth, rHeight, randomR());
 
-    // fidget1 = createFidget1(1200, -300, rWidth, rHeight, randomR()); // middle
-    // fidget1 = createFidget1(400, -300, rWidth, rHeight, randomR());
-    // fidget1 = createFidget1(800, -300, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(1200, -300, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(400, -300, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(800, -300, rWidth, rHeight, randomR());
 
-    // fidget1 = createFidget1(1000, -400, rWidth, rHeight, randomR()); // middle
-    // fidget1 = createFidget1(200, -400, rWidth, rHeight, randomR());
-    // fidget1 = createFidget1(600, -400, rWidth, rHeight, randomR());
-
-    // add a random flower
-    let fp = new PulsarFlower({
-      context: contextBlend,
-      x: 700,
-      y: -400,
-      z: 100,
-      velocity: 0.0001,
-      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
-      texture: textures[Math.floor(Math.random()*textures.length)],
-    });
-    addPulsar(fp);
+    fidget1 = createFidget1(1000, -400, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(200, -400, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(600, -400, rWidth, rHeight, randomR());
 
     // add a random flower
-    let fp1 = new PulsarFlower({
-      context: contextBlend,
-      x: 800,
-      y: -600,
-      z: 110,
-      velocity: 0.0001,
-      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
-      texture: textures[Math.floor(Math.random()*textures.length)],
-    });
-    addPulsar(fp1);
+    // let fp = new PulsarFlower({
+    //   context: contextBlend,
+    //   x: 700,
+    //   y: -400,
+    //   z: 100,
+    //   velocity: 0.0001,
+    //   bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+    //   texture: textures[Math.floor(Math.random()*textures.length)],
+    // });
+    // addPulsar(fp);
 
-    // add a disc
-    let disc1 = new PulsarSolid({
-      context: contextBlend,
-      x: 500,
-      y: -200,
-      z: 250,
-      r: 200,
-      velocity: 0.0001,
-      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
-      texture: texture, // global!
-    });
-    addPulsar(disc1);
+    // // add a random flower
+    // let fp1 = new PulsarFlower({
+    //   context: contextBlend,
+    //   x: 800,
+    //   y: -600,
+    //   z: 110,
+    //   velocity: 0.0001,
+    //   bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+    //   texture: textures[Math.floor(Math.random()*textures.length)],
+    // });
+    // addPulsar(fp1);
 
-    // another disc
-    let disc2 = new PulsarSolid({
-      context: contextBlend,
-      x: 1000,
-      y: -500,
-      z: 100,
-      r: 250,
-      velocity: 0.0001,
-      bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
-      texture: texture2, // global!
-    });
-    addPulsar(disc2);
+    // // add a disc
+    // let disc1 = new PulsarSolid({
+    //   context: contextBlend,
+    //   x: 500,
+    //   y: -200,
+    //   z: 250,
+    //   r: 200,
+    //   velocity: 0.0001,
+    //   bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+    //   texture: texture, // global!
+    // });
+    // addPulsar(disc1);
+
+    // // another disc
+    // let disc2 = new PulsarSolid({
+    //   context: contextBlend,
+    //   x: 1000,
+    //   y: -500,
+    //   z: 100,
+    //   r: 250,
+    //   velocity: 0.0001,
+    //   bounds: {minx: 0, maxx: 1200, miny: -800, maxy: 0},
+    //   texture: texture2, // global!
+    // });
+    // addPulsar(disc2);
   }
 
   return {
