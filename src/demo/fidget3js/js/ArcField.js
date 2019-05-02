@@ -457,9 +457,9 @@ window.ArcField = (function () {
     fidget1 = createFidget1(400, -100, rWidth, rHeight, randomR());
     fidget1 = createFidget1(800, -100, rWidth, rHeight, randomR());
 
-    // fidget1 = createFidget1(1000, -200, rWidth, rHeight, randomR()); // middle
-    // fidget1 = createFidget1(200, -200, rWidth, rHeight, randomR());
-    // fidget1 = createFidget1(600, -200, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(1000, -200, rWidth, rHeight, randomR()); // middle
+    fidget1 = createFidget1(200, -200, rWidth, rHeight, randomR());
+    fidget1 = createFidget1(600, -200, rWidth, rHeight, randomR());
 
     // fidget1 = createFidget1(1200, -300, rWidth, rHeight, randomR()); // middle
     // fidget1 = createFidget1(400, -300, rWidth, rHeight, randomR());
@@ -483,7 +483,7 @@ window.ArcField = (function () {
 
     // add a random flower
     let fp1 = new PulsarFlower({
-      context: contextBlend,
+      context: contextOverlay,
       x: 800,
       y: -600,
       z: 110,

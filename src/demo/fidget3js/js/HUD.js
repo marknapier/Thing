@@ -5,28 +5,47 @@ function makeHUD(rendrr, sceneDrawnInTexture) {
   var rWidth = rendrr.getSize().width;
   var rHeight = rendrr.getSize().height;
 
-  function makeMarker(w, h, color) {
+  function makeLine(w, h, color) {
     var square_material = new THREE.MeshBasicMaterial( { color: color, side: THREE.DoubleSide } );
     var square_geometry = new THREE.PlaneBufferGeometry(w, h);
     var square_mesh = new THREE.Mesh(square_geometry, square_material);
     return square_mesh;
   }
 
-  function drawLine(scene, x1, y1, x2, y2, color) {
+  function makeArrow(w, h, color) {
+    var ww = w/2;
+    var hh = h/2;
+    var triangleShape = new THREE.Shape();
+    triangleShape.moveTo( -ww, -hh );
+    triangleShape.lineTo( ww, -hh );
+    triangleShape.lineTo( ww, hh );
+
+    triangleShape.lineTo( ww+20, hh );
+    triangleShape.lineTo( 0, hh+40 );
+    triangleShape.lineTo( -(ww+20), hh );
+    triangleShape.lineTo( -ww, hh );
+
+    triangleShape.lineTo( -ww, -hh ); // close path
+
+    var geometry = new THREE.ShapeBufferGeometry(triangleShape, 60);
+    var mat = new THREE.MeshBasicMaterial( { color: 0xF6F300 } );
+    var mesh = new THREE.Mesh(geometry, mat);
+
+    return mesh;
+  }
+
+  function makeMarker(scene, x1, y1, x2, y2, color) {
     var lineWidth = 30;
     var length = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
     var angle = Math.atan2(y2 - y1, x2 - x1); // * 180 / Math.PI;
     var ninetyRads = 90 * Math.PI/180;
 
-    console.log('drawGesture xy2 xy1 len angle', x2, y2, x1, y1, length, angle);
-
-    marker && scene.remove(marker);
-
-    marker = makeMarker(lineWidth, length, 0xF00030);
+    // marker = makeLine(lineWidth, length, 0xF00030);
+    marker = makeArrow(lineWidth, length, 0xF00030);
     marker.rotateOnAxis( {x:0, y:0, z:1}, angle - ninetyRads );
     marker.position.set(x1, y1, 50);
     marker.translateY(length/2);
-    scene.add(marker);
+    return marker;
   }
 
   function makeHUDScene(sceneDrawnInTexture) {
@@ -66,7 +85,10 @@ function makeHUD(rendrr, sceneDrawnInTexture) {
   }
 
   function drawGesture(startX, startY, endX, endY) {
-    drawLine(scene, startX, startY, endX, endY, null);
+    marker && scene.remove(marker);
+
+    var line = makeMarker(scene, startX, startY, endX, endY, null);
+    scene.add(line);
   }
 
   function addQuadWithTexture(t) {

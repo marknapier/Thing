@@ -30,13 +30,14 @@ function makeBlendedDrawing(rendrr) {
   function render() {
     // renders into offscreent texture without clearing background: moving shapes will leave trails
     rendrr.render(scene, camera, offscreenTexture, true);
+    // rendrr.render(scene, camera);
   }
 
   function makeOffscreenTexture(r) {
     return new THREE.WebGLRenderTarget( rWidth, rHeight, {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter, // THREE.NearestFilter, THREE.LinearFilter
-      format: THREE.RGBFormat
+      format: THREE.RGBAFormat // Why do I need this now?!?!?!!!
     });
   }
 

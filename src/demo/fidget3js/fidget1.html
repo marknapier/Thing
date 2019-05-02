@@ -164,7 +164,7 @@
 
       function render() {
         FatLine.setResolution( window.innerWidth, window.innerHeight );
-        
+
         // redraw animation
         ArcField.draw();
         // render drawing into texture
@@ -350,6 +350,7 @@
             // HUD.addQuadWithTexture(texture3);
 
             FatLine.setResolution( window.innerWidth, window.innerHeight );
+
             // arcfield will render into drawing layer
             window.ArcField.init(renderer, drawing.scene, HUD.scene, textures);
 
